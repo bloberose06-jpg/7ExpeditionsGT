@@ -4,8 +4,8 @@ import { useEffect, useState } from "react";
 import { volcanoes } from "../data/volcanoes";
 
 // TODO: reemplazá estos dos valores con los datos reales del negocio.
-const WHATSAPP_NUMBER = "50212345678"; // formato: código de país + número, sin +, sin espacios
-const CONTACT_EMAIL = "reservas@7expeditionsgt.com";
+const WHATSAPP_NUMBER = "50236181268"; // formato: código de país + número, sin +, sin espacios
+const CONTACT_EMAIL = "viajesguateasociados@gmail.com";
 
 export default function Reservation() {
   const [form, setForm] = useState({
