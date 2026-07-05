@@ -1,0 +1,106 @@
+import React from 'react';
+
+export default function Home() {
+  return (
+    <div className="bg-slate-50 text-slate-800 font-sans min-h-screen">
+      
+      {/* 1. NAVBAR */}
+      <nav className="bg-slate-900 text-white px-6 py-4 flex justify-between items-center sticky top-0 z-50 shadow-md">
+        <div className="text-2xl font-black tracking-wider text-orange-500">7 EXPEDITIONS</div>
+        <div className="hidden md:flex space-x-6 font-medium">
+          <a href="#tours" className="hover:text-orange-400 transition">Tours</a>
+          <a href="#nosotros" className="hover:text-orange-400 transition">Sobre Nosotros</a>
+          <a href="#faq" className="hover:text-orange-400 transition">Preguntas Frecuentes</a>
+        </div>
+        <a 
+          href="https://wa.me/tu-numero" 
+          target="_blank" 
+          className="bg-orange-600 hover:bg-orange-700 text-white font-bold px-5 py-2 rounded-full transition text-sm shadow-lg"
+        >
+          Reservar Ahora
+        </a>
+      </nav>
+
+      {/* 2. HERO SECTION */}
+      <header className="relative bg-slate-900 h-[85vh] flex items-center justify-center text-center px-4 overflow-hidden">
+        {/* Imagen de fondo simulada con overlay oscuro */}
+        <div className="absolute inset-0 bg-black opacity-50 z-10"></div>
+        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&q=80&w=1200')] bg-cover bg-center"></div>
+        
+        <div className="relative z-20 max-w-3xl text-white">
+          <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight mb-4">
+            Conquista las Cumbres de Guatemala con <span className="text-orange-500">7 Expeditions</span>
+          </h1>
+          <p className="text-lg md:text-xl text-slate-200 mb-8 max-w-2xl mx-auto">
+            Guias expertos, la mejor logística de seguridad y una experiencia inolvidable en el Volcán de Acatenango y más allá.
+          </p>
+          <div className="flex flex-col sm:flex-row justify-center gap-4">
+            <a href="#tours" className="bg-orange-600 hover:bg-orange-700 text-white font-bold px-8 py-4 rounded-lg shadow-lg transition">
+              Ver Expediciones
+            </a>
+            <a href="#nosotros" className="bg-transparent border-2 border-white hover:bg-white hover:text-slate-950 font-bold px-8 py-4 rounded-lg transition">
+              Saber Más
+            </a>
+          </div>
+        </div>
+      </header>
+
+      {/* 3. SECCIÓN DE TOURS */}
+      <section id="tours" className="py-20 px-6 max-w-6xl mx-auto">
+        <div className="text-center mb-12">
+          <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-2">Nuestras Aventuras Destacadas</h2>
+          <p className="text-slate-600">Elige tu próximo reto. Todo incluido para tu seguridad y comodidad.</p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {/* Tarjeta de Tour 1 */}
+          <div className="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition border border-slate-100">
+            <div className="h-48 bg-[url('https://images.unsplash.com/photo-1589405858862-2ac9cbb41321?auto=format&fit=crop&q=80&w=600')] bg-cover bg-center"></div>
+            <div className="p-6">
+              <span className="bg-emerald-100 text-emerald-800 text-xs font-bold px-2.5 py-1 rounded">Popular</span>
+              <h3 className="text-xl font-bold mt-2 mb-1">Volcán Acatenango (2 Días)</h3>
+              <p className="text-sm text-slate-500 mb-4">Observa las erupciones del Volcán de Fuego en vivo desde nuestro campamento base.</p>
+              <div className="flex justify-between items-center pt-4 border-t border-slate-100">
+                <span className="text-2xl font-black text-slate-900">$89 <span className="text-xs font-normal text-slate-500">/ persona</span></span>
+                <a href="#" className="text-orange-600 font-bold hover:text-orange-700 transition text-sm">Detalles →</a>
+              </div>
+            </div>
+          </div>
+
+          {/* Tarjeta de Tour 2 */}
+          <div className="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition border border-slate-100">
+            <div className="h-48 bg-[url('https://images.unsplash.com/photo-1600298882283-40b4dcb8b211?auto=format&fit=crop&q=80&w=600')] bg-cover bg-center"></div>
+            <div className="p-6">
+              <span className="bg-blue-100 text-blue-800 text-xs font-bold px-2.5 py-1 rounded">Medio</span>
+              <h3 className="text-xl font-bold mt-2 mb-1">Caminata Volcán Pacaya</h3>
+              <p className="text-sm text-slate-500 mb-4">Ideal para familias. Camina sobre ríos de lava seca y cocina malvaviscos térmicos.</p>
+              <div className="flex justify-between items-center pt-4 border-t border-slate-100">
+                <span className="text-2xl font-black text-slate-900">$45 <span className="text-xs font-normal text-slate-500">/ persona</span></span>
+                <a href="#" className="text-orange-600 font-bold hover:text-orange-700 transition text-sm">Detalles →</a>
+              </div>
+            </div>
+          </div>
+
+          {/* Tarjeta de Tour 3 */}
+          <div className="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition border border-slate-100">
+            <div className="h-48 bg-[url('https://images.unsplash.com/photo-1544885935-98dd03b09034?auto=format&fit=crop&q=80&w=600')] bg-cover bg-center"></div>
+            <div className="p-6">
+              <span className="bg-purple-100 text-purple-800 text-xs font-bold px-2.5 py-1 rounded">Extremo</span>
+              <h3 className="text-xl font-bold mt-2 mb-1">Trilogía de Volcanes</h3>
+              <p className="text-sm text-slate-500 mb-4">Un desafío de 3 días para los más experimentados: Agua, Fuego y Acatenango.</p>
+              <div className="flex justify-between items-center pt-4 border-t border-slate-100">
+                <span className="text-2xl font-black text-slate-900">$210 <span className="text-xs font-normal text-slate-500">/ persona</span></span>
+                <a href="#" className="text-orange-600 font-bold hover:text-orange-700 transition text-sm">Detalles →</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 4. FOOTER */}
+      <footer className="bg-slate-900 text-slate-400 py-8 px-6 text-center border-t border-slate-800">
+        <p className="text-sm">© 2026 7 Expeditions. Diseñado para aventureros de verdad.</p>
+      </footer>
+    </div>
+  );
+}
