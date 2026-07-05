@@ -1,0 +1,101 @@
+@import "tailwindcss";
+
+:root {
+  /* --- 7 Expeditions GT :: paleta volcánica --- */
+  --basalt: #14110f;        /* fondo principal, roca volcánica */
+  --basalt-2: #1c1713;      /* fondo secundario, un tono más cálido */
+  --ceniza: #211c18;        /* superficies / tarjetas */
+  --ceniza-line: #3a322c;   /* bordes y divisores */
+  --lava: #c6491d;          /* acento primario, ceniza incandescente */
+  --lava-bright: #ea7134;   /* hover / brillo */
+  --sulfuro: #d9a73b;       /* acento secundario, azufre */
+  --bruma: #f1e9dd;         /* texto claro, niebla de cráter */
+  --bruma-dim: #cabfae;     /* texto secundario sobre fondo oscuro */
+  --musgo: #4a5a43;         /* verde bosque nuboso, contraste */
+  --musgo-bright: #6b7f61;
+
+  --font-display: "Big Shoulders Display";
+  --font-body: "Work Sans";
+  --font-mono: "IBM Plex Mono";
+}
+
+* {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--basalt);
+  color: var(--bruma);
+  font-family: var(--font-body), Arial, Helvetica, sans-serif;
+}
+
+::selection {
+  background: var(--lava);
+  color: var(--bruma);
+}
+
+:focus-visible {
+  outline: 2px solid var(--sulfuro);
+  outline-offset: 3px;
+}
+
+.font-display {
+  font-family: var(--font-display), sans-serif;
+}
+
+.font-mono {
+  font-family: var(--font-mono), monospace;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.reveal {
+  animation: rise 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes ember-pulse {
+  0%, 100% { opacity: 0.55; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.35); }
+}
+
+.ember {
+  animation: ember-pulse 2.4s ease-in-out infinite;
+}
+
+.field-input {
+  background: var(--basalt-2);
+  border: 1px solid var(--ceniza-line);
+  border-radius: 2px;
+  padding: 0.65rem 0.8rem;
+  color: var(--bruma);
+  font-family: var(--font-body), sans-serif;
+  font-size: 0.925rem;
+  transition: border-color 0.2s ease;
+}
+
+.field-input::placeholder {
+  color: var(--bruma-dim);
+  opacity: 0.6;
+}
+
+.field-input:focus {
+  border-color: var(--lava);
+  outline: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal, .ember, * {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
