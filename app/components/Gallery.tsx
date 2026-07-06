@@ -13,7 +13,7 @@ type Shot = {
 
 const shots: Shot[] = [
   {
-    id: "01",
+    id: <Image src="/gallery/Explosion.jpg" alt="Amanecer sobre el Fuego" fill className="object-cover" />,
     caption: "Amanecer sobre el Fuego",
     location: "Campamento Acatenango, 3,600 m",
     span: "md:col-span-2 md:row-span-2",
