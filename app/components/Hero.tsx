@@ -20,7 +20,7 @@ export default function Hero() {
         >
           Guatemala
           <br />
-          arde. <span className="text-[var(--lava)]">Vos subís.</span>
+           . <span className="text-[var(--lava)]">TIERRA DE FUEGO.</span>
         </h1>
         <p
           className="reveal mt-6 max-w-xl text-base md:text-lg text-[var(--bruma-dim)] font-medium"
