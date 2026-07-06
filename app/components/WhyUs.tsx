@@ -1,22 +1,22 @@
 const stats = [
   { value: "7", label: "Volcanes en operación" },
   { value: "10+", label: "Años guiando expediciones" },
-  { value: "8", label: "Máximo por grupo" },
-  { value: "100%", label: "Guías certificados INGUAT" },
+  { value: "Sin", label: "Máximo por grupo" },
+  { value: "100%", label: "Guías con Experiencia " },
 ];
 
 const items = [
   {
-    title: "Guías certificados",
-    text: "Certificación INGUAT y formación en primeros auxilios de montaña. Conocen cada ruta en cualquier condición climática.",
+    title: "Guías",
+    text: "Con formación en primeros auxilios de montaña. Conocen cada ruta en cualquier condición climática.",
   },
   {
-    title: "Grupos pequeños",
-    text: "Máximo ocho personas por expedición, para un ritmo seguro y atención real a cada participante.",
+    title: "Grupos Sin Limite",
+    text: "Sin Máximo de personas por expedición, siempre con un ritmo seguro y atención real a cada participante.",
   },
   {
-    title: "Equipo incluido",
-    text: "Bastones, chaqueta de montaña, guantes y bolsa de dormir para las expediciones de altura, sin costo extra.",
+    title: "Opciones de Equipo",
+    text: "Bastones, chaqueta de montaña, guantes y bolsa de dormir para las expediciones de altura.",
   },
   {
     title: "Seguridad primero",
