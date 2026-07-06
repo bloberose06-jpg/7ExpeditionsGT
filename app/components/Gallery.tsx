@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 
 type Shot = {
   id: string;
@@ -9,6 +10,7 @@ type Shot = {
   span: string; // clases de grid para el mosaico
   gradient: string;
   icon: "sunrise" | "lava" | "forest" | "group" | "stars" | "crater";
+  image: string;
 };
 
 const shots: Shot[] = [
@@ -19,7 +21,7 @@ const shots: Shot[] = [
     span: "md:col-span-2 md:row-span-2",
     gradient: "linear-gradient(155deg, #3a1c10 0%, #c6491d 55%, #d9a73b 100%)",
     icon: "sunrise",
-    tile: <Image src="/gallery/acatenango-amanecer.jpg" alt="Amanecer sobre el Fuego" fill className="object-cover" />,
+    image: "/gallery/Explosion.jpg",
   },
   {
     id: "02",
