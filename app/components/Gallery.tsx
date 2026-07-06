@@ -30,6 +30,7 @@ const shots: Shot[] = [
     span: "md:col-span-1 md:row-span-1",
     gradient: "linear-gradient(160deg, #1c1713 0%, #7a2d12 60%, #ea7134 100%)",
     icon: "lava",
+    image: "/gallery/Explosion.jpg",
   },
   {
     id: "03",
@@ -38,6 +39,7 @@ const shots: Shot[] = [
     span: "md:col-span-1 md:row-span-1",
     gradient: "linear-gradient(160deg, #14110f 0%, #2f3a2b 55%, #4a5a43 100%)",
     icon: "forest",
+    image: "/gallery/Acatenango1.jpg",
   },
   {
     id: "04",
@@ -46,6 +48,7 @@ const shots: Shot[] = [
     span: "md:col-span-1 md:row-span-1",
     gradient: "linear-gradient(160deg, #1c1713 0%, #6b4a2c 60%, #d9a73b 100%)",
     icon: "group",
+    image: "/gallery/Explosion.jpg",
   },
   {
     id: "05",
@@ -54,6 +57,7 @@ const shots: Shot[] = [
     span: "md:col-span-1 md:row-span-2",
     gradient: "linear-gradient(170deg, #0c0b0a 0%, #211c18 50%, #3a322c 100%)",
     icon: "stars",
+    image: "/gallery/Acatenango1.jpg",
   },
   {
     id: "06",
@@ -62,6 +66,7 @@ const shots: Shot[] = [
     span: "md:col-span-2 md:row-span-1",
     gradient: "linear-gradient(150deg, #1c1713 0%, #3f4a3d 60%, #6b7f61 100%)",
     icon: "crater",
+    image: "/gallery/Explosion.jpg",
   },
   {
     id: "07",
@@ -70,6 +75,7 @@ const shots: Shot[] = [
     span: "md:col-span-1 md:row-span-1",
     gradient: "linear-gradient(160deg, #14110f 0%, #7a2d12 55%, #ea7134 100%)",
     icon: "lava",
+    image: "/gallery/Explosion.jpg",
   },
 ];
 
