@@ -21,8 +21,7 @@ type Shot = {
 
 const ICON_CYCLE: IconType[] = ["sunrise", "lava", "forest", "group", "stars", "crater"];
 
-// Patrón de tamaños que se repite para que el mosaico se vea bien
-// sin importar cuántas fotos haya.
+// Aseguramos que estas clases estén exactamente escritas para que Tailwind las compile bien
 const SPAN_CYCLE = [
   "md:col-span-2 md:row-span-2",
   "md:col-span-1 md:row-span-1",
@@ -37,7 +36,6 @@ const IMAGE_EXTENSIONS = [".jpg", ".jpeg", ".png", ".webp"];
 function humanizeFilename(filename: string, index: number) {
   const base = filename.replace(/\.[^.]+$/, "");
 
-  // Nombres tipo WhatsApp (IMG-20260706-WA0005) no dicen nada útil
   const isWhatsappStyle = /^IMG-\d{6,8}-WA\d+$/i.test(base);
   if (isWhatsappStyle) {
     return `Momento de expedición ${index + 1}`;
@@ -147,15 +145,15 @@ export default function Gallery() {
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-12">
           <div>
             <p className="font-mono text-xs uppercase tracking-[0.3em] text-[var(--lava-bright)] mb-3">
-              Diario de expedición
+              7 Expeditions
             </p>
-            <h2 className="font-display uppercase text-[var(--bruma)]" style={{ fontSize: "clamp(2.2rem, 5vw, 3.8rem)" }}>
-              Galería
+            <h2 className="font-display uppercase text-[var(--bruma)] leading-none" style={{ fontSize: "clamp(2.5rem, 5vw, 4rem)" }}>
+              Guatemala arde.<br />
+              <span className="text-[var(--lava-bright)]">Tú la conquistas.</span>
             </h2>
           </div>
           <p className="max-w-sm text-[var(--bruma-dim)]">
-            Agregá tus fotos a <code className="font-mono text-[var(--sulfuro)]">/public/gallery</code> y
-            aparecen acá automáticamente al hacer deploy.
+            Fotografías reales tomadas en nuestros ascensos. Agrega tus capturas en <code className="font-mono text-[var(--sulfuro)]">/public/gallery</code> y aparecerán automáticamente aquí.
           </p>
         </div>
 
@@ -164,21 +162,23 @@ export default function Gallery() {
             No hay fotos todavía en /public/gallery.
           </p>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 md:auto-rows-[180px] gap-4">
+          /* Cambiado md:auto-rows-[180px] a grid-flow-row-dense y min-height explícitos para forzar la renderización de layouts rotos */
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 auto-rows-[200px] md:auto-rows-[180px] grid-flow-row-dense gap-4">
             {shots.map((s) => (
               <div
                 key={s.id}
-                className={`group relative rounded-sm overflow-hidden border border-white/10 min-h-[180px] ${s.span}`}
+                className={`group relative rounded-sm overflow-hidden border border-white/10 w-full h-full ${s.span}`}
               >
                 <Image
                   src={s.image}
                   alt={s.caption}
                   fill
-                  sizes="(max-width: 768px) 100vw, 50vw"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                   className="object-cover transition-transform duration-500 group-hover:scale-105"
+                  priority={s.id === "01"}
                 />
 
-                <div className="absolute inset-0 bg-black/30" />
+                <div className="absolute inset-0 bg-black/30 transition-colors duration-300 group-hover:bg-black/20" />
 
                 <div className="absolute top-3 left-3 font-mono text-[10px] uppercase tracking-widest text-white/70">
                   {s.id}
@@ -188,7 +188,7 @@ export default function Gallery() {
                   <ShotIcon type={s.icon} />
                 </div>
 
-                <div className="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-black/80 to-transparent opacity-90 group-hover:opacity-100 transition-opacity duration-300">
+                <div className="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-black/90 via-black/40 to-transparent opacity-90 group-hover:opacity-100 transition-opacity duration-300">
                   <p className="font-display uppercase text-white text-lg leading-tight">{s.caption}</p>
                   <p className="font-mono text-[11px] text-white/70 mt-0.5">{s.location}</p>
                 </div>
