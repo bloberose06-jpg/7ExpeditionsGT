@@ -148,7 +148,7 @@ export default function Gallery() {
               7 Expeditions
             </p>
             <h2 className="font-display uppercase text-[var(--bruma)] leading-none" style={{ fontSize: "clamp(2.5rem, 5vw, 4rem)" }}>
-              Guatemala arde.<br />
+              Guatemala Inolvidable.<br />
               <span className="text-[var(--lava-bright)]">Tú la conquistas.</span>
             </h2>
           </div>
