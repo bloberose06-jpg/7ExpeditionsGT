@@ -153,7 +153,7 @@ export default function Gallery() {
             </h2>
           </div>
           <p className="max-w-sm text-[var(--bruma-dim)]">
-            Fotografías reales tomadas en nuestros ascensos. Agrega tus capturas en <code className="font-mono text-[var(--sulfuro)]">/public/gallery</code> y aparecerán automáticamente aquí.
+            Fotografías reales tomadas en nuestros ascensos. <code className="font-mono text-[var(--sulfuro)]"></code> .
           </p>
         </div>
 
