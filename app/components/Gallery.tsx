@@ -1,77 +1,96 @@
-"use client";
-
-import { useState } from "react";
+import fs from "fs";
+import path from "path";
 import Image from "next/image";
+
+type IconType = "sunrise" | "lava" | "forest" | "group" | "stars" | "crater";
+
+type Metadata = {
+  caption?: string;
+  location?: string;
+  icon?: IconType;
+};
 
 type Shot = {
   id: string;
   caption: string;
   location: string;
-  span: string; // clases de grid para el mosaico
-  icon: "sunrise" | "lava" | "forest" | "group" | "stars" | "crater";
+  span: string;
+  icon: IconType;
   image: string;
 };
 
-const shots: Shot[] = [
-  {
-    id: "01",
-    caption: "Amanecer sobre el Fuego",
-    location: "Campamento Acatenango, 3,600 m",
-    span: "md:col-span-2 md:row-span-2",
-    icon: "sunrise",
-    image: "/gallery/Explosion.jpg",
-  },
-  {
-    id: "02",
-    caption: "Colada de lava activa",
-    location: "Volcán Pacaya",
-    span: "md:col-span-1 md:row-span-1",
-    icon: "lava",
-    image: "/gallery/Explosion.jpg",
-  },
-  {
-    id: "03",
-    caption: "Bosque nuboso en ruta",
-    location: "Sendero al Atitlán",
-    span: "md:col-span-1 md:row-span-1",
-    icon: "forest",
-    image: "/gallery/Acatenango1.jpg",
-  },
-  {
-    id: "04",
-    caption: "Grupo en la cumbre",
-    location: "Volcán de Agua, 3,760 m",
-    span: "md:col-span-1 md:row-span-1",
-    icon: "group",
-    image: "/gallery/Explosion.jpg",
-  },
-  {
-    id: "05",
-    caption: "Cielo estrellado en campamento",
-    location: "Campamento Acatenango",
-    span: "md:col-span-1 md:row-span-2",
-    icon: "stars",
-    image: "/gallery/Acatenango1.jpg",
-  },
-  {
-    id: "06",
-    caption: "Cráter cubierto de musgo",
-    location: "Volcán San Pedro",
-    span: "md:col-span-2 md:row-span-1",
-    icon: "crater",
-    image: "/gallery/Explosion.jpg",
-  },
-  {
-    id: "07",
-    caption: "Explosión estromboliana nocturna",
-    location: "Volcán de Fuego, visto desde Acatenango",
-    span: "md:col-span-1 md:row-span-1",
-    icon: "lava",
-    image: "/gallery/Explosion.jpg",
-  },
+const ICON_CYCLE: IconType[] = ["sunrise", "lava", "forest", "group", "stars", "crater"];
+
+// Patrón de tamaños que se repite para que el mosaico se vea bien
+// sin importar cuántas fotos haya.
+const SPAN_CYCLE = [
+  "md:col-span-2 md:row-span-2",
+  "md:col-span-1 md:row-span-1",
+  "md:col-span-1 md:row-span-1",
+  "md:col-span-1 md:row-span-2",
+  "md:col-span-1 md:row-span-1",
+  "md:col-span-2 md:row-span-1",
 ];
 
-function ShotIcon({ type }: { type: Shot["icon"] }) {
+const IMAGE_EXTENSIONS = [".jpg", ".jpeg", ".png", ".webp"];
+
+function humanizeFilename(filename: string, index: number) {
+  const base = filename.replace(/\.[^.]+$/, "");
+
+  // Nombres tipo WhatsApp (IMG-20260706-WA0005) no dicen nada útil
+  const isWhatsappStyle = /^IMG-\d{6,8}-WA\d+$/i.test(base);
+  if (isWhatsappStyle) {
+    return `Momento de expedición ${index + 1}`;
+  }
+
+  return base
+    .replace(/[-_]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .replace(/\b\w/g, (c) => c.toUpperCase());
+}
+
+function loadMetadata(galleryDir: string): Record<string, Metadata> {
+  const metaPath = path.join(galleryDir, "metadata.json");
+  if (!fs.existsSync(metaPath)) return {};
+  try {
+    const raw = fs.readFileSync(metaPath, "utf-8");
+    return JSON.parse(raw) as Record<string, Metadata>;
+  } catch {
+    console.warn("gallery/metadata.json inválido, ignorando.");
+    return {};
+  }
+}
+
+function getShots(): Shot[] {
+  const galleryDir = path.join(process.cwd(), "public", "gallery");
+
+  let files: string[] = [];
+  try {
+    files = fs
+      .readdirSync(galleryDir)
+      .filter((f) => IMAGE_EXTENSIONS.includes(path.extname(f).toLowerCase()))
+      .sort();
+  } catch {
+    return [];
+  }
+
+  const metadata = loadMetadata(galleryDir);
+
+  return files.map((filename, index) => {
+    const meta = metadata[filename] ?? {};
+    return {
+      id: String(index + 1).padStart(2, "0"),
+      caption: meta.caption ?? humanizeFilename(filename, index),
+      location: meta.location ?? "Guatemala",
+      icon: meta.icon ?? ICON_CYCLE[index % ICON_CYCLE.length],
+      span: SPAN_CYCLE[index % SPAN_CYCLE.length],
+      image: `/gallery/${filename}`,
+    };
+  });
+}
+
+function ShotIcon({ type }: { type: IconType }) {
   const common = { width: 22, height: 22, viewBox: "0 0 24 24", fill: "none" } as const;
   switch (type) {
     case "sunrise":
@@ -120,7 +139,7 @@ function ShotIcon({ type }: { type: Shot["icon"] }) {
 }
 
 export default function Gallery() {
-  const [hovered, setHovered] = useState<string | null>(null);
+  const shots = getShots();
 
   return (
     <section id="galeria" className="px-6 lg:px-10 py-24 md:py-32 bg-[var(--basalt-2)]">
@@ -135,49 +154,48 @@ export default function Gallery() {
             </h2>
           </div>
           <p className="max-w-sm text-[var(--bruma-dim)]">
-            Espacio reservado para fotografías reales de cada expedición.
-            Reemplazá cada tile con tus propias imágenes en{" "}
-            <code className="font-mono text-[var(--sulfuro)]">/public/gallery</code>.
+            Agregá tus fotos a <code className="font-mono text-[var(--sulfuro)]">/public/gallery</code> y
+            aparecen acá automáticamente al hacer deploy.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 md:auto-rows-[180px] gap-4">
-          {shots.map((s) => (
-            <div
-              key={s.id}
-              className={`relative rounded-sm overflow-hidden border border-white/10 cursor-default min-h-[180px] ${s.span}`}
-              onMouseEnter={() => setHovered(s.id)}
-              onMouseLeave={() => setHovered(null)}
-            >
-              <Image
-                src={s.image}
-                alt={s.caption}
-                fill
-                sizes="(max-width: 768px) 100vw, 50vw"
-                className="object-cover transition-transform duration-500 hover:scale-105"
-              />
-
-              <div className="absolute inset-0 bg-black/30" />
-
-              <div className="absolute top-3 left-3 font-mono text-[10px] uppercase tracking-widest text-white/70">
-                {s.id}
-              </div>
-
-              <div className="absolute top-3 right-3 text-white/70">
-                <ShotIcon type={s.icon} />
-              </div>
-
+        {shots.length === 0 ? (
+          <p className="text-[var(--bruma-dim)] font-mono text-sm">
+            No hay fotos todavía en /public/gallery.
+          </p>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 md:auto-rows-[180px] gap-4">
+            {shots.map((s) => (
               <div
-                className={`absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-black/80 to-transparent transition-opacity duration-300 ${
-                  hovered === s.id ? "opacity-100" : "opacity-90"
-                }`}
+                key={s.id}
+                className={`group relative rounded-sm overflow-hidden border border-white/10 min-h-[180px] ${s.span}`}
               >
-                <p className="font-display uppercase text-white text-lg leading-tight">{s.caption}</p>
-                <p className="font-mono text-[11px] text-white/70 mt-0.5">{s.location}</p>
+                <Image
+                  src={s.image}
+                  alt={s.caption}
+                  fill
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                  className="object-cover transition-transform duration-500 group-hover:scale-105"
+                />
+
+                <div className="absolute inset-0 bg-black/30" />
+
+                <div className="absolute top-3 left-3 font-mono text-[10px] uppercase tracking-widest text-white/70">
+                  {s.id}
+                </div>
+
+                <div className="absolute top-3 right-3 text-white/70">
+                  <ShotIcon type={s.icon} />
+                </div>
+
+                <div className="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-black/80 to-transparent opacity-90 group-hover:opacity-100 transition-opacity duration-300">
+                  <p className="font-display uppercase text-white text-lg leading-tight">{s.caption}</p>
+                  <p className="font-mono text-[11px] text-white/70 mt-0.5">{s.location}</p>
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );
