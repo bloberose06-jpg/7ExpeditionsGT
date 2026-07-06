@@ -8,7 +8,6 @@ type Shot = {
   caption: string;
   location: string;
   span: string; // clases de grid para el mosaico
-  gradient: string;
   icon: "sunrise" | "lava" | "forest" | "group" | "stars" | "crater";
   image: string;
 };
@@ -19,7 +18,6 @@ const shots: Shot[] = [
     caption: "Amanecer sobre el Fuego",
     location: "Campamento Acatenango, 3,600 m",
     span: "md:col-span-2 md:row-span-2",
-    gradient: "linear-gradient(155deg, #3a1c10 0%, #c6491d 55%, #d9a73b 100%)",
     icon: "sunrise",
     image: "/gallery/Explosion.jpg",
   },
@@ -28,7 +26,6 @@ const shots: Shot[] = [
     caption: "Colada de lava activa",
     location: "Volcán Pacaya",
     span: "md:col-span-1 md:row-span-1",
-    gradient: "linear-gradient(160deg, #1c1713 0%, #7a2d12 60%, #ea7134 100%)",
     icon: "lava",
     image: "/gallery/Explosion.jpg",
   },
@@ -37,7 +34,6 @@ const shots: Shot[] = [
     caption: "Bosque nuboso en ruta",
     location: "Sendero al Atitlán",
     span: "md:col-span-1 md:row-span-1",
-    gradient: "linear-gradient(160deg, #14110f 0%, #2f3a2b 55%, #4a5a43 100%)",
     icon: "forest",
     image: "/gallery/Acatenango1.jpg",
   },
@@ -46,7 +42,6 @@ const shots: Shot[] = [
     caption: "Grupo en la cumbre",
     location: "Volcán de Agua, 3,760 m",
     span: "md:col-span-1 md:row-span-1",
-    gradient: "linear-gradient(160deg, #1c1713 0%, #6b4a2c 60%, #d9a73b 100%)",
     icon: "group",
     image: "/gallery/Explosion.jpg",
   },
@@ -55,7 +50,6 @@ const shots: Shot[] = [
     caption: "Cielo estrellado en campamento",
     location: "Campamento Acatenango",
     span: "md:col-span-1 md:row-span-2",
-    gradient: "linear-gradient(170deg, #0c0b0a 0%, #211c18 50%, #3a322c 100%)",
     icon: "stars",
     image: "/gallery/Acatenango1.jpg",
   },
@@ -64,7 +58,6 @@ const shots: Shot[] = [
     caption: "Cráter cubierto de musgo",
     location: "Volcán San Pedro",
     span: "md:col-span-2 md:row-span-1",
-    gradient: "linear-gradient(150deg, #1c1713 0%, #3f4a3d 60%, #6b7f61 100%)",
     icon: "crater",
     image: "/gallery/Explosion.jpg",
   },
@@ -73,7 +66,6 @@ const shots: Shot[] = [
     caption: "Explosión estromboliana nocturna",
     location: "Volcán de Fuego, visto desde Acatenango",
     span: "md:col-span-1 md:row-span-1",
-    gradient: "linear-gradient(160deg, #14110f 0%, #7a2d12 55%, #ea7134 100%)",
     icon: "lava",
     image: "/gallery/Explosion.jpg",
   },
@@ -153,20 +145,30 @@ export default function Gallery() {
           {shots.map((s) => (
             <div
               key={s.id}
-              className={`relative rounded-sm overflow-hidden border border-dashed border-white/15 cursor-default min-h-[180px] ${s.span}`}
-              style={{ background: s.gradient }}
+              className={`relative rounded-sm overflow-hidden border border-white/10 cursor-default min-h-[180px] ${s.span}`}
               onMouseEnter={() => setHovered(s.id)}
               onMouseLeave={() => setHovered(null)}
             >
-              <div className="absolute inset-0 bg-black/20" />
+              <Image
+                src={s.image}
+                alt={s.caption}
+                fill
+                sizes="(max-width: 768px) 100vw, 50vw"
+                className="object-cover transition-transform duration-500 hover:scale-105"
+              />
+
+              <div className="absolute inset-0 bg-black/30" />
+
               <div className="absolute top-3 left-3 font-mono text-[10px] uppercase tracking-widest text-white/70">
                 {s.id}
               </div>
+
               <div className="absolute top-3 right-3 text-white/70">
                 <ShotIcon type={s.icon} />
               </div>
+
               <div
-                className={`absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-black/70 to-transparent transition-opacity duration-300 ${
+                className={`absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-black/80 to-transparent transition-opacity duration-300 ${
                   hovered === s.id ? "opacity-100" : "opacity-90"
                 }`}
               >
