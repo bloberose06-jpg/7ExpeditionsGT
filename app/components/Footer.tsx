@@ -18,8 +18,8 @@ export default function Footer() {
           </p>
           <ul className="space-y-1.5 text-sm text-[var(--bruma)]">
             {/* TODO: actualizá con los datos reales del negocio */}
-            <li>WhatsApp: +502 1234 5678</li>
-            <li>reservas@7expeditionsgt.com</li>
+            <li>WhatsApp: +502 3618 1268</li>
+            <li>viajesguateasociados@gmail.com</li>
             <li>Antigua Guatemala, Sacatepéquez</li>
           </ul>
         </div>
