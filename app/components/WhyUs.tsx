@@ -1,4 +1,4 @@
-import { useState } from "react";
+
 
 const stats = [
   { value: "7", label: "Volcanes en operación" },
