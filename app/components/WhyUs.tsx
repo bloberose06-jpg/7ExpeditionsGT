@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 const stats = [
   { value: "7", label: "Volcanes en operación" },
   { value: "10+", label: "Años guiando expediciones" },
@@ -25,8 +27,10 @@ const items = [
 ];
 
 export function AcatenangoPdfViewer() {
+  const pdfPath = "/docs/Acatenango_Fuego_7Expeditions.pdf";
+
   return (
-    <div className="w-full max-w-4xl mx-auto my-12 px-4">
+    <div className="w-full max-w-4xl mx-auto mt-20 px-4">
       <div className="text-center mb-6">
         <p className="font-mono text-xs uppercase tracking-[0.3em] text-[var(--lava-bright)] mb-2">
           Información Oficial
@@ -42,35 +46,42 @@ export function AcatenangoPdfViewer() {
       {/* Contenedor adaptativo para el PDF */}
       <div className="relative w-full h-[600px] md:h-[750px] rounded-sm overflow-hidden border border-white/10 bg-black/20 shadow-2xl">
         <object
-          data="/docs/Acatenango_Fuego_7Expeditions.pdf"
+          data={pdfPath}
           type="application/pdf"
           className="w-full h-full"
         >
-          {/* Alternativa elegante por si el navegador no soporta visualización directa */}
-          <div className="flex flex-col items-center justify-center h-full p-6 text-center">
-            <p className="text-[var(--bruma-dim)] font-mono text-sm mb-4">
-              Tu navegador no puede previsualizar el PDF de forma nativa.
-            </p>
-            <a
-              href="/docs/Acatenango_Fuego_7Expeditions.pdf"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="px-4 py-2 border border-[var(--lava-bright)] text-[var(--lava-bright)] font-mono text-xs uppercase tracking-wider rounded-sm hover:bg-[var(--lava-bright)] hover:text-white transition-all"
-            >
-              Abrir PDF en pestaña nueva
-            </a>
-          </div>
+          {/* Un iframe como plan de respaldo nativo si el object falla */}
+          <iframe
+            src={`${pdfPath}#toolbar=0`}
+            className="w-full h-full border-none"
+            title="Catálogo Acatenango"
+          >
+            <div className="flex flex-col items-center justify-center h-full p-6 text-center">
+              <p className="text-[var(--bruma-dim)] font-mono text-sm mb-4">
+                Tu navegador no puede previsualizar el PDF de forma nativa.
+              </p>
+              <a
+                href={pdfPath}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-4 py-2 border border-[var(--lava-bright)] text-[var(--lava-bright)] font-mono text-xs uppercase tracking-wider rounded-sm hover:bg-[var(--lava-bright)] hover:text-white transition-all"
+              >
+                Abrir PDF en pestaña nueva
+              </a>
+            </div>
+          </iframe>
         </object>
       </div>
     </div>
   );
 }
 
-
 export default function WhyUs() {
   return (
     <section id="nosotros" className="px-6 lg:px-10 py-24 md:py-32 bg-[var(--basalt)] border-t border-[var(--ceniza-line)]">
       <div className="mx-auto max-w-6xl">
+        
+        {/* Estadísticas */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-20 pb-16 border-b border-[var(--ceniza-line)]">
           {stats.map((s) => (
             <div key={s.label}>
@@ -82,6 +93,7 @@ export default function WhyUs() {
           ))}
         </div>
 
+        {/* Bloque Informativo Principal */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-10">
           <div>
             <p className="font-mono text-xs uppercase tracking-[0.3em] text-[var(--lava-bright)] mb-3">
@@ -101,6 +113,10 @@ export default function WhyUs() {
             ))}
           </div>
         </div>
+
+        {/* 💥 IMPORTANTE: Aquí llamamos al componente para que aparezca abajo de los textos */}
+        <AcatenangoPdfViewer />
+
       </div>
     </section>
   );
