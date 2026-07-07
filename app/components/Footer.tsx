@@ -37,13 +37,50 @@ export default function Footer() {
         </div>
       </div>
 
-      <div className="mx-auto max-w-6xl mt-10 pt-6 border-t border-[var(--ceniza-line)] flex flex-col sm:flex-row justify-between gap-2">
-        <p className="font-mono text-[11px] text-[var(--bruma-dim)]">
-          © {new Date().getFullYear()} 7 Expeditions GT. Todos los derechos reservados.
-        </p>
-        <p className="font-mono text-[11px] text-[var(--bruma-dim)]">
-          Rutas sujetas a condiciones climáticas y actividad volcánica.
-        </p>
+      {/* Métodos de Pago Aceptados */}
+      <div className="mx-auto max-w-6xl mt-10 pt-6 border-t border-[var(--ceniza-line)] flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div className="flex flex-col gap-1.5">
+          <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--bruma-dim)]">
+            Métodos de pago aceptados
+          </p>
+          <div className="flex flex-wrap gap-3 text-white/60 font-mono text-[11px]">
+            {/* PayPal */}
+            <span className="flex items-center gap-1.5 bg-white/5 px-2 py-1 rounded-sm border border-white/5">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zM4 6h16v2H4V6zm0 12v-6h16v6H4z"/>
+              </svg>
+              PayPal
+            </span>
+
+            {/* Bitcoin */}
+            <span className="flex items-center gap-1.5 bg-white/5 px-2 py-1 rounded-sm border border-white/5">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M6 12h9a3 3 0 0 0 0-6H6v6zm0 6h10a3 3 0 0 0 0-6H6v6z" />
+                <line x1="9" y1="3" x2="9" y2="21" />
+                <line x1="12" y1="3" x2="12" y2="21" />
+              </svg>
+              Bitcoin (BTC)
+            </span>
+
+            {/* Solana */}
+            <span className="flex items-center gap-1.5 bg-white/5 px-2 py-1 rounded-sm border border-white/5">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M4 6h16l-4 4H0zM24 14H8l-4 4h16zM0 10h16l4-4H4z" />
+              </svg>
+              Solana (SOL)
+            </span>
+          </div>
+        </div>
+
+        {/* Términos y Copyright */}
+        <div className="flex flex-col gap-1 text-left md:text-right">
+          <p className="font-mono text-[11px] text-[var(--bruma-dim)]">
+            © {new Date().getFullYear()} 7 Expeditions GT. Todos los derechos reservados.
+          </p>
+          <p className="font-mono text-[11px] text-[var(--bruma-dim)]">
+            Rutas sujetas a condiciones climáticas y actividad volcánica.
+          </p>
+        </div>
       </div>
     </footer>
   );
