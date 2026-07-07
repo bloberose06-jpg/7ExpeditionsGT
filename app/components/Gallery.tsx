@@ -164,7 +164,7 @@ export default function Gallery() {
             <div className="flex gap-2">
               {/* Instagram */}
               <a
-                href="https://instagram.com" 
+                href="https://www.instagram.com/7expeditionsgt?igsh=MXZ6ZGU1ZWl6ZGFqbQ==" 
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-2 px-3 py-1.5 rounded-sm border border-white/10 bg-white/5 font-mono text-[11px] uppercase tracking-wider text-white hover:bg-[var(--lava-bright)] hover:border-[var(--lava-bright)] transition-all duration-300"
@@ -179,7 +179,7 @@ export default function Gallery() {
 
               {/* TikTok */}
               <a
-                href="https://tiktok.com" 
+                href="https://www.tiktok.com/@7.expeditions?_r=1&_t=ZS-97pwNQ1LnE5" 
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-2 px-3 py-1.5 rounded-sm border border-white/10 bg-white/5 font-mono text-[11px] uppercase tracking-wider text-white hover:bg-[var(--lava-bright)] hover:border-[var(--lava-bright)] transition-all duration-300"
