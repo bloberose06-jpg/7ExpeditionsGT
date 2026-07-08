@@ -30,6 +30,7 @@ export default function Footer() {
           </p>
           <ul className="space-y-1.5 text-sm">
             <li><a href="#expediciones" className="text-[var(--bruma-dim)] hover:text-[var(--sulfuro)]">Expediciones</a></li>
+            <li><a href="#calendario" className="text-[var(--bruma-dim)] hover:text-[var(--sulfuro)]">Calendario</a></li>
             <li><a href="#galeria" className="text-[var(--bruma-dim)] hover:text-[var(--sulfuro)]">Galería</a></li>
             <li><a href="#nosotros" className="text-[var(--bruma-dim)] hover:text-[var(--sulfuro)]">Nosotros</a></li>
             <li><a href="#reservar" className="text-[var(--bruma-dim)] hover:text-[var(--sulfuro)]">Reservar</a></li>
