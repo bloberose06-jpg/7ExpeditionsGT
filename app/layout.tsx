@@ -12,7 +12,29 @@ export const metadata: Metadata = {
     "expediciones volcanes",
     "turismo Guatemala",
     "hiking Guatemala",
+    "glamping acatenango",
+    "guia de turistas guatemala"
   ],
+  authors: [{ name: "7 Expeditions GT" }],
+  creator: "7 Expeditions GT",
+  
+  // 🚀 ESTO AGREGA EL FORMATO VISUAL PARA REDES SOCIALES Y WHATSAPP
+  openGraph: {
+    title: "7 Expeditions GT · Expediciones a los volcanes de Guatemala",
+    description: "Ascensos guiados a Acatenango, Pacaya, Fuego y más. Guías certificados y equipo incluido. ¡Reserva tu cupo!",
+    url: "https://www.7expeditionsgt.com", // ⚠️ Cambia por tu dominio real definitivo
+    siteName: "7 Expeditions GT",
+    locale: "es_GT",
+    type: "website",
+    images: [
+      {
+        url: "/og-image.jpg", // ⚠️ Sube una foto horizontal atractiva (1200x630px) a tu carpeta 'public' con este nombre
+        width: 1200,
+        height: 630,
+        alt: "Expediciones a los volcanes de Guatemala con 7 Expeditions GT",
+      },
+    ],
+  },
 };
 
 export default function RootLayout({
