@@ -1,17 +1,18 @@
 import { client, urlFor } from "@/sanity/client";
 import Image from "next/image";
 
-// 1. Tipamos los datos que vienen desde Sanity incluyendo la imagen
+// 1. Tipamos los datos que vienen desde Sanity incluyendo la imagen y el PDF opcional
 interface SanityTour {
   _id: string;
   title: string;
   slug: { current: string };
-  mainImage?: any; // Añadimos el campo de la imagen
+  mainImage?: any; 
   date?: string;
   price?: string;
   duration?: string;
   status?: "disponible" | "ultimos-cupos" | "agotado";
   description?: string;
+  pdfPath?: string; // Propiedad agregada para el documento adjunto
 }
 
 const statusStyles: Record<string, { label: string; color: string }> = {
@@ -99,19 +100,36 @@ export default async function Tours() {
                     </div>
                   </div>
 
-                  {/* Footer de la tarjeta */}
+                  {/* 🚀 Footer de la tarjeta con Precio a la izquierda y los dos links a la derecha */}
                   <div className="flex items-center justify-between mx-6 pb-6 pt-4 border-t border-[var(--ceniza-line)]">
                     <span className="font-display text-lg text-[var(--sulfuro)]">
                       {v.price || "Consultar precio"}
                     </span>
 
-                    <a
-                      href={`#reservar`}
-                      data-tour={v.title}
-                      className="reservar-link font-mono text-xs uppercase tracking-[0.15em] text-[var(--bruma)] border-b border-[var(--lava)] hover:text-[var(--lava-bright)] pb-0.5"
-                    >
-                      Reservar →
-                    </a>
+                    {/* Contenedor de botones alineados */}
+                    <div className="flex items-center gap-5">
+                      {/* 📄 NUEVO BOTÓN: Dirige al PDF (Aparece solo si existe v.pdfPath) */}
+                      {v.pdfPath && (
+                        <a
+                          href={v.pdfPath}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="font-mono text-xs uppercase tracking-[0.15em] text-[var(--bruma-dim)] hover:text-[var(--sulfuro)] border-b border-[var(--ceniza-line)] hover:border-[var(--sulfuro)] pb-0.5 transition-all"
+                          title="Abrir itinerario y detalles en PDF"
+                        >
+                          Info del tour
+                        </a>
+                      )}
+
+                      {/* Botón original de Reservar (Intacto) */}
+                      <a
+                        href={`#reservar`}
+                        data-tour={v.title}
+                        className="reservar-link font-mono text-xs uppercase tracking-[0.15em] text-[var(--bruma)] border-b border-[var(--lava)] hover:text-[var(--lava-bright)] pb-0.5"
+                      >
+                        Reservar →
+                      </a>
+                    </div>
                   </div>
                 </article>
               );
