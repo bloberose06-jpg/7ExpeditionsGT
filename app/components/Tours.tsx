@@ -60,8 +60,22 @@ export default function Tours() {
                 </ul>
               </div>
 
+              {/* 🚀 AQUÍ SE APLICÓ EL PASO 2: Control dinámico del precio/PDF */}
               <div className="flex items-center justify-between pt-4 border-t border-[var(--ceniza-line)]">
-                <span className="font-display text-lg text-[var(--sulfuro)]">{v.price}</span>
+                {v.pdfPath ? (
+                  <a
+                    href={v.pdfPath}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-display text-base uppercase text-[var(--sulfuro)] hover:text-[var(--lava-bright)] transition-colors underline decoration-[var(--lava)] decoration-2 underline-offset-4"
+                    title="Abrir catálogo de precios en PDF"
+                  >
+                    {v.price}
+                  </a>
+                ) : (
+                  <span className="font-display text-lg text-[var(--sulfuro)]">{v.price}</span>
+                )}
+
                 <a
                   href={`#reservar`}
                   data-tour={v.name}
