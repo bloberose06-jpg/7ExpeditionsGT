@@ -25,6 +25,15 @@ export const tourType = defineType({
       options: { hotspot: true },
       validation: (Rule) => Rule.required(),
     }),
+    // Dentro de los fields de tu esquema de Sanity:
+    defineField({
+      name: 'pdfCatalogue',
+      title: 'Catálogo en PDF (Itinerario/Precios)',
+      type: 'file',
+      options: {
+        accept: '.pdf' // Esto obliga a que solo se puedan subir archivos PDF
+      },
+    })
     defineField({
       name: 'date',
       title: 'Fecha del Viaje',
