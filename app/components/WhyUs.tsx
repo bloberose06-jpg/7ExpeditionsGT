@@ -1,5 +1,3 @@
-
-
 const stats = [
   { value: "7", label: "Volcanes en operación" },
   { value: "10+", label: "Años guiando expediciones" },
@@ -25,11 +23,6 @@ const items = [
     text: "Monitoreo constante de actividad volcánica con INSIVUMEH. Rutas ajustadas o suspendidas cuando las condiciones lo requieren.",
   },
 ];
-
-
-
-
-  
 
 export default function WhyUs() {
   return (
@@ -68,9 +61,6 @@ export default function WhyUs() {
             ))}
           </div>
         </div>
-
-        {/* 💥 IMPORTANTE: Aquí llamamos al componente para que aparezca abajo de los textos */}
-        <AcatenangoPdfViewer />
 
       </div>
     </section>
