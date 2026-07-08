@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 
 const links = [
   { href: "#expediciones", label: "Expediciones" },
+  { href: "#calendario", label: "Calendario" }, // <-- Agregado aquí de manera centralizada
   { href: "#galeria", label: "Galería" },
   { href: "#nosotros", label: "Nosotros" },
   { href: "#reservar", label: "Reservar" },
