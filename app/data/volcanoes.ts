@@ -47,7 +47,7 @@ export const volcanoes: Volcano[] = [
     summary:
       "Uno de los volcanes más activos de América. Por seguridad no se asciende a su cráter: se observa desde el campamento en Acatenango.",
     highlights: ["Erupciones estrombolianas frecuentes", "Explosiones audibles de noche", "Solo como mirador guiado"],
-    price: "Incluido en Acatenango",
+    price: "Preguntar por precios",
   },
   {
     slug: "agua",
