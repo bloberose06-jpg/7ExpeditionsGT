@@ -1,10 +1,12 @@
-import { client } from "@/sanity/client";
+import { client, urlFor } from "@/sanity/client";
+import Image from "next/image";
 
-// 1. Tipamos los datos que vienen desde Sanity
+// 1. Tipamos los datos que vienen desde Sanity incluyendo la imagen
 interface SanityTour {
   _id: string;
   title: string;
   slug: { current: string };
+  mainImage?: any; // Añadimos el campo de la imagen
   date?: string;
   price?: string;
   duration?: string;
@@ -12,7 +14,6 @@ interface SanityTour {
   description?: string;
 }
 
-// Mapeo de colores estéticos según el estado del tour
 const statusStyles: Record<string, { label: string; color: string }> = {
   "disponible": { label: "Disponible", color: "var(--musgo-bright)" },
   "ultimos-cupos": { label: "Últimos Cupos", color: "var(--sulfuro)" },
@@ -20,7 +21,6 @@ const statusStyles: Record<string, { label: string; color: string }> = {
 };
 
 export default async function Tours() {
-  // 2. Traemos los datos de Sanity usando GROQ en tiempo real
   const tours: SanityTour[] = await client.fetch(
     `*[_type == "tour"] | order(_createdAt desc)`
   );
@@ -56,37 +56,53 @@ export default async function Tours() {
                 <article
                   key={v._id}
                   id={v.slug.current}
-                  className="group scroll-mt-24 flex flex-col justify-between rounded-sm border border-[var(--ceniza-line)] bg-[var(--ceniza)] p-6 hover:border-[var(--lava)] transition-colors"
+                  className="group scroll-mt-24 flex flex-col justify-between rounded-sm border border-[var(--ceniza-line)] bg-[var(--ceniza)] overflow-hidden hover:border-[var(--lava)] transition-colors"
                 >
                   <div>
-                    <div className="flex items-start justify-between gap-3 mb-3">
-                      <h3 className="font-display text-2xl uppercase text-[var(--bruma)]">
-                        {v.title}
-                      </h3>
-                      {/* Puntos de estado dinámicos basados en la selección del owner */}
-                      <span 
-                        className="mt-1.5 inline-block h-2.5 w-2.5 rounded-full" 
-                        style={{ backgroundColor: statusStyles[currentStatus].color }}
-                        title={`Estado: ${statusStyles[currentStatus].label}`}
-                      />
-                    </div>
+                    {/* 📸 CONTENEDOR DE LA IMAGEN DINÁMICA */}
+                    {v.mainImage && (
+                      <div className="relative h-48 w-full w-full bg-[var(--basalt)] overflow-hidden">
+                        <Image
+                          src={urlFor(v.mainImage).url()}
+                          alt={v.title}
+                          fill
+                          className="object-cover group-hover:scale-105 transition-transform duration-500"
+                          sizes="(max-w-768px) 100vw, (max-w-1200px) 50vw, 33vw"
+                        />
+                      </div>
+                    )}
 
-                    <div className="flex flex-wrap gap-x-4 gap-y-1 font-mono text-[11px] uppercase tracking-wide text-[var(--bruma-dim)] mb-4">
-                      {v.date && <span>📅 {v.date}</span>}
-                      {v.date && v.duration && <span>·</span>}
-                      {v.duration && <span>{v.duration}</span>}
-                      <span>·</span>
-                      <span style={{ color: statusStyles[currentStatus].color }}>
-                        {statusStyles[currentStatus].label}
-                      </span>
-                    </div>
+                    {/* Contenido de la tarjeta con padding acolchado */}
+                    <div className="p-6">
+                      <div className="flex items-start justify-between gap-3 mb-3">
+                        <h3 className="font-display text-2xl uppercase text-[var(--bruma)]">
+                          {v.title}
+                        </h3>
+                        <span 
+                          className="mt-1.5 inline-block h-2.5 w-2.5 rounded-full" 
+                          style={{ backgroundColor: statusStyles[currentStatus].color }}
+                          title={`Estado: ${statusStyles[currentStatus].label}`}
+                        />
+                      </div>
 
-                    <p className="text-sm text-[var(--bruma-dim)] mb-6 leading-relaxed">
-                      {v.description || "Sin descripción disponible."}
-                    </p>
+                      <div className="flex flex-wrap gap-x-4 gap-y-1 font-mono text-[11px] uppercase tracking-wide text-[var(--bruma-dim)] mb-4">
+                        {v.date && <span>📅 {v.date}</span>}
+                        {v.date && v.duration && <span>·</span>}
+                        {v.duration && <span>{v.duration}</span>}
+                        <span>·</span>
+                        <span style={{ color: statusStyles[currentStatus].color }}>
+                          {statusStyles[currentStatus].label}
+                        </span>
+                      </div>
+
+                      <p className="text-sm text-[var(--bruma-dim)] mb-2 leading-relaxed">
+                        {v.description || "Sin descripción disponible."}
+                      </p>
+                    </div>
                   </div>
 
-                  <div className="flex items-center justify-between pt-4 border-t border-[var(--ceniza-line)]">
+                  {/* Footer de la tarjeta */}
+                  <div className="flex items-center justify-between mx-6 pb-6 pt-4 border-t border-[var(--ceniza-line)]">
                     <span className="font-display text-lg text-[var(--sulfuro)]">
                       {v.price || "Consultar precio"}
                     </span>
