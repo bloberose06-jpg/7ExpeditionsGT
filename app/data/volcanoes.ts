@@ -8,10 +8,9 @@ export type Volcano = {
   summary: string;
   highlights: string[];
   price: string;
+  pdfPath?: string; // 👈 Agregamos esta propiedad opcional para los que abren PDF
 };
 
-// Ordenados de mayor a menor elevación — el orden importa: así se leen
-// en el perfil de la cordillera y en la sección de expediciones.
 export const volcanoes: Volcano[] = [
   {
     slug: "tajumulco",
@@ -35,7 +34,8 @@ export const volcanoes: Volcano[] = [
     summary:
       "La expedición más buscada del país: se duerme frente al Fuego en erupción, a un cañón de distancia de la lava.",
     highlights: ["Vista frontal al Volcán de Fuego", "Campamento a 3,600 m", "Erupciones nocturnas visibles"],
-    price: "Desde Q1,600",
+    price: "Ver Tarifas y Glamping →", // 🚀 Texto mejorado, más comercial
+    pdfPath: "/docs/Acatenango_Fuego_7Expeditions.pdf", // 👈 Ruta del PDF
   },
   {
     slug: "fuego",
@@ -47,7 +47,8 @@ export const volcanoes: Volcano[] = [
     summary:
       "Uno de los volcanes más activos de América. Por seguridad no se asciende a su cráter: se observa desde el campamento en Acatenango.",
     highlights: ["Erupciones estrombolianas frecuentes", "Explosiones audibles de noche", "Solo como mirador guiado"],
-    price: "Preguntar por precios",
+    price: "Ver Catálogo Completo →", // 🚀 Texto mejorado
+    pdfPath: "/docs/Acatenango_Fuego_7Expeditions.pdf", // 👈 También abre el catálogo
   },
   {
     slug: "agua",
