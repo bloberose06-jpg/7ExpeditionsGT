@@ -61,13 +61,11 @@ export default async function Tours() {
                   <div>
                     {/* 📸 CONTENEDOR DE LA IMAGEN DINÁMICA */}
                     {v.mainImage && (
-                      <div className="relative h-48 w-full w-full bg-[var(--basalt)] overflow-hidden">
-                        <Image
+                      <div className="relative h-48 w-full bg-[var(--basalt)] overflow-hidden">
+                        <img
                           src={urlFor(v.mainImage).url()}
                           alt={v.title}
-                          fill
-                          className="object-cover group-hover:scale-105 transition-transform duration-500"
-                          sizes="(max-w-768px) 100vw, (max-w-1200px) 50vw, 33vw"
+                          className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500"
                         />
                       </div>
                     )}
