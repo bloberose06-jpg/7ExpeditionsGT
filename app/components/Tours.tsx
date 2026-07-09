@@ -36,7 +36,11 @@ export default async function Tours() {
       status,
       description,
       "pdfUrl": defined(pdfCatalogue.asset) => pdfCatalogue.asset->url
-    }`
+    }`,
+    {}, // Parámetros vacíos de la query
+    {
+      next: { revalidate: 10 } // 🔥 Esto obliga a Next.js a refrescar los datos cada 10 segundos obligatoriamente
+    }
   );
 
   return (
