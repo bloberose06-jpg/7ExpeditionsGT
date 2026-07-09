@@ -1,10 +1,8 @@
 import { client, urlFor } from "@/sanity/client";
 import Image from "next/image";
 
-// ⚡ REVALIDACIÓN AUTOMÁTICA: Revisa cambios en Sanity cada 10 segundos
 export const revalidate = 10;
 
-// 1. Tipamos los datos que vienen desde Sanity incluyendo la imagen y el PDF opcional
 interface SanityTour {
   _id: string;
   title: string;
@@ -15,7 +13,7 @@ interface SanityTour {
   duration?: string;
   status?: "disponible" | "ultimos-cupos" | "agotado";
   description?: string;
-  pdfPath?: string; 
+  pdfUrl?: string; // Cambiamos a pdfUrl que contendrá la dirección directa del archivo
 }
 
 const statusStyles: Record<string, { label: string; color: string }> = {
@@ -25,8 +23,20 @@ const statusStyles: Record<string, { label: string; color: string }> = {
 };
 
 export default async function Tours() {
+  // Solicitamos la URL del archivo de manera directa usando la referencia -> asset->url
   const tours: SanityTour[] = await client.fetch(
-    `*[_type == "tour"] | order(_createdAt desc)`
+    `*[_type == "tour"] | order(_createdAt desc) {
+      _id,
+      title,
+      slug,
+      mainImage,
+      date,
+      price,
+      duration,
+      status,
+      description,
+      "pdfUrl": pdfCatalogue.asset->url
+    }`
   );
 
   return (
@@ -74,7 +84,7 @@ export default async function Tours() {
                       </div>
                     )}
 
-                    {/* Contenido de la tarjeta con padding acolchado */}
+                    {/* Contenido de la tarjeta */}
                     <div className="p-6">
                       <div className="flex items-start justify-between gap-3 mb-3">
                         <h3 className="font-display text-2xl uppercase text-[var(--bruma)]">
@@ -103,17 +113,17 @@ export default async function Tours() {
                     </div>
                   </div>
 
-                  {/* Footer de la tarjeta con Precio e Info del Tour / Reservar */}
+                  {/* Footer de la tarjeta */}
                   <div className="flex items-center justify-between mx-6 pb-6 pt-4 border-t border-[var(--ceniza-line)]">
                     <span className="font-display text-lg text-[var(--sulfuro)]">
                       {v.price || "Consultar precio"}
                     </span>
 
                     <div className="flex items-center gap-5">
-                      {/* Botón dinámico para el PDF */}
-                      {v.pdfPath && (
+                      {/* Botón dinámico para el PDF real subido a Sanity */}
+                      {v.pdfUrl && (
                         <a
-                          href={v.pdfPath}
+                          href={v.pdfUrl}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="font-mono text-xs uppercase tracking-[0.15em] text-[var(--bruma-dim)] hover:text-[var(--sulfuro)] border-b border-[var(--ceniza-line)] hover:border-[var(--sulfuro)] pb-0.5 transition-all"

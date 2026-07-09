@@ -26,10 +26,13 @@ export const tourType = defineType({
       validation: (Rule) => Rule.required(),
     }),
     defineField({
-      name: 'pdfPath',
+      name: 'pdfCatalogue',
       title: 'Catálogo o Información en PDF',
-      type: 'string',
-      description: 'Pega aquí la ruta del PDF (Ej: "/pdf/acatenango.pdf") o el link de descarga.',
+      type: 'file',
+      options: {
+        accept: '.pdf'
+      },
+      description: 'Sube el archivo PDF del itinerario directamente desde tu computadora.',
     }),
     defineField({
       name: 'date',
