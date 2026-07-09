@@ -1,6 +1,9 @@
 import { client, urlFor } from "@/sanity/client";
 import Image from "next/image";
 
+// ⚡ REVALIDACIÓN AUTOMÁTICA: Revisa cambios en Sanity cada 10 segundos
+export const revalidate = 10;
+
 // 1. Tipamos los datos que vienen desde Sanity incluyendo la imagen y el PDF opcional
 interface SanityTour {
   _id: string;
@@ -12,7 +15,7 @@ interface SanityTour {
   duration?: string;
   status?: "disponible" | "ultimos-cupos" | "agotado";
   description?: string;
-  pdfPath?: string; // Propiedad agregada para el documento adjunto
+  pdfPath?: string; 
 }
 
 const statusStyles: Record<string, { label: string; color: string }> = {
@@ -100,15 +103,14 @@ export default async function Tours() {
                     </div>
                   </div>
 
-                  {/* 🚀 Footer de la tarjeta con Precio a la izquierda y los dos links a la derecha */}
+                  {/* Footer de la tarjeta con Precio e Info del Tour / Reservar */}
                   <div className="flex items-center justify-between mx-6 pb-6 pt-4 border-t border-[var(--ceniza-line)]">
                     <span className="font-display text-lg text-[var(--sulfuro)]">
                       {v.price || "Consultar precio"}
                     </span>
 
-                    {/* Contenedor de botones alineados */}
                     <div className="flex items-center gap-5">
-                      {/* 📄 NUEVO BOTÓN: Dirige al PDF (Aparece solo si existe v.pdfPath) */}
+                      {/* Botón dinámico para el PDF */}
                       {v.pdfPath && (
                         <a
                           href={v.pdfPath}
@@ -121,7 +123,7 @@ export default async function Tours() {
                         </a>
                       )}
 
-                      {/* Botón original de Reservar (Intacto) */}
+                      {/* Botón de Reservar */}
                       <a
                         href={`#reservar`}
                         data-tour={v.title}
