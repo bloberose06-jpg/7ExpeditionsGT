@@ -35,7 +35,7 @@ export default async function Tours() {
       duration,
       status,
       description,
-      "pdfUrl": pdfCatalogue.asset->url
+      "pdfUrl": defined(pdfCatalogue.asset) => pdfCatalogue.asset->url
     }`
   );
 
