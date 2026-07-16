@@ -215,9 +215,12 @@ export default function Gallery() {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 auto-rows-[200px] md:auto-rows-[180px] grid-flow-row-dense gap-4">
             {shots.map((s) => (
-              <div
+              <a
                 key={s.id}
-                className={`group relative rounded-sm overflow-hidden border border-white/10 w-full h-full ${s.span}`}
+                href={s.image}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`group relative rounded-sm overflow-hidden border border-white/10 w-full h-full block cursor-pointer ${s.span}`}
               >
                 <Image
                   src={s.image}
@@ -242,7 +245,7 @@ export default function Gallery() {
                   <p className="font-display uppercase text-white text-lg leading-tight">{s.caption}</p>
                   <p className="font-mono text-[11px] text-white/70 mt-0.5">{s.location}</p>
                 </div>
-              </div>
+              </a>
             ))}
           </div>
         )}
