@@ -1,0 +1,151 @@
+{
+  "metadata": {
+    "title": "7 Expeditions GT · Guatemala Volcano Expeditions",
+    "description": "Guided ascents to Acatenango, Pacaya, Fuego, Agua, Atitlán, and Tajumulco. Certified guides, small groups, gear included. Book your expedition to Guatemala's fire.",
+    "ogDescription": "Guided ascents to Acatenango, Pacaya, Fuego and more. Certified guides and gear included. Book your spot!",
+    "ogImageAlt": "Guatemala volcano expeditions with 7 Expeditions GT"
+  },
+
+  "header": {
+    "navExpediciones": "Expeditions",
+    "navCalendario": "Calendar",
+    "navGaleria": "Gallery",
+    "navNosotros": "About Us",
+    "navReservar": "Book Now",
+    "cta": "Book your spot",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu"
+  },
+
+  "hero": {
+    "eyebrow": "Guided expeditions · Guatemala",
+    "title1": "Guatemala",
+    "title2": "LAND OF FIRE.",
+    "description": "Seven volcanoes, one country. Guided ascents to Acatenango, Pacaya, Agua, Atitlán and more — with certified local guides, small groups, and Fuego lighting up the night.",
+    "ctaPrimary": "Book my expedition",
+    "ctaSecondary": "See all 7 volcanoes"
+  },
+
+  "whyUs": {
+    "eyebrow": "Why 7 Expeditions GT",
+    "title1": "We guide with",
+    "title2": "respect for the fire",
+    "stats": {
+      "volcanoesValue": "7",
+      "volcanoesLabel": "Active volcanoes",
+      "yearsValue": "10+",
+      "yearsLabel": "Years guiding expeditions",
+      "groupMaxValue": "No",
+      "groupMaxLabel": "Group size limit",
+      "guidesValue": "100%",
+      "guidesLabel": "Experienced guides"
+    },
+    "items": {
+      "guidesTitle": "Guides",
+      "guidesText": "Trained in mountain first aid. They know every route in any weather condition.",
+      "groupsTitle": "No Group Limit",
+      "groupsText": "No maximum group size, always with a safe pace and real attention to every participant.",
+      "equipmentTitle": "Gear Options",
+      "equipmentText": "Trekking poles, mountain jacket, gloves, and sleeping bag for high-altitude expeditions.",
+      "safetyTitle": "Safety first",
+      "safetyText": "Constant volcanic activity monitoring with INSIVUMEH. Routes adjusted or suspended when conditions require it."
+    }
+  },
+
+  "tours": {
+    "eyebrow": "Upcoming Departures",
+    "title": "The expeditions",
+    "description": "Every route includes a certified guide, mountain gear, and transportation from Antigua Guatemala or Guatemala City. Choose your next adventure!",
+    "empty": "No expeditions are currently published. Go to /studio to add one.",
+    "status": {
+      "disponible": "Available",
+      "ultimos-cupos": "Few Spots Left",
+      "agotado": "Sold Out"
+    },
+    "statusTitle": "Status: {status}",
+    "noDescription": "No description available.",
+    "priceFallback": "Ask for price",
+    "infoPdf": "Tour info",
+    "infoPdfTitle": "Open itinerary and details as PDF",
+    "reservar": "Book now →"
+  },
+
+  "calendar": {
+    "eyebrow": "Official Information",
+    "title": "Calendar & Full Catalogue",
+    "description": "Browse itineraries, dates, glamping menus, and prices directly here.",
+    "unsupported": "Your browser can't preview this PDF natively.",
+    "openPdf": "Open PDF in new tab",
+    "iframeTitle": "Acatenango Catalogue"
+  },
+
+  "reservation": {
+    "eyebrow": "One last step before you climb",
+    "title": "Book your expedition",
+    "description": "Fill out the form and send your request directly via WhatsApp or email. A guide will confirm availability within 24 hours.",
+    "labelName": "Full name",
+    "placeholderName": "Your name",
+    "labelTour": "Volcano",
+    "labelEmail": "Email",
+    "placeholderEmail": "you@email.com",
+    "labelPhone": "Phone / WhatsApp",
+    "placeholderPhone": "+1 ...",
+    "labelDate": "Preferred date",
+    "labelPeople": "Number of people",
+    "labelMessage": "Message (optional)",
+    "placeholderMessage": "Allergies, fitness level, gear you need to rent…",
+    "sendWhatsapp": "Send via WhatsApp",
+    "sendEmail": "Send via email",
+    "validationHint": "Fill in your name and at least an email or phone number to enable sending.",
+    "waMessageIntro": "Hi, I'd like to book an expedition with 7 Expeditions GT.",
+    "waVolcano": "Volcano",
+    "waDate": "Preferred date",
+    "waDateFallback": "to be confirmed",
+    "waPeople": "Number of people",
+    "waName": "Name",
+    "waEmail": "Email",
+    "waPhone": "Phone",
+    "waMessage": "Message",
+    "emailSubject": "Booking · {tour}"
+  },
+
+  "footer": {
+    "description": "Guided expeditions to Guatemala's volcanoes. Antigua Guatemala and Guatemala City.",
+    "contactTitle": "Contact",
+    "navTitle": "Navigation",
+    "navExpediciones": "Expeditions",
+    "navCalendario": "Calendar",
+    "navGaleria": "Gallery",
+    "navNosotros": "About Us",
+    "navReservar": "Book Now",
+    "paymentTitle": "Accepted payment methods",
+    "rights": "All rights reserved.",
+    "weatherNotice": "Routes subject to weather conditions and volcanic activity."
+  },
+
+  "gallery": {
+    "eyebrow": "7 Expeditions",
+    "title1": "Guatemala is on fire.",
+    "title2": "You conquer it.",
+    "description": "Real photos from our climbs. Follow us on social media to relive every expedition in real time.",
+    "instagram": "Instagram",
+    "tiktok": "TikTok",
+    "youtube": "YouTube",
+    "empty": "No photos yet in /public/gallery.",
+    "defaultCaption": "Expedition moment {n}"
+  },
+
+  "volcanoProfile": {
+    "ariaLabel": "Elevation profile of Guatemala's volcanoes, from tallest to shortest",
+    "hint": "Tap a volcano to see its expedition ↓"
+  },
+
+  "acatenangoPdfViewer": {
+    "eyebrow": "Official Information",
+    "title": "Full Tour Catalogue",
+    "description": "Browse itineraries, glamping menus, and prices directly here.",
+    "unsupported": "Your browser can't preview this PDF natively.",
+    "openPdf": "Open PDF in new tab",
+    "iframeTitle": "Acatenango Catalogue"
+  }
+}

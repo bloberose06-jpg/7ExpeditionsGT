@@ -1,0 +1,151 @@
+{
+  "metadata": {
+    "title": "7 Expeditions GT · Expediciones a los volcanes de Guatemala",
+    "description": "Ascensos guiados a Acatenango, Pacaya, Fuego, Agua, Atitlán y Tajumulco. Guías certificados, grupos pequeños, equipo incluido. Reserva tu expedición al fuego de Guatemala.",
+    "ogDescription": "Ascensos guiados a Acatenango, Pacaya, Fuego y más. Guías certificados y equipo incluido. ¡Reserva tu cupo!",
+    "ogImageAlt": "Expediciones a los volcanes de Guatemala con 7 Expeditions GT"
+  },
+
+  "header": {
+    "navExpediciones": "Expediciones",
+    "navCalendario": "Calendario",
+    "navGaleria": "Galería",
+    "navNosotros": "Nosotros",
+    "navReservar": "Reservar",
+    "cta": "Reservar cupo",
+    "openMenu": "Abrir menú",
+    "closeMenu": "Cerrar menú"
+  },
+
+  "hero": {
+    "eyebrow": "Expediciones guiadas · Guatemala",
+    "title1": "Guatemala",
+    "title2": "TIERRA DE FUEGO.",
+    "description": "Siete volcanes, un país. Ascensos guiados a Acatenango, Pacaya, Agua, Atitlán y más — con guías locales certificados, grupos pequeños y el Fuego iluminando la noche.",
+    "ctaPrimary": "Reservar mi expedición",
+    "ctaSecondary": "Ver los 7 volcanes"
+  },
+
+  "whyUs": {
+    "eyebrow": "Por qué 7 Expeditions GT",
+    "title1": "Guiamos con",
+    "title2": "respeto al fuego",
+    "stats": {
+      "volcanoesValue": "7",
+      "volcanoesLabel": "Volcanes en operación",
+      "yearsValue": "10+",
+      "yearsLabel": "Años guiando expediciones",
+      "groupMaxValue": "Sin",
+      "groupMaxLabel": "Máximo por grupo",
+      "guidesValue": "100%",
+      "guidesLabel": "Guías con Experiencia"
+    },
+    "items": {
+      "guidesTitle": "Guías",
+      "guidesText": "Con formación en primeros auxilios de montaña. Conocen cada ruta en cualquier condición climática.",
+      "groupsTitle": "Grupos Sin Límite",
+      "groupsText": "Sin Máximo de personas por expedición, siempre con un ritmo seguro y atención real a cada participante.",
+      "equipmentTitle": "Opciones de Equipo",
+      "equipmentText": "Bastones, chaqueta de montaña, guantes y bolsa de dormir para las expediciones de altura.",
+      "safetyTitle": "Seguridad primero",
+      "safetyText": "Monitoreo constante de actividad volcánica con INSIVUMEH. Rutas ajustadas o suspendidas cuando las condiciones lo requieren."
+    }
+  },
+
+  "tours": {
+    "eyebrow": "Próximas Salidas",
+    "title": "Las expediciones",
+    "description": "Cada ruta incluye guía certificado, equipo de montaña y transporte desde Antigua Guatemala o Ciudad de Guatemala. ¡Elige tu próxima aventura!",
+    "empty": "No hay expediciones publicadas en este momento. Ingresa al /studio para agregar una.",
+    "status": {
+      "disponible": "Disponible",
+      "ultimos-cupos": "Últimos Cupos",
+      "agotado": "Agotado"
+    },
+    "statusTitle": "Estado: {status}",
+    "noDescription": "Sin descripción disponible.",
+    "priceFallback": "Consultar precio",
+    "infoPdf": "Info del tour",
+    "infoPdfTitle": "Abrir itinerario y detalles en PDF",
+    "reservar": "Reservar →"
+  },
+
+  "calendar": {
+    "eyebrow": "Información Oficial",
+    "title": "Calendario y Catálogo Completo",
+    "description": "Explora los itinerarios, fechas, menús de glamping y precios directamente aquí.",
+    "unsupported": "Tu navegador no puede previsualizar el PDF de forma nativa.",
+    "openPdf": "Abrir PDF en pestaña nueva",
+    "iframeTitle": "Catálogo Acatenango"
+  },
+
+  "reservation": {
+    "eyebrow": "Último paso antes de subir",
+    "title": "Reservá tu expedición",
+    "description": "Completá el formulario y enviá tu solicitud directo por WhatsApp o correo. Un guía te confirma disponibilidad en menos de 24 horas.",
+    "labelName": "Nombre completo",
+    "placeholderName": "Tu nombre",
+    "labelTour": "Volcán",
+    "labelEmail": "Correo electrónico",
+    "placeholderEmail": "vos@correo.com",
+    "labelPhone": "Teléfono / WhatsApp",
+    "placeholderPhone": "+502 ...",
+    "labelDate": "Fecha deseada",
+    "labelPeople": "Número de personas",
+    "labelMessage": "Mensaje (opcional)",
+    "placeholderMessage": "Alergias, nivel de condición física, equipo que necesitás rentar…",
+    "sendWhatsapp": "Enviar por WhatsApp",
+    "sendEmail": "Enviar por correo",
+    "validationHint": "Completá tu nombre y al menos un correo o teléfono para habilitar el envío.",
+    "waMessageIntro": "Hola, quiero reservar una expedición con 7 Expeditions GT.",
+    "waVolcano": "Volcán",
+    "waDate": "Fecha deseada",
+    "waDateFallback": "por confirmar",
+    "waPeople": "Número de personas",
+    "waName": "Nombre",
+    "waEmail": "Email",
+    "waPhone": "Teléfono",
+    "waMessage": "Mensaje",
+    "emailSubject": "Reservación · {tour}"
+  },
+
+  "footer": {
+    "description": "Expediciones guiadas a los volcanes de Guatemala. Antigua Guatemala y Ciudad de Guatemala.",
+    "contactTitle": "Contacto",
+    "navTitle": "Navegación",
+    "navExpediciones": "Expediciones",
+    "navCalendario": "Calendario",
+    "navGaleria": "Galería",
+    "navNosotros": "Nosotros",
+    "navReservar": "Reservar",
+    "paymentTitle": "Métodos de pago aceptados",
+    "rights": "Todos los derechos reservados.",
+    "weatherNotice": "Rutas sujetas a condiciones climáticas y actividad volcánica."
+  },
+
+  "gallery": {
+    "eyebrow": "7 Expeditions",
+    "title1": "Guatemala arde.",
+    "title2": "Tú la conquistas.",
+    "description": "Fotografías reales tomadas en nuestros ascensos. Síguenos en nuestras redes para revivir cada expedición en tiempo real.",
+    "instagram": "Instagram",
+    "tiktok": "TikTok",
+    "youtube": "YouTube",
+    "empty": "No hay fotos todavía en /public/gallery.",
+    "defaultCaption": "Momento de expedición {n}"
+  },
+
+  "volcanoProfile": {
+    "ariaLabel": "Perfil de elevación de los volcanes de Guatemala, de mayor a menor altura",
+    "hint": "Tocá un volcán para ver su expedición ↓"
+  },
+
+  "acatenangoPdfViewer": {
+    "eyebrow": "Información Oficial",
+    "title": "Catálogo del Tour Completo",
+    "description": "Explora los itinerarios, menús de glamping y precios directamente aquí.",
+    "unsupported": "Tu navegador no puede previsualizar el PDF de forma nativa.",
+    "openPdf": "Abrir PDF en pestaña nueva",
+    "iframeTitle": "Catálogo Acatenango"
+  }
+}
