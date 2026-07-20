@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 import { volcanoes } from "../data/volcanoes";
 
 // TODO: reemplazá estos dos valores con los datos reales del negocio.
@@ -8,6 +9,8 @@ const WHATSAPP_NUMBER = "50236181268"; // formato: código de país + número, s
 const CONTACT_EMAIL = "viajesguateasociados@gmail.com";
 
 export default function Reservation() {
+  const t = useTranslations("reservation");
+
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -36,15 +39,15 @@ export default function Reservation() {
 
   const buildMessage = () =>
     [
-      `Hola, quiero reservar una expedición con 7 Expeditions GT.`,
+      t("waMessageIntro"),
       ``,
-      `Volcán: ${form.tour}`,
-      `Fecha deseada: ${form.date || "por confirmar"}`,
-      `Número de personas: ${form.people}`,
-      `Nombre: ${form.name || "-"}`,
-      `Email: ${form.email || "-"}`,
-      `Teléfono: ${form.phone || "-"}`,
-      form.message ? `Mensaje: ${form.message}` : "",
+      `${t("waVolcano")}: ${form.tour}`,
+      `${t("waDate")}: ${form.date || t("waDateFallback")}`,
+      `${t("waPeople")}: ${form.people}`,
+      `${t("waName")}: ${form.name || "-"}`,
+      `${t("waEmail")}: ${form.email || "-"}`,
+      `${t("waPhone")}: ${form.phone || "-"}`,
+      form.message ? `${t("waMessage")}: ${form.message}` : "",
     ]
       .filter(Boolean)
       .join("\n");
@@ -53,38 +56,37 @@ export default function Reservation() {
 
   const whatsappHref = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(buildMessage())}`;
   const mailHref = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(
-    `Reservación · ${form.tour}`
+    t("emailSubject", { tour: form.tour })
   )}&body=${encodeURIComponent(buildMessage())}`;
 
   return (
     <section id="reservar" className="px-6 lg:px-10 py-24 md:py-32 bg-[var(--basalt)]">
       <div className="mx-auto max-w-4xl">
         <p className="font-mono text-xs uppercase tracking-[0.3em] text-[var(--lava-bright)] mb-3">
-          Último paso antes de subir
+          {t("eyebrow")}
         </p>
         <h2 className="font-display uppercase text-[var(--bruma)] mb-4" style={{ fontSize: "clamp(2.2rem, 5vw, 3.8rem)" }}>
-          Reservá tu expedición
+          {t("title")}
         </h2>
         <p className="text-[var(--bruma-dim)] max-w-xl mb-10">
-          Completá el formulario y enviá tu solicitud directo por WhatsApp o
-          correo. Un guía te confirma disponibilidad en menos de 24 horas.
+          {t("description")}
         </p>
 
         <form
           className="grid grid-cols-1 md:grid-cols-2 gap-5 bg-[var(--ceniza)] border border-[var(--ceniza-line)] rounded-sm p-6 md:p-8"
           onSubmit={(e) => e.preventDefault()}
         >
-          <Field label="Nombre completo" required>
+          <Field label={t("labelName")} required>
             <input
               required
               value={form.name}
               onChange={update("name")}
-              placeholder="Tu nombre"
+              placeholder={t("placeholderName")}
               className="field-input"
             />
           </Field>
 
-          <Field label="Volcán">
+          <Field label={t("labelTour")}>
             <select value={form.tour} onChange={update("tour")} className="field-input">
               {volcanoes.map((v) => (
                 <option key={v.slug} value={v.name}>
@@ -94,31 +96,31 @@ export default function Reservation() {
             </select>
           </Field>
 
-          <Field label="Correo electrónico">
+          <Field label={t("labelEmail")}>
             <input
               type="email"
               value={form.email}
               onChange={update("email")}
-              placeholder="vos@correo.com"
+              placeholder={t("placeholderEmail")}
               className="field-input"
             />
           </Field>
 
-          <Field label="Teléfono / WhatsApp">
+          <Field label={t("labelPhone")}>
             <input
               type="tel"
               value={form.phone}
               onChange={update("phone")}
-              placeholder="+502 ..."
+              placeholder={t("placeholderPhone")}
               className="field-input"
             />
           </Field>
 
-          <Field label="Fecha deseada">
+          <Field label={t("labelDate")}>
             <input type="date" value={form.date} onChange={update("date")} className="field-input" />
           </Field>
 
-          <Field label="Número de personas">
+          <Field label={t("labelPeople")}>
             <input
               type="number"
               min={1}
@@ -130,12 +132,12 @@ export default function Reservation() {
           </Field>
 
           <div className="md:col-span-2">
-            <Field label="Mensaje (opcional)">
+            <Field label={t("labelMessage")}>
               <textarea
                 rows={3}
                 value={form.message}
                 onChange={update("message")}
-                placeholder="Alergias, nivel de condición física, equipo que necesitás rentar…"
+                placeholder={t("placeholderMessage")}
                 className="field-input resize-none"
               />
             </Field>
@@ -154,7 +156,7 @@ export default function Reservation() {
                   : "bg-[var(--ceniza-line)] text-[var(--bruma-dim)] cursor-not-allowed"
               }`}
             >
-              Enviar por WhatsApp
+              {t("sendWhatsapp")}
             </a>
             <a
               href={isValid ? mailHref : undefined}
@@ -166,12 +168,12 @@ export default function Reservation() {
                   : "border-[var(--ceniza-line)] text-[var(--bruma-dim)] cursor-not-allowed"
               }`}
             >
-              Enviar por correo
+              {t("sendEmail")}
             </a>
           </div>
           {!isValid && (
             <p className="md:col-span-2 font-mono text-[11px] text-[var(--bruma-dim)]">
-              Completá tu nombre y al menos un correo o teléfono para habilitar el envío.
+              {t("validationHint")}
             </p>
           )}
         </form>

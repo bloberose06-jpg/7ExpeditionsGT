@@ -1,12 +1,15 @@
 import fs from "fs";
 import path from "path";
 import Image from "next/image";
+import { getLocale, getTranslations } from "next-intl/server";
 
 type IconType = "sunrise" | "lava" | "forest" | "group" | "stars" | "crater";
 
+type LocalizedText = string | { es?: string; en?: string };
+
 type Metadata = {
-  caption?: string;
-  location?: string;
+  caption?: LocalizedText;
+  location?: LocalizedText;
   icon?: IconType;
 };
 
@@ -32,12 +35,24 @@ const SPAN_CYCLE = [
 
 const IMAGE_EXTENSIONS = [".jpg", ".jpeg", ".png", ".webp"];
 
-function humanizeFilename(filename: string, index: number) {
+// Resuelve un campo que puede ser un string simple (mismo texto en ambos
+// idiomas) o un objeto { es, en } con traducciones por idioma.
+function resolveLocalized(
+  value: LocalizedText | undefined,
+  locale: string,
+  fallback: string
+): string {
+  if (!value) return fallback;
+  if (typeof value === "string") return value;
+  return value[locale as "es" | "en"] ?? value.es ?? fallback;
+}
+
+function humanizeFilename(filename: string, index: number, defaultCaption: string) {
   const base = filename.replace(/\.[^.]+$/, "");
 
   const isWhatsappStyle = /^IMG-\d{6,8}-WA\d+$/i.test(base);
   if (isWhatsappStyle) {
-    return `Momento de expedición ${index + 1}`;
+    return defaultCaption.replace("{n}", String(index + 1));
   }
 
   return base
@@ -59,7 +74,7 @@ function loadMetadata(galleryDir: string): Record<string, Metadata> {
   }
 }
 
-function getShots(): Shot[] {
+function getShots(locale: string, defaultCaption: string, defaultLocation: string): Shot[] {
   const galleryDir = path.join(process.cwd(), "public", "gallery");
 
   let files: string[] = [];
@@ -76,10 +91,12 @@ function getShots(): Shot[] {
 
   return files.map((filename, index) => {
     const meta = metadata[filename] ?? {};
+    const humanized = humanizeFilename(filename, index, defaultCaption);
+
     return {
       id: String(index + 1).padStart(2, "0"),
-      caption: meta.caption ?? humanizeFilename(filename, index),
-      location: meta.location ?? "Guatemala",
+      caption: resolveLocalized(meta.caption, locale, humanized),
+      location: resolveLocalized(meta.location, locale, defaultLocation),
       icon: meta.icon ?? ICON_CYCLE[index % ICON_CYCLE.length],
       span: SPAN_CYCLE[index % SPAN_CYCLE.length],
       image: `/gallery/${filename}`,
@@ -135,8 +152,10 @@ function ShotIcon({ type }: { type: IconType }) {
   }
 }
 
-export default function Gallery() {
-  const shots = getShots();
+export default async function Gallery() {
+  const locale = await getLocale();
+  const t = await getTranslations("gallery");
+  const shots = getShots(locale, t("defaultCaption"), "Guatemala");
 
   return (
     <section id="galeria" className="px-6 lg:px-10 py-24 md:py-32 bg-[var(--basalt-2)]">
@@ -146,18 +165,18 @@ export default function Gallery() {
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-12">
           <div>
             <p className="font-mono text-xs uppercase tracking-[0.3em] text-[var(--lava-bright)] mb-3">
-              7 Expeditions
+              {t("eyebrow")}
             </p>
             <h2 className="font-display uppercase text-[var(--bruma)] leading-none mb-4 md:mb-0" style={{ fontSize: "clamp(2.5rem, 5vw, 4rem)" }}>
-              Guatemala arde.<br />
-              <span className="text-[var(--lava-bright)]">Tú la conquistas.</span>
+              {t("title1")}<br />
+              <span className="text-[var(--lava-bright)]">{t("title2")}</span>
             </h2>
           </div>
 
           {/* Bloque Izquierdo: Descripción y Botones Sociales */}
           <div className="flex flex-col gap-4 max-w-sm">
             <p className="text-[var(--bruma-dim)] text-sm">
-              Fotografías reales tomadas en nuestros ascensos. Síguenos en nuestras redes para revivir cada expedición en tiempo real.
+              {t("description")}
             </p>
             
             {/* Botones de Redes Sociales */}
@@ -174,7 +193,7 @@ export default function Gallery() {
                   <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
                   <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
                 </svg>
-                Instagram
+                {t("instagram")}
               </a>
 
               {/* TikTok */}
@@ -187,7 +206,7 @@ export default function Gallery() {
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"></path>
                 </svg>
-                TikTok
+                {t("tiktok")}
               </a>
 
               {/* YouTube */}
@@ -201,7 +220,7 @@ export default function Gallery() {
                   <path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z"></path>
                   <polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"></polygon>
                 </svg>
-                YouTube
+                {t("youtube")}
               </a>
             </div>
           </div>
@@ -210,7 +229,7 @@ export default function Gallery() {
         {/* Rejilla de fotos */}
         {shots.length === 0 ? (
           <p className="text-[var(--bruma-dim)] font-mono text-sm">
-            No hay fotos todavía en /public/gallery.
+            {t("empty")}
           </p>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 auto-rows-[200px] md:auto-rows-[180px] grid-flow-row-dense gap-4">

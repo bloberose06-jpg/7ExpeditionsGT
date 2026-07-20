@@ -1,30 +1,22 @@
-const stats = [
-  { value: "7", label: "Volcanes en operación" },
-  { value: "10+", label: "Años guiando expediciones" },
-  { value: "Sin", label: "Máximo por grupo" },
-  { value: "100%", label: "Guías con Experiencia " },
-];
+import { getTranslations } from "next-intl/server";
 
-const items = [
-  {
-    title: "Guías",
-    text: "Con formación en primeros auxilios de montaña. Conocen cada ruta en cualquier condición climática.",
-  },
-  {
-    title: "Grupos Sin Limite",
-    text: "Sin Máximo de personas por expedición, siempre con un ritmo seguro y atención real a cada participante.",
-  },
-  {
-    title: "Opciones de Equipo",
-    text: "Bastones, chaqueta de montaña, guantes y bolsa de dormir para las expediciones de altura.",
-  },
-  {
-    title: "Seguridad primero",
-    text: "Monitoreo constante de actividad volcánica con INSIVUMEH. Rutas ajustadas o suspendidas cuando las condiciones lo requieren.",
-  },
-];
+export default async function WhyUs() {
+  const t = await getTranslations("whyUs");
 
-export default function WhyUs() {
+  const stats = [
+    { value: t("stats.volcanoesValue"), label: t("stats.volcanoesLabel") },
+    { value: t("stats.yearsValue"), label: t("stats.yearsLabel") },
+    { value: t("stats.groupMaxValue"), label: t("stats.groupMaxLabel") },
+    { value: t("stats.guidesValue"), label: t("stats.guidesLabel") },
+  ];
+
+  const items = [
+    { title: t("items.guidesTitle"), text: t("items.guidesText") },
+    { title: t("items.groupsTitle"), text: t("items.groupsText") },
+    { title: t("items.equipmentTitle"), text: t("items.equipmentText") },
+    { title: t("items.safetyTitle"), text: t("items.safetyText") },
+  ];
+
   return (
     <section id="nosotros" className="px-6 lg:px-10 py-24 md:py-32 bg-[var(--basalt)] border-t border-[var(--ceniza-line)]">
       <div className="mx-auto max-w-6xl">
@@ -40,16 +32,15 @@ export default function WhyUs() {
             </div>
           ))}
         </div>
-
         {/* Bloque Informativo Principal */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-10">
           <div>
             <p className="font-mono text-xs uppercase tracking-[0.3em] text-[var(--lava-bright)] mb-3">
-              Por qué 7 Expeditions GT
+              {t("eyebrow")}
             </p>
             <h2 className="font-display uppercase text-[var(--bruma)]" style={{ fontSize: "clamp(2.2rem, 5vw, 3.4rem)" }}>
-              Guiamos con
-              <br /> respeto al fuego
+              {t("title1")}
+              <br /> {t("title2")}
             </h2>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
@@ -61,7 +52,6 @@ export default function WhyUs() {
             ))}
           </div>
         </div>
-
       </div>
     </section>
   );

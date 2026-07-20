@@ -1,4 +1,8 @@
-export default function Footer() {
+import { getTranslations } from "next-intl/server";
+
+export default async function Footer() {
+  const t = await getTranslations("footer");
+
   return (
     <footer className="px-6 lg:px-10 py-14 bg-[var(--basalt-2)] border-t border-[var(--ceniza-line)]">
       <div className="mx-auto max-w-6xl grid grid-cols-1 md:grid-cols-3 gap-10">
@@ -7,14 +11,13 @@ export default function Footer() {
             7 Expeditions <span className="text-[var(--lava)]">GT</span>
           </span>
           <p className="mt-3 text-sm text-[var(--bruma-dim)] max-w-xs">
-            Expediciones guiadas a los volcanes de Guatemala. Antigua Guatemala
-            y Ciudad de Guatemala.
+            {t("description")}
           </p>
         </div>
 
         <div>
           <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-[var(--bruma-dim)] mb-3">
-            Contacto
+            {t("contactTitle")}
           </p>
           <ul className="space-y-1.5 text-sm text-[var(--bruma)]">
             {/* TODO: actualizá con los datos reales del negocio */}
@@ -26,14 +29,14 @@ export default function Footer() {
 
         <div>
           <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-[var(--bruma-dim)] mb-3">
-            Navegación
+            {t("navTitle")}
           </p>
           <ul className="space-y-1.5 text-sm">
-            <li><a href="#expediciones" className="text-[var(--bruma-dim)] hover:text-[var(--sulfuro)]">Expediciones</a></li>
-            <li><a href="#calendario" className="text-[var(--bruma-dim)] hover:text-[var(--sulfuro)]">Calendario</a></li>
-            <li><a href="#galeria" className="text-[var(--bruma-dim)] hover:text-[var(--sulfuro)]">Galería</a></li>
-            <li><a href="#nosotros" className="text-[var(--bruma-dim)] hover:text-[var(--sulfuro)]">Nosotros</a></li>
-            <li><a href="#reservar" className="text-[var(--bruma-dim)] hover:text-[var(--sulfuro)]">Reservar</a></li>
+            <li><a href="#expediciones" className="text-[var(--bruma-dim)] hover:text-[var(--sulfuro)]">{t("navExpediciones")}</a></li>
+            <li><a href="#calendario" className="text-[var(--bruma-dim)] hover:text-[var(--sulfuro)]">{t("navCalendario")}</a></li>
+            <li><a href="#galeria" className="text-[var(--bruma-dim)] hover:text-[var(--sulfuro)]">{t("navGaleria")}</a></li>
+            <li><a href="#nosotros" className="text-[var(--bruma-dim)] hover:text-[var(--sulfuro)]">{t("navNosotros")}</a></li>
+            <li><a href="#reservar" className="text-[var(--bruma-dim)] hover:text-[var(--sulfuro)]">{t("navReservar")}</a></li>
           </ul>
         </div>
       </div>
@@ -42,7 +45,7 @@ export default function Footer() {
       <div className="mx-auto max-w-6xl mt-10 pt-6 border-t border-[var(--ceniza-line)] flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
         <div className="flex flex-col gap-2.5 max-w-2xl">
           <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--bruma-dim)]">
-            Métodos de pago aceptados
+            {t("paymentTitle")}
           </p>
           <div className="flex flex-wrap gap-2 text-white/60 font-mono text-[11px]">
             {/* PayPal */}
@@ -101,10 +104,10 @@ export default function Footer() {
         {/* Términos y Copyright */}
         <div className="flex flex-col gap-1 text-left lg:text-right mt-4 lg:mt-0">
           <p className="font-mono text-[11px] text-[var(--bruma-dim)]">
-            © {new Date().getFullYear()} 7 Expeditions GT. Todos los derechos reservados.
+            © {new Date().getFullYear()} 7 Expeditions GT. {t("rights")}
           </p>
           <p className="font-mono text-[11px] text-[var(--bruma-dim)]">
-            Rutas sujetas a condiciones climáticas y actividad volcánica.
+            {t("weatherNotice")}
           </p>
         </div>
       </div>

@@ -1,18 +1,20 @@
 "use client";
-
 import { useEffect, useState } from "react";
-
-const links = [
-  { href: "#expediciones", label: "Expediciones" },
-  { href: "#calendario", label: "Calendario" }, // <-- Agregado aquí de manera centralizada
-  { href: "#galeria", label: "Galería" },
-  { href: "#nosotros", label: "Nosotros" },
-  { href: "#reservar", label: "Reservar" },
-];
+import { useTranslations } from "next-intl";
+import LanguageSwitcher from "./LanguageSwitcher";
 
 export default function Header() {
+  const t = useTranslations("header");
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+
+  const links = [
+    { href: "#expediciones", label: t("navExpediciones") },
+    { href: "#calendario", label: t("navCalendario") },
+    { href: "#galeria", label: t("navGaleria") },
+    { href: "#nosotros", label: t("navNosotros") },
+    { href: "#reservar", label: t("navReservar") },
+  ];
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
@@ -37,7 +39,6 @@ export default function Header() {
             7 Expeditions <span className="text-[var(--lava)]">GT</span>
           </span>
         </a>
-
         <nav className="hidden md:flex items-center gap-8">
           {links.map((l) => (
             <a
@@ -52,28 +53,30 @@ export default function Header() {
             href="#reservar"
             className="rounded-sm bg-[var(--lava)] hover:bg-[var(--lava-bright)] transition-colors px-4 py-2 font-display text-sm uppercase tracking-wide text-[var(--bruma)]"
           >
-            Reservar cupo
+            {t("cta")}
           </a>
+          <LanguageSwitcher />
         </nav>
-
-        <button
-          onClick={() => setOpen((v) => !v)}
-          aria-label={open ? "Cerrar menú" : "Abrir menú"}
-          aria-expanded={open}
-          className="md:hidden text-[var(--bruma)] p-2"
-        >
-          {open ? (
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-              <path d="M6 6L18 18M18 6L6 18" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-            </svg>
-          ) : (
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-              <path d="M4 7H20M4 12H20M4 17H20" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-            </svg>
-          )}
-        </button>
+        <div className="flex items-center gap-4 md:hidden">
+          <LanguageSwitcher />
+          <button
+            onClick={() => setOpen((v) => !v)}
+            aria-label={open ? t("closeMenu") : t("openMenu")}
+            aria-expanded={open}
+            className="text-[var(--bruma)] p-2"
+          >
+            {open ? (
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <path d="M6 6L18 18M18 6L6 18" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+              </svg>
+            ) : (
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <path d="M4 7H20M4 12H20M4 17H20" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+              </svg>
+            )}
+          </button>
+        </div>
       </div>
-
       {open && (
         <div className="md:hidden bg-[var(--basalt)] border-t border-[var(--ceniza-line)] px-6 py-6 flex flex-col gap-5">
           {links.map((l) => (

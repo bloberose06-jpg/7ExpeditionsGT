@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { volcanoes, maxElevation } from "../data/volcanoes";
 
 const VIEW_W = 1200;
@@ -15,6 +16,7 @@ function peakHeight(elevation: number) {
 }
 
 export default function VolcanoProfile() {
+  const t = useTranslations("volcanoProfile");
   const [active, setActive] = useState<string | null>(null);
 
   return (
@@ -23,7 +25,7 @@ export default function VolcanoProfile() {
         viewBox={`0 0 ${VIEW_W} ${VIEW_H}`}
         className="w-full h-auto"
         role="img"
-        aria-label="Perfil de elevación de los volcanes de Guatemala, de mayor a menor altura"
+        aria-label={t("ariaLabel")}
       >
         {/* líneas de referencia de altitud */}
         {[1000, 2000, 3000, 4000].map((m) => {
@@ -98,28 +100,27 @@ export default function VolcanoProfile() {
       </svg>
 
       <p className="mt-2 text-center font-mono text-[11px] uppercase tracking-[0.2em] text-[var(--bruma-dim)]">
-        Tocá un volcán para ver su expedición ↓
+        {t("hint")}
       </p>
     </div>
   );
 }
 
-
-
 export function AcatenangoPdfViewer() {
+  const t = useTranslations("acatenangoPdfViewer");
   const pdfPath = "/docs/Acatenango_Fuego_7Expeditions.pdf";
 
   return (
     <div className="w-full max-w-4xl mx-auto mt-20 px-4">
       <div className="text-center mb-6">
         <p className="font-mono text-xs uppercase tracking-[0.3em] text-[var(--lava-bright)] mb-2">
-          Información Oficial
+          {t("eyebrow")}
         </p>
         <h3 className="font-display uppercase text-[var(--bruma)] text-2xl">
-          Catálogo del Tour Completo
+          {t("title")}
         </h3>
         <p className="text-[var(--bruma-dim)] text-sm mt-1">
-          Explora los itinerarios, menús de glamping y precios directamente aquí.
+          {t("description")}
         </p>
       </div>
 
@@ -134,11 +135,11 @@ export function AcatenangoPdfViewer() {
           <iframe
             src={`${pdfPath}#toolbar=0`}
             className="w-full h-full border-none"
-            title="Catálogo Acatenango"
+            title={t("iframeTitle")}
           >
             <div className="flex flex-col items-center justify-center h-full p-6 text-center">
               <p className="text-[var(--bruma-dim)] font-mono text-sm mb-4">
-                Tu navegador no puede previsualizar el PDF de forma nativa.
+                {t("unsupported")}
               </p>
               <a
                 href={pdfPath}
@@ -146,7 +147,7 @@ export function AcatenangoPdfViewer() {
                 rel="noopener noreferrer"
                 className="px-4 py-2 border border-[var(--lava-bright)] text-[var(--lava-bright)] font-mono text-xs uppercase tracking-wider rounded-sm hover:bg-[var(--lava-bright)] hover:text-white transition-all"
               >
-                Abrir PDF en pestaña nueva
+                {t("openPdf")}
               </a>
             </div>
           </iframe>
