@@ -29,7 +29,6 @@ export default function VolcanoProfile() {
         role="img"
         aria-label={t("ariaLabel")}
       >
-        {/* líneas de referencia de altitud */}
         {[1000, 2000, 3000, 4000].map((m) => {
           const y = BASE_Y - peakHeight(m);
           return (
@@ -70,13 +69,7 @@ export default function VolcanoProfile() {
                 style={{ transition: "fill 0.25s ease" }}
               />
               {v.active && (
-                <circle
-                  cx={cx}
-                  cy={BASE_Y - h + 6}
-                  r={4}
-                  fill="var(--sulfuro)"
-                  className="ember"
-                />
+                <circle cx={cx} cy={BASE_Y - h + 6} r={4} fill="var(--sulfuro)" className="ember" />
               )}
               <text
                 x={cx}
@@ -89,14 +82,7 @@ export default function VolcanoProfile() {
               >
                 {v.name.split(" ")[0]}
               </text>
-              <text
-                x={cx}
-                y={BASE_Y + 38}
-                textAnchor="middle"
-                className="font-mono"
-                fontSize="10.5"
-                fill="var(--bruma-dim)"
-              >
+              <text x={cx} y={BASE_Y + 38} textAnchor="middle" className="font-mono" fontSize="10.5" fill="var(--bruma-dim)">
                 {v.elevation.toLocaleString()} m
               </text>
             </g>
@@ -130,16 +116,8 @@ export function AcatenangoPdfViewer() {
       </div>
 
       <div className="relative w-full h-[600px] md:h-[750px] rounded-sm overflow-hidden border border-white/10 bg-black/20 shadow-2xl">
-        <object
-          data={pdfPath}
-          type="application/pdf"
-          className="w-full h-full"
-        >
-          <iframe
-            src={`${pdfPath}#toolbar=0`}
-            className="w-full h-full border-none"
-            title={t("iframeTitle")}
-          >
+        <object data={pdfPath} type="application/pdf" className="w-full h-full">
+          <iframe src={`${pdfPath}#toolbar=0`} className="w-full h-full border-none" title={t("iframeTitle")}>
             <div className="flex flex-col items-center justify-center h-full p-6 text-center">
               <p className="text-[var(--bruma-dim)] font-mono text-sm mb-4">
                 {t("unsupported")}
