@@ -4,7 +4,7 @@ export type Volcano = {
   elevation: number;
   active: boolean;
   // nuevos, opcionales:
-  difficulty?: "Fácil" | "Moderada" | "Difícil" | "Extrema";
+  difficulty: "Moderada" | "Alta" | "Muy alta";
   duration?: string;
   description?: string;
   highlights?: string[];
