@@ -1,14 +1,14 @@
 export type Volcano = {
   slug: string;
   name: string;
-  elevation: number; // msnm
-  difficulty: "Moderada" | "Alta" | "Muy alta";
-  duration: string;
-  active: boolean; // actividad eruptiva visible
-  summary: string;
-  highlights: string[];
-  price: string;
-  pdfPath?: string; // 👈 Agregamos esta propiedad opcional para los que abren PDF
+  elevation: number;
+  active: boolean;
+  // nuevos, opcionales:
+  difficulty?: "Fácil" | "Moderada" | "Difícil" | "Extrema";
+  duration?: string;
+  description?: string;
+  highlights?: string[];
+  images?: string[];
 };
 
 export const volcanoes: Volcano[] = [
