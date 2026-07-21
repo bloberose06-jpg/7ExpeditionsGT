@@ -122,12 +122,12 @@ export function AcatenangoPdfViewer() {
               <p className="text-[var(--bruma-dim)] font-mono text-sm mb-4">
                 {t("unsupported")}
               </p>
-              
+                <a
                 href={pdfPath}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="px-4 py-2 border border-[var(--lava-bright)] text-[var(--lava-bright)] font-mono text-xs uppercase tracking-wider rounded-sm hover:bg-[var(--lava-bright)] hover:text-white transition-all"
-              >
+                >
                 {t("openPdf")}
               </a>
             </div>
