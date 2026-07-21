@@ -3,12 +3,14 @@ export type Volcano = {
   name: string;
   elevation: number;
   active: boolean;
-  // nuevos, opcionales:
   difficulty: "Moderada" | "Alta" | "Muy alta";
   duration?: string;
   description?: string;
+  summary?: string;     // 👈 Added
   highlights?: string[];
   images?: string[];
+  price?: string;       // 👈 Added
+  pdfPath?: string;     // 👈 Added
 };
 
 export const volcanoes: Volcano[] = [
@@ -34,8 +36,8 @@ export const volcanoes: Volcano[] = [
     summary:
       "La expedición más buscada del país: se duerme frente al Fuego en erupción, a un cañón de distancia de la lava.",
     highlights: ["Vista frontal al Volcán de Fuego", "Campamento a 3,600 m", "Erupciones nocturnas visibles"],
-    price: "Ver Tarifas y Glamping →", // 🚀 Texto mejorado, más comercial
-    pdfPath: "/docs/Acatenango_Fuego_7Expeditions.pdf", // 👈 Ruta del PDF
+    price: "Ver Tarifas y Glamping →",
+    pdfPath: "/docs/Acatenango_Fuego_7Expeditions.pdf",
   },
   {
     slug: "fuego",
@@ -47,8 +49,8 @@ export const volcanoes: Volcano[] = [
     summary:
       "Uno de los volcanes más activos de América. Por seguridad no se asciende a su cráter: se observa desde el campamento en Acatenango.",
     highlights: ["Erupciones estrombolianas frecuentes", "Explosiones audibles de noche", "Solo como mirador guiado"],
-    price: "Ver Catálogo Completo →", // 🚀 Texto mejorado
-    pdfPath: "/docs/Acatenango_Fuego_7Expeditions.pdf", // 👈 También abre el catálogo
+    price: "Ver Catálogo Completo →",
+    pdfPath: "/docs/Acatenango_Fuego_7Expeditions.pdf",
   },
   {
     slug: "agua",
