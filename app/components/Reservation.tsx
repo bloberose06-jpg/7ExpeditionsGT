@@ -8,6 +8,11 @@ import { volcanoes } from "../data/volcanoes";
 const WHATSAPP_NUMBER = "50236181268"; // formato: código de país + número, sin +, sin espacios
 const CONTACT_EMAIL = "viajesguateasociados@gmail.com";
 
+// URL del Google Apps Script que guarda la reserva en Sheets y envía el correo.
+// Se configura en .env.local / variables de entorno de Vercel:
+// NEXT_PUBLIC_SHEETS_ENDPOINT=https://script.google.com/macros/s/XXXXX/exec
+const SHEETS_ENDPOINT = process.env.NEXT_PUBLIC_SHEETS_ENDPOINT || "";
+
 export default function Reservation() {
   const t = useTranslations("reservation");
 
@@ -20,6 +25,36 @@ export default function Reservation() {
     people: "2",
     message: "",
   });
+
+  const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
+
+  // Envía los datos del formulario al Google Apps Script, que los guarda en
+  // Sheets y le manda un correo de aviso al negocio. Se dispara ANTES de
+  // abrir WhatsApp o el correo, para que la reserva quede guardada sin
+  // depender de que el cliente confirme el envío del mensaje.
+  const saveToSheet = async () => {
+    if (!SHEETS_ENDPOINT) {
+      // Si no está configurado el endpoint, no bloqueamos el flujo actual.
+      console.warn("NEXT_PUBLIC_SHEETS_ENDPOINT no está configurado; la reserva no se guardó en Sheets.");
+      return;
+    }
+    try {
+      setStatus("sending");
+      // mode: "no-cors" + Content-Type text/plain evita el preflight que
+      // Google Apps Script no maneja bien. No podemos leer la respuesta,
+      // pero no la necesitamos: solo nos interesa que el POST se dispare.
+      await fetch(SHEETS_ENDPOINT, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "text/plain" },
+        body: JSON.stringify(form),
+      });
+      setStatus("sent");
+    } catch (err) {
+      console.error("Error guardando la reserva en Sheets:", err);
+      setStatus("error");
+    }
+  };
 
   // Si el visitante viene de un botón "Reservar →" de una tarjeta de tour,
   // preseleccionamos ese volcán automáticamente.
@@ -149,7 +184,15 @@ export default function Reservation() {
               target="_blank"
               rel="noopener noreferrer"
               aria-disabled={!isValid}
-              onClick={(e) => !isValid && e.preventDefault()}
+              onClick={async (e) => {
+                if (!isValid) {
+                  e.preventDefault();
+                  return;
+                }
+                e.preventDefault();
+                await saveToSheet();
+                window.open(whatsappHref, "_blank", "noopener,noreferrer");
+              }}
               className={`flex-1 text-center rounded-sm px-6 py-3.5 font-display text-base uppercase tracking-wide transition-colors ${
                 isValid
                   ? "bg-[var(--lava)] hover:bg-[var(--lava-bright)] text-[var(--bruma)] cursor-pointer"
@@ -161,7 +204,15 @@ export default function Reservation() {
             <a
               href={isValid ? mailHref : undefined}
               aria-disabled={!isValid}
-              onClick={(e) => !isValid && e.preventDefault()}
+              onClick={async (e) => {
+                if (!isValid) {
+                  e.preventDefault();
+                  return;
+                }
+                e.preventDefault();
+                await saveToSheet();
+                window.location.href = mailHref;
+              }}
               className={`flex-1 text-center rounded-sm px-6 py-3.5 font-display text-base uppercase tracking-wide border transition-colors ${
                 isValid
                   ? "border-[var(--sulfuro)] text-[var(--bruma)] hover:bg-[var(--sulfuro)] hover:text-[var(--basalt)] cursor-pointer"
@@ -171,6 +222,21 @@ export default function Reservation() {
               {t("sendEmail")}
             </a>
           </div>
+          {status === "sending" && (
+            <p className="md:col-span-2 font-mono text-[11px] text-[var(--lava-bright)]">
+              Guardando tu reserva…
+            </p>
+          )}
+          {status === "sent" && (
+            <p className="md:col-span-2 font-mono text-[11px] text-[var(--lava-bright)]">
+              ✓ Reserva guardada. Abriendo WhatsApp/correo…
+            </p>
+          )}
+          {status === "error" && (
+            <p className="md:col-span-2 font-mono text-[11px] text-red-400">
+              No pudimos guardar la reserva automáticamente, pero tu mensaje se envía igual.
+            </p>
+          )}
           {!isValid && (
             <p className="md:col-span-2 font-mono text-[11px] text-[var(--bruma-dim)]">
               {t("validationHint")}
