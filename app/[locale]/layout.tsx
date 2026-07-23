@@ -5,6 +5,8 @@ import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
 import "../globals.css";
 
+const baseUrl = "https://www.7expeditionsgt.com";
+
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
 }
@@ -18,6 +20,7 @@ export async function generateMetadata({
   const t = await getTranslations({ locale, namespace: "metadata" });
 
   return {
+    metadataBase: new URL(baseUrl),
     title: t("title"),
     description: t("description"),
     keywords: [
@@ -31,13 +34,23 @@ export async function generateMetadata({
       "guia de turistas guatemala",
       "Guatemala volcano tours",
       "Acatenango hike",
+      "Fuego volcano trek",
+      "Guatemala adventure travel",
     ],
     authors: [{ name: "7 Expeditions GT" }],
     creator: "7 Expeditions GT",
+    alternates: {
+      canonical: `${baseUrl}/${locale}`,
+      languages: {
+        es: `${baseUrl}/es`,
+        en: `${baseUrl}/en`,
+        "x-default": `${baseUrl}/en`,
+      },
+    },
     openGraph: {
       title: t("title"),
       description: t("ogDescription"),
-      url: "https://www.7expeditionsgt.com",
+      url: `${baseUrl}/${locale}`,
       siteName: "7 Expeditions GT",
       locale: locale === "en" ? "en_US" : "es_GT",
       type: "website",
@@ -50,6 +63,16 @@ export async function generateMetadata({
         },
       ],
     },
+    twitter: {
+      card: "summary_large_image",
+      title: t("title"),
+      description: t("ogDescription"),
+      images: ["/og-image.jpg"],
+    },
+    robots: {
+      index: true,
+      follow: true,
+    },
   };
 }
 
@@ -61,13 +84,10 @@ export default async function LocaleLayout({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
-
   if (!routing.locales.includes(locale as (typeof routing.locales)[number])) {
     notFound();
   }
-
   const messages = await getMessages();
-
   return (
     <html lang={locale} className="h-full antialiased">
       <head>
