@@ -29,20 +29,14 @@ export default function Reservation() {
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
 
   // Envía los datos del formulario al Google Apps Script, que los guarda en
-  // Sheets y le manda un correo de aviso al negocio. Se dispara ANTES de
-  // abrir WhatsApp o el correo, para que la reserva quede guardada sin
-  // depender de que el cliente confirme el envío del mensaje.
+  // Sheets y le manda un correo de aviso al negocio.
   const saveToSheet = async () => {
     if (!SHEETS_ENDPOINT) {
-      // Si no está configurado el endpoint, no bloqueamos el flujo actual.
       console.warn("NEXT_PUBLIC_SHEETS_ENDPOINT no está configurado; la reserva no se guardó en Sheets.");
       return;
     }
     try {
       setStatus("sending");
-      // mode: "no-cors" + Content-Type text/plain evita el preflight que
-      // Google Apps Script no maneja bien. No podemos leer la respuesta,
-      // pero no la necesitamos: solo nos interesa que el POST se dispare.
       await fetch(SHEETS_ENDPOINT, {
         method: "POST",
         mode: "no-cors",
@@ -69,8 +63,9 @@ export default function Reservation() {
     return () => document.removeEventListener("click", handler);
   }, []);
 
-  const update = (key: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) =>
-    setForm((f) => ({ ...f, [key]: e.target.value }));
+  const update = (key: keyof typeof form) => (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
+  ) => setForm((f) => ({ ...f, [key]: e.target.value }));
 
   const buildMessage = () =>
     [
@@ -87,7 +82,7 @@ export default function Reservation() {
       .filter(Boolean)
       .join("\n");
 
-  const isValid = form.name.trim() && (form.email.trim() || form.phone.trim());
+  const isValid = Boolean(form.name.trim() && (form.email.trim() || form.phone.trim()));
 
   const whatsappHref = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(buildMessage())}`;
   const mailHref = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(
@@ -184,14 +179,12 @@ export default function Reservation() {
               target="_blank"
               rel="noopener noreferrer"
               aria-disabled={!isValid}
-              onClick={async (e) => {
+              onClick={(e) => {
                 if (!isValid) {
                   e.preventDefault();
                   return;
                 }
-                e.preventDefault();
-                await saveToSheet();
-                window.open(whatsappHref, "_blank", "noopener,noreferrer");
+                saveToSheet();
               }}
               className={`flex-1 text-center rounded-sm px-6 py-3.5 font-display text-base uppercase tracking-wide transition-colors ${
                 isValid
@@ -204,14 +197,12 @@ export default function Reservation() {
             <a
               href={isValid ? mailHref : undefined}
               aria-disabled={!isValid}
-              onClick={async (e) => {
+              onClick={(e) => {
                 if (!isValid) {
                   e.preventDefault();
                   return;
                 }
-                e.preventDefault();
-                await saveToSheet();
-                window.location.href = mailHref;
+                saveToSheet();
               }}
               className={`flex-1 text-center rounded-sm px-6 py-3.5 font-display text-base uppercase tracking-wide border transition-colors ${
                 isValid
@@ -222,6 +213,7 @@ export default function Reservation() {
               {t("sendEmail")}
             </a>
           </div>
+
           {status === "sending" && (
             <p className="md:col-span-2 font-mono text-[11px] text-[var(--lava-bright)]">
               Guardando tu reserva…
@@ -229,7 +221,7 @@ export default function Reservation() {
           )}
           {status === "sent" && (
             <p className="md:col-span-2 font-mono text-[11px] text-[var(--lava-bright)]">
-              ✓ Reserva guardada. Abriendo WhatsApp/correo…
+              ✓ Reserva guardada correctamente.
             </p>
           )}
           {status === "error" && (
