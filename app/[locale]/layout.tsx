@@ -5,7 +5,7 @@ import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
 import "../globals.css";
 
-const baseUrl = "https://www.7expeditionsgt.com";
+const baseUrl = "https://7-expeditions-gt.vercel.app";
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
