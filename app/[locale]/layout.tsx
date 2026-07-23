@@ -23,7 +23,7 @@ export async function generateMetadata({
     metadataBase: new URL(baseUrl),
     title: t("title"),
     description: t("description"),
-    keywords: [keywords: t("keywords").split(", "),],
+    keywords: t("keywords").split(", "),
     authors: [{ name: "7 Expeditions GT" }],
     creator: "7 Expeditions GT",
     alternates: {
