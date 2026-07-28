@@ -4,6 +4,7 @@ import { getMessages, getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
 import "../globals.css";
+import SocialFloatingButtons from "../components/SocialFloatingButtons"; 
 
 const baseUrl = "https://7-expeditions-gt.vercel.app";
 
@@ -88,6 +89,7 @@ export default async function LocaleLayout({
       <body className="min-h-full flex flex-col bg-[var(--basalt)]">
         <NextIntlClientProvider messages={messages}>
           {children}
+          <SocialFloatingButtons /> {/* 👈 2. Lo agregas aquí abajo */}
         </NextIntlClientProvider>
       </body>
     </html>
