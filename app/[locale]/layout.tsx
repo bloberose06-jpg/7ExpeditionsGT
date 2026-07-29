@@ -5,6 +5,9 @@ import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
 import "../globals.css";
 import SocialFloatingButtons from "../components/SocialFloatingButtons"; 
+import Header from "@/app/components/Header";
+import Footer from "@/app/components/Footer";
+
 
 const baseUrl = "https://7-expeditions-gt.vercel.app";
 
@@ -95,3 +98,5 @@ export default async function LocaleLayout({
     </html>
   );
 }
+
+
