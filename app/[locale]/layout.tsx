@@ -91,8 +91,10 @@ export default async function LocaleLayout({
       </head>
       <body className="min-h-full flex flex-col bg-[var(--basalt)]">
         <NextIntlClientProvider messages={messages}>
-          {children}
-          <SocialFloatingButtons /> {/* 👈 2. Lo agregas aquí abajo */}
+          <Header />
+          <main className="flex-1 flex flex-col">{children}</main>
+          <Footer />
+          <SocialFloatingButtons />
         </NextIntlClientProvider>
       </body>
     </html>
