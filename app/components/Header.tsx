@@ -1,16 +1,15 @@
 "use client";
 import { useEffect, useState } from "react";
-import { useTranslations, useLocale } from "next-intl"; // 👈 Agrega useLocale
-import Link from "next/link"; // 👈 Agrega Link
+import { useTranslations, useLocale } from "next-intl";
+import Link from "next/link";
 import LanguageSwitcher from "./LanguageSwitcher";
 
 export default function Header() {
   const t = useTranslations("header");
-  const locale = useLocale(); // 👈 Obtén el idioma actual
+  const locale = useLocale();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
 
-  // Modifica los links para que apunten a la raíz del locale con su hash correspondiente
   const links = [
     { href: `/${locale}#expediciones`, label: t("navExpediciones") },
     { href: `/${locale}#calendario`, label: t("navCalendario") },
@@ -29,13 +28,13 @@ export default function Header() {
   return (
     <header
       className={`fixed top-0 inset-x-0 z-50 transition-colors duration-300 ${
-        scrolled ? "bg-[var(--basalt)]/90 backdrop-blur border-b border-[var(--ceniza-line)]" : "bg-transparent"
+        scrolled
+          ? "bg-[var(--basalt)]/90 backdrop-blur border-b border-[var(--ceniza-line)]"
+          : "bg-transparent"
       }`}
     >
       <div className="mx-auto max-w-7xl px-6 lg:px-10 flex items-center justify-between h-18 py-4">
-        
-        {/* ❌ ANTES: <a href="#top" className="..."> */}
-        {/* ✅ AHORA: Apunta a /es o /en para volver a la Home */}
+        {/* Logo que redirige a la raíz del locale activo */}
         <Link href={`/${locale}`} className="flex items-center gap-2.5 group">
           <svg width="28" height="28" viewBox="0 0 28 28" fill="none" aria-hidden="true">
             <path d="M4 22L11 8L14.5 14.5L17 10L24 22H4Z" fill="var(--lava)" />
@@ -46,6 +45,7 @@ export default function Header() {
           </span>
         </Link>
 
+        {/* Menú Desktop */}
         <nav className="hidden md:flex items-center gap-8">
           {links.map((l) => (
             <Link
@@ -65,4 +65,53 @@ export default function Header() {
           <LanguageSwitcher />
         </nav>
 
-        {/* ... Resto del menú móvil ... */}
+        {/* Botón Menú Móvil */}
+        <div className="flex items-center gap-4 md:hidden">
+          <LanguageSwitcher />
+          <button
+            onClick={() => setOpen((v) => !v)}
+            aria-label={open ? t("closeMenu") : t("openMenu")}
+            aria-expanded={open}
+            className="text-[var(--bruma)] p-2"
+          >
+            {open ? (
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <path
+                  d="M6 6L18 18M18 6L6 18"
+                  stroke="currentColor"
+                  strokeWidth="1.8"
+                  strokeLinecap="round"
+                />
+              </svg>
+            ) : (
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <path
+                  d="M4 7H20M4 12H20M4 17H20"
+                  stroke="currentColor"
+                  strokeWidth="1.8"
+                  strokeLinecap="round"
+                />
+              </svg>
+            )}
+          </button>
+        </div>
+      </div>
+
+      {/* Menú Desplegable Móvil */}
+      {open && (
+        <div className="md:hidden bg-[var(--basalt)] border-t border-[var(--ceniza-line)] px-6 py-6 flex flex-col gap-5">
+          {links.map((l) => (
+            <Link
+              key={l.href}
+              href={l.href}
+              onClick={() => setOpen(false)}
+              className="font-display text-2xl uppercase text-[var(--bruma)]"
+            >
+              {l.label}
+            </Link>
+          ))}
+        </div>
+      )}
+    </header>
+  );
+}
