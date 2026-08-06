@@ -1,5 +1,4 @@
-// sanity/schemas/volcano.ts (o dentro de tu estructura de Sanity Studio)
-import { defineType, defineField } from 'sanity';
+import { defineField, defineType } from 'sanity'
 
 export const volcano = defineType({
   name: 'volcano',
@@ -12,12 +11,29 @@ export const volcano = defineType({
       type: 'string',
       validation: (Rule) => Rule.required(),
     }),
+    // 🌋 SLUG COMO SELECCIÓN DESPLEGABLE CON LOS 7 VOLCANES
     defineField({
       name: 'slug',
-      title: 'Slug (URL)',
+      title: 'Seleccionar Volcán (Slug)',
       type: 'slug',
-      options: { source: 'name', maxLength: 96 },
       validation: (Rule) => Rule.required(),
+      options: {
+        list: [
+          { title: 'Volcán Acatenango', value: 'acatenango' },
+          { title: 'Volcán de Fuego', value: 'fuego' },
+          { title: 'Volcán Tajumulco', value: 'tajumulco' },
+          { title: 'Volcán Pacaya', value: 'pacaya' },
+          { title: 'Volcán Atitlán', value: 'atitlan' },
+          { title: 'Volcán Santa María', value: 'santa-maria' },
+          { title: 'Volcán Agua', value: 'agua' },
+        ],
+      },
+    }),
+    defineField({
+      name: 'mainImage',
+      title: 'Imagen Principal',
+      type: 'image',
+      options: { hotspot: true },
     }),
     defineField({
       name: 'elevation',
@@ -28,20 +44,17 @@ export const volcano = defineType({
       name: 'difficulty',
       title: 'Dificultad',
       type: 'string',
-      options: {
-        list: ['Fácil', 'Moderada', 'Alta', 'Extrema'],
-      },
     }),
     defineField({
       name: 'description',
-      title: 'Descripción breve',
+      title: 'Descripción',
       type: 'text',
     }),
     defineField({
-      name: 'mainImage',
-      title: 'Imagen Principal',
-      type: 'image',
-      options: { hotspot: true },
+      name: 'highlights',
+      title: 'Puntos Destacados',
+      type: 'array',
+      of: [{ type: 'string' }],
     }),
     defineField({
       name: 'gallery',
@@ -49,11 +62,5 @@ export const volcano = defineType({
       type: 'array',
       of: [{ type: 'image', options: { hotspot: true } }],
     }),
-    defineField({
-      name: 'details',
-      title: 'Detalles / Itinerario (Rich Text)',
-      type: 'array',
-      of: [{ type: 'block' }],
-    }),
   ],
-});
+})
