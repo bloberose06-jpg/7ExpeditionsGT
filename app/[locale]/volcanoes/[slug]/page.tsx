@@ -4,7 +4,7 @@ import { setRequestLocale } from "next-intl/server";
 import { createClient } from "next-sanity";
 import imageUrlBuilder from "@sanity/image-url";
 
-// 1. Cliente de Sanity
+// 1. Configuración del cliente de Sanity
 const client = createClient({
   projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID,
   dataset: process.env.NEXT_PUBLIC_SANITY_DATASET || "production",
@@ -24,7 +24,7 @@ export async function generateStaticParams() {
   return (volcanoes || []).map((v: { slug: string }) => ({ slug: v.slug }));
 }
 
-// 3. Metadata y Tarjeta Open Graph / Redes Sociales
+// 3. Metadata, Tarjeta Open Graph y SEO (Paso 2)
 export async function generateMetadata({
   params,
 }: {
@@ -44,8 +44,11 @@ export async function generateMetadata({
 
   const title = `${volcano.name} — 7 Expeditions Guatemala`;
   const description = volcano.description || `Conoce la expedición al volcán ${volcano.name}.`;
-  const baseUrl = "https://7expeditions.com"; // Reemplaza con tu dominio real
+  
+  // Reemplaza esto con tu dominio real cuando estés en producción
+  const baseUrl = "https://7expeditions.com"; 
 
+  // Si tiene imagen en Sanity la usa recortada a 1200x630, si no, usa la foto de public/gallery
   const imageUrl = volcano.mainImage 
     ? urlFor(volcano.mainImage).width(1200).height(630).fit("crop").url()
     : `${baseUrl}/gallery/IMG-20260706-WA0005.jpg`;
@@ -53,6 +56,8 @@ export async function generateMetadata({
   return {
     title,
     description,
+
+    // 🎯 PASO 2 SEO: Canonical & Alternate Languages
     alternates: {
       canonical: `${baseUrl}/${locale}/volcanoes/${slug}`,
       languages: {
@@ -60,6 +65,8 @@ export async function generateMetadata({
         "en-US": `${baseUrl}/en/volcanoes/${slug}`,
       },
     },
+
+    // Tarjeta de presentación (Open Graph / Redes Sociales)
     openGraph: {
       title,
       description,
@@ -85,7 +92,7 @@ export async function generateMetadata({
   };
 }
 
-// 4. Componente de la Página (AQUÍ VA EL PASO 1 DE SCHEMA.ORG)
+// 4. Componente de la Página de Volcán
 export default async function VolcanoPage({
   params,
 }: {
@@ -108,7 +115,7 @@ export default async function VolcanoPage({
 
   if (!volcano) notFound();
 
-  // 🎯 PASO 1: OBJETO JSON-LD PARA SCHEMA.ORG
+  // 🎯 PASO 1 SEO: Schema.org / JSON-LD para motores de búsqueda
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "TouristAttraction",
@@ -124,7 +131,7 @@ export default async function VolcanoPage({
 
   return (
     <section className="px-6 lg:px-10 py-24 md:py-32 bg-[var(--basalt-2)] min-h-screen">
-      {/* 🎯 PASO 1: INYECCIÓN DEL SCRIPT PARA LOS BOT DE GOOGLE */}
+      {/* Inyección del script JSON-LD */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
@@ -161,7 +168,7 @@ export default async function VolcanoPage({
           </ul>
         )}
 
-        {/* Galería con optimización de sizes */}
+        {/* Galería de imágenes */}
         {volcano.gallery && volcano.gallery.length > 0 && (
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
             {volcano.gallery.map((img: any, idx: number) => (
