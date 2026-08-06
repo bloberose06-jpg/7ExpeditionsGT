@@ -1,10 +1,10 @@
 import { notFound } from "next/navigation";
 import Image from "next/image";
-import { setRequestLocale, getTranslations } from "next-intl/server";
+import { setRequestLocale } from "next-intl/server";
 import { createClient } from "next-sanity";
 import imageUrlBuilder from "@sanity/image-url";
 
-// Configuración del cliente de Sanity usando variables de entorno
+// 1. Configuración del cliente de Sanity
 const client = createClient({
   projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID,
   dataset: process.env.NEXT_PUBLIC_SANITY_DATASET || "production",
@@ -12,37 +12,76 @@ const client = createClient({
   useCdn: process.env.NODE_ENV === "production",
 });
 
-// Helper interno para transformar referencias de imágenes en URLs
 const builder = imageUrlBuilder(client);
 function urlFor(source: any) {
   return builder.image(source);
 }
 
-// Genera las rutas estáticas consultando los slugs en Sanity
+// 2. Generación de rutas estáticas para Next.js
 export async function generateStaticParams() {
   const query = `*[_type == "volcano"]{ "slug": slug.current }`;
   const volcanoes = await client.fetch(query);
   return (volcanoes || []).map((v: { slug: string }) => ({ slug: v.slug }));
 }
 
-// Genera la metadata SEO dinámicamente
+// 3. 🎯 AQUÍ AGREGAS LA INFORMACIÓN DE LA TARJETA / VISTA PREVIA (generateMetadata)
 export async function generateMetadata({
   params,
 }: {
   params: Promise<{ locale: string; slug: string }>;
 }) {
-  const { slug } = await params;
-  const query = `*[_type == "volcano" && slug.current == $slug][0]{ name, description }`;
+  const { locale, slug } = await params;
+
+  const query = `*[_type == "volcano" && slug.current == $slug][0]{ 
+    name, 
+    description,
+    mainImage
+  }`;
+  
   const volcano = await client.fetch(query, { slug });
 
   if (!volcano) return {};
+
+  const title = `${volcano.name} — 7 Expeditions Guatemala`;
+  const description = volcano.description || `Conoce la expedición al volcán ${volcano.name}.`;
+
+  // Cambia esto por tu dominio real cuando estés en producción
+  const baseUrl = "https://7expeditions.com"; 
+
+  // Si no hay foto cargada en Sanity, usa la imagen de public/gallery
+  const imageUrl = volcano.mainImage 
+    ? urlFor(volcano.mainImage).width(1200).height(630).fit("crop").url()
+    : `${baseUrl}/gallery/IMG-20260706-WA0005.jpg`;
+
   return {
-    title: `${volcano.name} — 7 Expeditions`,
-    description: volcano.description,
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      url: `${baseUrl}/${locale}/volcanoes/${slug}`,
+      siteName: "7 Expeditions Guatemala",
+      locale: locale === "es" ? "es_GT" : "en_US",
+      type: "article",
+      images: [
+        {
+          url: imageUrl,
+          width: 1200,
+          height: 630,
+          alt: volcano.name,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [imageUrl],
+    },
   };
 }
 
-// Componente principal de la página del volcán
+// 4. Componente principal de la vista del Volcán
 export default async function VolcanoPage({
   params,
 }: {
@@ -51,7 +90,6 @@ export default async function VolcanoPage({
   const { locale, slug } = await params;
   setRequestLocale(locale);
 
-  // Consulta GROQ para obtener toda la información cargada desde Sanity
   const query = `*[_type == "volcano" && slug.current == $slug][0]{
     name,
     elevation,
@@ -86,7 +124,7 @@ export default async function VolcanoPage({
           </p>
         )}
 
-        {/* Puntos destacados / Highlights */}
+        {/* Highlights */}
         {volcano.highlights && volcano.highlights.length > 0 && (
           <ul className="mb-10 space-y-2">
             {volcano.highlights.map((h: string) => (
@@ -98,7 +136,7 @@ export default async function VolcanoPage({
           </ul>
         )}
 
-        {/* Galería de imágenes cargadas en Sanity */}
+        {/* Galería */}
         {volcano.gallery && volcano.gallery.length > 0 && (
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
             {volcano.gallery.map((img: any, idx: number) => (
