@@ -1,17 +1,31 @@
 import { notFound } from "next/navigation";
 import Image from "next/image";
-import { setRequestLocale } from "next-intl/server";
-import { client } from "@/sanity/lib/client"; // Ajusta a tu import de Sanity client
-import { urlFor } from "@/sanity/lib/image";  // Ajusta a tu helper de imágenes de Sanity
+import { setRequestLocale, getTranslations } from "next-intl/server";
+import { createClient } from "next-sanity";
+import imageUrlBuilder from "@sanity/image-url";
 
-// Genera las rutas estáticas consultando todos los slugs disponibles en Sanity
+// Configuración del cliente de Sanity usando variables de entorno
+const client = createClient({
+  projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID,
+  dataset: process.env.NEXT_PUBLIC_SANITY_DATASET || "production",
+  apiVersion: "2024-01-01",
+  useCdn: process.env.NODE_ENV === "production",
+});
+
+// Helper interno para transformar referencias de imágenes en URLs
+const builder = imageUrlBuilder(client);
+function urlFor(source: any) {
+  return builder.image(source);
+}
+
+// Genera las rutas estáticas consultando los slugs en Sanity
 export async function generateStaticParams() {
   const query = `*[_type == "volcano"]{ "slug": slug.current }`;
   const volcanoes = await client.fetch(query);
-  return volcanoes.map((v: { slug: string }) => ({ slug: v.slug }));
+  return (volcanoes || []).map((v: { slug: string }) => ({ slug: v.slug }));
 }
 
-// Genera los metadatos dinámicos para el SEO de cada volcán
+// Genera la metadata SEO dinámicamente
 export async function generateMetadata({
   params,
 }: {
@@ -20,7 +34,7 @@ export async function generateMetadata({
   const { slug } = await params;
   const query = `*[_type == "volcano" && slug.current == $slug][0]{ name, description }`;
   const volcano = await client.fetch(query, { slug });
-  
+
   if (!volcano) return {};
   return {
     title: `${volcano.name} — 7 Expeditions`,
@@ -37,20 +51,18 @@ export default async function VolcanoPage({
   const { locale, slug } = await params;
   setRequestLocale(locale);
 
-  // Consulta en GROQ para traer la información del volcán según el slug de la URL
+  // Consulta GROQ para obtener toda la información cargada desde Sanity
   const query = `*[_type == "volcano" && slug.current == $slug][0]{
     name,
     elevation,
     difficulty,
     description,
-    mainImage,
-    gallery,
-    highlights
+    highlights,
+    gallery
   }`;
 
   const volcano = await client.fetch(query, { slug });
 
-  // Si no se encuentra el volcán en Sanity, muestra la página 404
   if (!volcano) notFound();
 
   return (
@@ -74,7 +86,7 @@ export default async function VolcanoPage({
           </p>
         )}
 
-        {/* Lista de puntos destacados (Highlights) */}
+        {/* Puntos destacados / Highlights */}
         {volcano.highlights && volcano.highlights.length > 0 && (
           <ul className="mb-10 space-y-2">
             {volcano.highlights.map((h: string) => (
