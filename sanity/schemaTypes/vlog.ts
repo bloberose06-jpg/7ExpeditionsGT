@@ -24,6 +24,14 @@ export default defineType({
       },
       validation: (Rule) => Rule.required(),
     }),
+    // 🌋 CAMPO DE REFERENCIA AL VOLCÁN
+    defineField({
+      name: 'volcano',
+      title: 'Volcán Relacionado / Related Volcano',
+      type: 'reference',
+      to: [{ type: 'volcano' }],
+      description: 'Selecciona el volcán asociado a este Vlog',
+    }),
     defineField({
       name: 'coverImage',
       title: 'Cover Image',
@@ -48,10 +56,10 @@ export default defineType({
           title: 'Spanish',
           type: 'array',
           of: [
-            { type: 'block' }, // Permite párrafos, títulos, listas, etc.
+            { type: 'block' },
             {
-              type: 'image', // <-- Esto permite agregar imágenes entre párrafos
-              options: { hotspot: true }, // Permite recortar/centrar la imagen en Sanity
+              type: 'image',
+              options: { hotspot: true },
               fields: [
                 {
                   name: 'alt',
@@ -91,6 +99,7 @@ export default defineType({
     select: {
       title: 'title.en',
       media: 'coverImage',
+      subtitle: 'volcano.name', // Muestra opcionalmente el nombre del volcán en la lista de vlogs
     },
   },
 })
