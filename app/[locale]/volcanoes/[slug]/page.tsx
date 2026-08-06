@@ -19,9 +19,16 @@ function urlFor(source: any) {
 
 // 2. Generación de rutas estáticas
 export async function generateStaticParams() {
-  const query = `*[_type == "volcano"]{ slug }`;
-  const volcanoes = await client.fetch(query);
-  return (volcanoes || []).map((v: { slug: string }) => ({ slug: v.slug }));
+  // Traemos el slug directamente (que ahora es un string simple)
+  const query = `*[_type == "volcano"].slug`;
+  const slugs: string[] = await client.fetch(query);
+
+  // Aseguramos devolver únicamente un objeto con la llave "slug" como string
+  return (slugs || [])
+    .filter((slug) => typeof slug === "string") // Filtra si hay algún documento viejo con slug de tipo objeto
+    .map((slug) => ({
+      slug,
+    }));
 }
 
 // 3. Metadata, Tarjeta Open Graph y SEO (Paso 2)
