@@ -19,7 +19,7 @@ function urlFor(source: any) {
 
 // 2. Generación de rutas estáticas
 export async function generateStaticParams() {
-  const query = `*[_type == "volcano"]{ "slug": slug.current }`;
+  const query = `*[_type == "volcano"]{ slug }`;
   const volcanoes = await client.fetch(query);
   return (volcanoes || []).map((v: { slug: string }) => ({ slug: v.slug }));
 }
@@ -32,7 +32,7 @@ export async function generateMetadata({
 }) {
   const { locale, slug } = await params;
 
-  const query = `*[_type == "volcano" && slug.current == $slug][0]{ 
+  const query = `*[_type == "volcano" && slug == $slug][0]{ 
     name, 
     description,
     mainImage
@@ -101,7 +101,7 @@ export default async function VolcanoPage({
   const { locale, slug } = await params;
   setRequestLocale(locale);
 
-  const query = `*[_type == "volcano" && slug.current == $slug][0]{
+  const query = `*[_type == "volcano" && slug == $slug][0]{
     name,
     elevation,
     difficulty,
