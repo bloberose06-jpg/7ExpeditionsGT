@@ -11,24 +11,27 @@ export const volcano = defineType({
       type: 'string',
       validation: (Rule) => Rule.required(),
     }),
-    // 🌋 SLUG COMO SELECCIÓN DESPLEGABLE CON LOS 7 VOLCANES
+
+    // 🌋 DESPLEGABLE REAL DE LOS 7 VOLCANES
     defineField({
       name: 'slug',
-      title: 'Seleccionar Volcán (Slug)',
-      type: 'slug',
+      title: 'Seleccionar Volcán (Slug para la URL)',
+      type: 'string',
       validation: (Rule) => Rule.required(),
       options: {
         list: [
-          { title: 'Volcán Acatenango', value: 'acatenango' },
-          { title: 'Volcán de Fuego', value: 'fuego' },
-          { title: 'Volcán Tajumulco', value: 'tajumulco' },
-          { title: 'Volcán Pacaya', value: 'pacaya' },
-          { title: 'Volcán Atitlán', value: 'atitlan' },
-          { title: 'Volcán Santa María', value: 'santa-maria' },
-          { title: 'Volcán Agua', value: 'agua' },
+          { title: 'Volcán Acatenango (acatenango)', value: 'acatenango' },
+          { title: 'Volcán de Fuego (fuego)', value: 'fuego' },
+          { title: 'Volcán Tajumulco (tajumulco)', value: 'tajumulco' },
+          { title: 'Volcán Pacaya (pacaya)', value: 'pacaya' },
+          { title: 'Volcán Atitlán (atitlan)', value: 'atitlan' },
+          { title: 'Volcán Santa María (santa-maria)', value: 'santa-maria' },
+          { title: 'Volcán Agua (agua)', value: 'agua' },
         ],
+        layout: 'dropdown', // Fuerza la vista de menú desplegable
       },
     }),
+
     defineField({
       name: 'mainImage',
       title: 'Imagen Principal',
