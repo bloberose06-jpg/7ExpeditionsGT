@@ -33,31 +33,60 @@ export default function VolcanoProfile() {
           const y = BASE_Y - peakHeight(m);
           return (
             <g key={m}>
-              <line x1={0} x2={VIEW_W} y1={y} y2={y} stroke="var(--ceniza-line)" strokeWidth={1} strokeDasharray="2 6" />
-              <text x={4} y={y - 6} className="font-mono" fontSize="11" fill="var(--bruma-dim)">
+              <line
+                x1={0}
+                x2={VIEW_W}
+                y1={y}
+                y2={y}
+                stroke="var(--ceniza-line)"
+                strokeWidth={1}
+                strokeDasharray="2 6"
+              />
+              <text
+                x={4}
+                y={y - 6}
+                className="font-mono"
+                fontSize="11"
+                fill="var(--bruma-dim)"
+              >
                 {m.toLocaleString()} m
               </text>
             </g>
           );
         })}
 
-        <line x1={0} x2={VIEW_W} y1={BASE_Y} y2={BASE_Y} stroke="var(--ceniza-line)" strokeWidth={1.5} />
+        <line
+          x1={0}
+          x2={VIEW_W}
+          y1={BASE_Y}
+          y2={BASE_Y}
+          stroke="var(--ceniza-line)"
+          strokeWidth={1.5}
+        />
 
         {volcanoes.map((v, i) => {
           const cx = GAP * i + GAP / 2;
           const h = peakHeight(v.elevation);
           const width = GAP * 0.82;
           const isActive = active === v.slug;
+
+          // Normalizamos el slug para asegurar que coincida exactamente con la ruta de Sanity
+          const safeSlug = String(v.slug).toLowerCase().trim();
+
+          const handleNavigate = () => {
+            router.push(`/volcanoes/${safeSlug}`);
+          };
+
           return (
             <g
               key={v.slug}
               onMouseEnter={() => setActive(v.slug)}
               onMouseLeave={() => setActive(null)}
-              onClick={() => router.push(`/volcanoes/${v.slug}`)}
+              onClick={handleNavigate}
               role="button"
               tabIndex={0}
               onKeyDown={(e) => {
-                if (e.key === "Enter" || e.key === " ") router.push(`/volcanoes/${v.slug}`);
+                if (e.key === "Enter" || e.key === " ") handleNavigate();
               }}
               className="cursor-pointer"
             >
@@ -69,7 +98,13 @@ export default function VolcanoProfile() {
                 style={{ transition: "fill 0.25s ease" }}
               />
               {v.active && (
-                <circle cx={cx} cy={BASE_Y - h + 6} r={4} fill="var(--sulfuro)" className="ember" />
+                <circle
+                  cx={cx}
+                  cy={BASE_Y - h + 6}
+                  r={4}
+                  fill="var(--sulfuro)"
+                  className="ember"
+                />
               )}
               <text
                 x={cx}
@@ -82,7 +117,14 @@ export default function VolcanoProfile() {
               >
                 {v.name.split(" ")[0]}
               </text>
-              <text x={cx} y={BASE_Y + 38} textAnchor="middle" className="font-mono" fontSize="10.5" fill="var(--bruma-dim)">
+              <text
+                x={cx}
+                y={BASE_Y + 38}
+                textAnchor="middle"
+                className="font-mono"
+                fontSize="10.5"
+                fill="var(--bruma-dim)"
+              >
                 {v.elevation.toLocaleString()} m
               </text>
             </g>
@@ -117,17 +159,21 @@ export function AcatenangoPdfViewer() {
 
       <div className="relative w-full h-[600px] md:h-[750px] rounded-sm overflow-hidden border border-white/10 bg-black/20 shadow-2xl">
         <object data={pdfPath} type="application/pdf" className="w-full h-full">
-          <iframe src={`${pdfPath}#toolbar=0`} className="w-full h-full border-none" title={t("iframeTitle")}>
+          <iframe
+            src={`${pdfPath}#toolbar=0`}
+            className="w-full h-full border-none"
+            title={t("iframeTitle")}
+          >
             <div className="flex flex-col items-center justify-center h-full p-6 text-center">
               <p className="text-[var(--bruma-dim)] font-mono text-sm mb-4">
                 {t("unsupported")}
               </p>
-                <a
+              <a
                 href={pdfPath}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="px-4 py-2 border border-[var(--lava-bright)] text-[var(--lava-bright)] font-mono text-xs uppercase tracking-wider rounded-sm hover:bg-[var(--lava-bright)] hover:text-white transition-all"
-                >
+              >
                 {t("openPdf")}
               </a>
             </div>
