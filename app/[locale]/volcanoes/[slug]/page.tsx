@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import Image from "next/image";
+import Link from "next/link";
 import { setRequestLocale } from "next-intl/server";
 import { createClient } from "next-sanity";
 import imageUrlBuilder from "@sanity/image-url";
@@ -17,24 +18,21 @@ function urlFor(source: any) {
   return builder.image(source);
 }
 
-
 // 2. Generación de rutas estáticas
 export async function generateStaticParams() {
-  // Traemos el slug (soporta tanto cadenas de texto como objetos slug de Sanity)
   const query = `*[_type == "volcano" && defined(slug)][].slug`;
   const rawSlugs = await client.fetch(query);
 
-  const slugs: string[] = (rawSlugs || []).map((s: any) =>
-    typeof s === "string" ? s : s?.current
-  ).filter(Boolean);
+  const slugs: string[] = (rawSlugs || [])
+    .map((s: any) => (typeof s === "string" ? s : s?.current))
+    .filter(Boolean);
 
   return slugs.map((slug) => ({
     slug,
   }));
 }
 
-// 3. Metadata, Tarjeta Open Graph y SEO (Paso 2)
-
+// 3. Metadata, Tarjeta Open Graph y SEO
 export async function generateMetadata({
   params,
 }: {
@@ -42,23 +40,23 @@ export async function generateMetadata({
 }) {
   const { locale, slug } = await params;
 
-  // 🎯 CAMBIO AQUÍ: Buscar en slug.current O slug
   const query = `*[_type == "volcano" && (slug.current == $slug || slug == $slug)][0]{ 
     name, 
     description,
     mainImage
   }`;
-  
+
   const volcano = await client.fetch(query, { slug });
 
   if (!volcano) return {};
 
   const title = `${volcano.name} — 7 Expeditions Guatemala`;
-  const description = volcano.description || `Conoce la expedición al volcán ${volcano.name}.`;
-  
-  const baseUrl = "https://7expeditions.com"; 
+  const description =
+    volcano.description || `Conoce la expedición al volcán ${volcano.name}.`;
 
-  const imageUrl = volcano.mainImage 
+  const baseUrl = "https://7expeditionsguatemala.com";
+
+  const imageUrl = volcano.mainImage
     ? urlFor(volcano.mainImage).width(1200).height(630).fit("crop").url()
     : `${baseUrl}/gallery/IMG-20260706-WA0005.jpg`;
 
@@ -96,8 +94,6 @@ export async function generateMetadata({
     },
   };
 }
-  
-
 
 // 4. Componente de la Página de Volcán
 export default async function VolcanoPage({
@@ -108,37 +104,51 @@ export default async function VolcanoPage({
   const { locale, slug } = await params;
   setRequestLocale(locale);
 
-  const query = `*[_type == "volcano" && slug == $slug][0]{
+  // Consulta GROQ que obtiene la info del volcán Y sus vlogs relacionados
+  const query = `*[_type == "volcano" && (slug.current == $slug || slug == $slug)][0]{
+    _id,
     name,
     elevation,
     difficulty,
     description,
     highlights,
     mainImage,
-    gallery
+    gallery,
+    "vlogs": *[_type == "vlog" && (
+      references(^._id) || 
+      relatedVolcano._ref == ^._id || 
+      volcanoSlug == $slug ||
+      volcanoSlug == ^.slug.current
+    )]{
+      _id,
+      title,
+      slug,
+      coverImage,
+      publishedAt
+    }
   }`;
 
   const volcano = await client.fetch(query, { slug });
 
   if (!volcano) notFound();
 
-  // 🎯 PASO 1 SEO: Schema.org / JSON-LD para motores de búsqueda
+  // SEO: Schema.org / JSON-LD para motores de búsqueda
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "TouristAttraction",
-    "name": volcano.name,
-    "description": volcano.description,
-    "geo": {
+    name: volcano.name,
+    description: volcano.description,
+    geo: {
       "@type": "GeoCoordinates",
-      "elevation": `${volcano.elevation} m`,
+      elevation: `${volcano.elevation} m`,
     },
-    "touristType": "Hiking",
-    "image": volcano.mainImage ? urlFor(volcano.mainImage).url() : undefined,
+    touristType: "Hiking",
+    image: volcano.mainImage ? urlFor(volcano.mainImage).url() : undefined,
   };
 
   return (
     <section className="px-6 lg:px-10 py-24 md:py-32 bg-[var(--basalt-2)] min-h-screen">
-      {/* Inyección del script JSON-LD */}
+      {/* Script JSON-LD */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
@@ -167,7 +177,10 @@ export default async function VolcanoPage({
         {volcano.highlights && volcano.highlights.length > 0 && (
           <ul className="mb-10 space-y-2">
             {volcano.highlights.map((h: string) => (
-              <li key={h} className="flex items-center gap-2 text-[var(--bruma)] font-mono text-sm">
+              <li
+                key={h}
+                className="flex items-center gap-2 text-[var(--bruma)] font-mono text-sm"
+              >
                 <span className="w-1.5 h-1.5 bg-[var(--lava-bright)]" />
                 {h}
               </li>
@@ -177,7 +190,7 @@ export default async function VolcanoPage({
 
         {/* Galería de imágenes */}
         {volcano.gallery && volcano.gallery.length > 0 && (
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-12">
             {volcano.gallery.map((img: any, idx: number) => (
               <div
                 key={idx}
@@ -192,6 +205,60 @@ export default async function VolcanoPage({
                 />
               </div>
             ))}
+          </div>
+        )}
+
+        {/* 🎬 Sección de Vlogs Relacionados */}
+        {volcano.vlogs && volcano.vlogs.length > 0 && (
+          <div className="mt-16 border-t border-white/10 pt-12">
+            <h2 className="font-display uppercase text-2xl text-[var(--bruma)] mb-6 tracking-wide">
+              Vlogs & Experiencias en {volcano.name}
+            </h2>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {volcano.vlogs.map((vlog: any) => {
+                const vlogTitle =
+                  typeof vlog.title === "object"
+                    ? vlog.title[locale] || vlog.title.es || vlog.title.en
+                    : vlog.title;
+
+                const vlogSlug =
+                  typeof vlog.slug === "object"
+                    ? vlog.slug.current
+                    : vlog.slug;
+
+                const coverUrl = vlog.coverImage
+                  ? urlFor(vlog.coverImage).width(600).height(380).fit("crop").url()
+                  : null;
+
+                return (
+                  <Link
+                    key={vlog._id}
+                    href={`/${locale}/vlog/${vlogSlug}`}
+                    className="group block rounded-sm overflow-hidden border border-white/10 bg-[var(--basalt-1)] hover:border-[var(--lava-bright)] transition-all"
+                  >
+                    {coverUrl && (
+                      <div className="relative aspect-video w-full overflow-hidden">
+                        <Image
+                          src={coverUrl}
+                          alt={vlogTitle || "Vlog de la expedición"}
+                          fill
+                          className="object-cover group-hover:scale-105 transition-transform duration-300"
+                        />
+                      </div>
+                    )}
+                    <div className="p-4">
+                      <p className="font-mono text-[10px] uppercase tracking-widest text-[var(--lava-bright)] mb-1">
+                        Vlog de Expedición
+                      </p>
+                      <h3 className="font-display uppercase text-lg text-[var(--bruma)] group-hover:text-[var(--sulfuro)] transition-colors">
+                        {vlogTitle}
+                      </h3>
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
           </div>
         )}
       </div>
