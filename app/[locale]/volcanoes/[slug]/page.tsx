@@ -17,18 +17,20 @@ function urlFor(source: any) {
   return builder.image(source);
 }
 
+
 // 2. Generación de rutas estáticas
 export async function generateStaticParams() {
-  // Traemos el slug directamente (que ahora es un string simple)
-  const query = `*[_type == "volcano"].slug`;
-  const slugs: string[] = await client.fetch(query);
+  // Traemos el slug (soporta tanto cadenas de texto como objetos slug de Sanity)
+  const query = `*[_type == "volcano" && defined(slug)][].slug`;
+  const rawSlugs = await client.fetch(query);
 
-  // Aseguramos devolver únicamente un objeto con la llave "slug" como string
-  return (slugs || [])
-    .filter((slug) => typeof slug === "string") // Filtra si hay algún documento viejo con slug de tipo objeto
-    .map((slug) => ({
-      slug,
-    }));
+  const slugs: string[] = (rawSlugs || []).map((s: any) =>
+    typeof s === "string" ? s : s?.current
+  ).filter(Boolean);
+
+  return slugs.map((slug) => ({
+    slug,
+  }));
 }
 
 // 3. Metadata, Tarjeta Open Graph y SEO (Paso 2)
