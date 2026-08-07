@@ -104,7 +104,7 @@ export default async function VolcanoPage({
   const { locale, slug } = await params;
   setRequestLocale(locale);
 
-  // Consulta GROQ que obtiene la info del volcán Y sus vlogs relacionados
+  // Consulta GROQ: Trae los datos del volcán Y los Vlogs vinculados
   const query = `*[_type == "volcano" && (slug.current == $slug || slug == $slug)][0]{
     _id,
     name,
@@ -132,7 +132,7 @@ export default async function VolcanoPage({
 
   if (!volcano) notFound();
 
-  // SEO: Schema.org / JSON-LD para motores de búsqueda
+  // SEO: Schema.org / JSON-LD
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "TouristAttraction",
@@ -148,7 +148,6 @@ export default async function VolcanoPage({
 
   return (
     <section className="px-6 lg:px-10 py-24 md:py-32 bg-[var(--basalt-2)] min-h-screen">
-      {/* Script JSON-LD */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
@@ -208,7 +207,7 @@ export default async function VolcanoPage({
           </div>
         )}
 
-        {/* 🎬 Sección de Vlogs Relacionados */}
+        {/* 🎬 AQUÍ VA EL PASO 2: Vlogs Relacionados en el mismo archivo */}
         {volcano.vlogs && volcano.vlogs.length > 0 && (
           <div className="mt-16 border-t border-white/10 pt-12">
             <h2 className="font-display uppercase text-2xl text-[var(--bruma)] mb-6 tracking-wide">
@@ -234,7 +233,7 @@ export default async function VolcanoPage({
                 return (
                   <Link
                     key={vlog._id}
-                    href={`/${locale}/vlog/${vlogSlug}`}
+                    href={`/${locale}/vlogs/${vlogSlug}`}
                     className="group block rounded-sm overflow-hidden border border-white/10 bg-[var(--basalt-1)] hover:border-[var(--lava-bright)] transition-all"
                   >
                     {coverUrl && (
