@@ -34,6 +34,7 @@ export async function generateStaticParams() {
 }
 
 // 3. Metadata, Tarjeta Open Graph y SEO (Paso 2)
+
 export async function generateMetadata({
   params,
 }: {
@@ -41,7 +42,8 @@ export async function generateMetadata({
 }) {
   const { locale, slug } = await params;
 
-  const query = `*[_type == "volcano" && slug == $slug][0]{ 
+  // 🎯 CAMBIO AQUÍ: Buscar en slug.current O slug
+  const query = `*[_type == "volcano" && (slug.current == $slug || slug == $slug)][0]{ 
     name, 
     description,
     mainImage
@@ -54,10 +56,8 @@ export async function generateMetadata({
   const title = `${volcano.name} — 7 Expeditions Guatemala`;
   const description = volcano.description || `Conoce la expedición al volcán ${volcano.name}.`;
   
-  // Reemplaza esto con tu dominio real cuando estés en producción
   const baseUrl = "https://7expeditions.com"; 
 
-  // Si tiene imagen en Sanity la usa recortada a 1200x630, si no, usa la foto de public/gallery
   const imageUrl = volcano.mainImage 
     ? urlFor(volcano.mainImage).width(1200).height(630).fit("crop").url()
     : `${baseUrl}/gallery/IMG-20260706-WA0005.jpg`;
@@ -65,8 +65,6 @@ export async function generateMetadata({
   return {
     title,
     description,
-
-    // 🎯 PASO 2 SEO: Canonical & Alternate Languages
     alternates: {
       canonical: `${baseUrl}/${locale}/volcanoes/${slug}`,
       languages: {
@@ -74,8 +72,6 @@ export async function generateMetadata({
         "en-US": `${baseUrl}/en/volcanoes/${slug}`,
       },
     },
-
-    // Tarjeta de presentación (Open Graph / Redes Sociales)
     openGraph: {
       title,
       description,
@@ -100,6 +96,8 @@ export async function generateMetadata({
     },
   };
 }
+  
+
 
 // 4. Componente de la Página de Volcán
 export default async function VolcanoPage({
