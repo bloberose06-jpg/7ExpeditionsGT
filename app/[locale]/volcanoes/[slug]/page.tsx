@@ -15,7 +15,12 @@ const client = createClient({
 
 const builder = imageUrlBuilder(client);
 function urlFor(source: any) {
-  return builder.image(source);
+  if (!source || !source.asset) return null;
+  try {
+    return builder.image(source);
+  } catch (e) {
+    return null;
+  }
 }
 
 // 2. Generación de rutas estáticas
@@ -50,14 +55,15 @@ export async function generateMetadata({
 
   if (!volcano) return {};
 
-  const title = `${volcano.name} — 7 Expeditions Guatemala`;
+  const title = `${volcano.name || "Volcán"} — 7 Expeditions Guatemala`;
   const description =
     volcano.description || `Conoce la expedición al volcán ${volcano.name}.`;
 
   const baseUrl = "https://7expeditionsguatemala.com";
 
-  const imageUrl = volcano.mainImage
-    ? urlFor(volcano.mainImage).width(1200).height(630).fit("crop").url()
+  const imageBuilder = urlFor(volcano.mainImage);
+  const imageUrl = imageBuilder
+    ? imageBuilder.width(1200).height(630).fit("crop").url()
     : `${baseUrl}/gallery/IMG-20260706-WA0005.jpg`;
 
   return {
@@ -82,7 +88,7 @@ export async function generateMetadata({
           url: imageUrl,
           width: 1200,
           height: 630,
-          alt: volcano.name,
+          alt: volcano.name || "Volcán",
         },
       ],
     },
@@ -104,8 +110,8 @@ export default async function VolcanoPage({
   const { locale, slug } = await params;
   setRequestLocale(locale);
 
-  // Consulta GROQ: Trae los datos del volcán Y los Vlogs vinculados
-  const query = `*[_type == "volcano" && (slug.current == $slug || slug == $slug)][0]{
+  // Consulta GROQ: Trae el volcán completo y sus vlogs relacionados
+  const query = `*[_type == "volcano" && (slug.current == $slug || slug == $slug)] | order(_createdAt desc)[0]{
     _id,
     name,
     elevation,
@@ -133,6 +139,7 @@ export default async function VolcanoPage({
   if (!volcano) notFound();
 
   // SEO: Schema.org / JSON-LD
+  const mainImgUrl = urlFor(volcano.mainImage)?.url();
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "TouristAttraction",
@@ -143,7 +150,7 @@ export default async function VolcanoPage({
       elevation: `${volcano.elevation} m`,
     },
     touristType: "Hiking",
-    image: volcano.mainImage ? urlFor(volcano.mainImage).url() : undefined,
+    image: mainImgUrl || undefined,
   };
 
   return (
@@ -155,7 +162,7 @@ export default async function VolcanoPage({
 
       <div className="mx-auto max-w-4xl">
         <p className="font-mono text-xs uppercase tracking-[0.3em] text-[var(--lava-bright)] mb-3">
-          {volcano.elevation?.toLocaleString()} m
+          {volcano.elevation ? `${volcano.elevation.toLocaleString()} m` : ""}
           {volcano.difficulty ? ` · ${volcano.difficulty}` : ""}
         </p>
 
@@ -190,24 +197,28 @@ export default async function VolcanoPage({
         {/* Galería de imágenes */}
         {volcano.gallery && volcano.gallery.length > 0 && (
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-12">
-            {volcano.gallery.map((img: any, idx: number) => (
-              <div
-                key={idx}
-                className="relative aspect-square rounded-sm overflow-hidden border border-white/10"
-              >
-                <Image
-                  src={urlFor(img).url()}
-                  alt={`Fotografía ${idx + 1} de la expedición al volcán ${volcano.name}`}
-                  fill
-                  sizes="(max-width: 768px) 50vw, 33vw"
-                  className="object-cover"
-                />
-              </div>
-            ))}
+            {volcano.gallery.map((img: any, idx: number) => {
+              const imgObj = urlFor(img);
+              if (!imgObj) return null;
+              return (
+                <div
+                  key={idx}
+                  className="relative aspect-square rounded-sm overflow-hidden border border-white/10"
+                >
+                  <Image
+                    src={imgObj.url()}
+                    alt={`Fotografía ${idx + 1} de la expedición al volcán ${volcano.name}`}
+                    fill
+                    sizes="(max-width: 768px) 50vw, 33vw"
+                    className="object-cover"
+                  />
+                </div>
+              );
+            })}
           </div>
         )}
 
-        {/* 🎬 AQUÍ VA EL PASO 2: Vlogs Relacionados en el mismo archivo */}
+        {/* 🎬 Vlogs & Experiencias Relacionadas */}
         {volcano.vlogs && volcano.vlogs.length > 0 && (
           <div className="mt-16 border-t border-white/10 pt-12">
             <h2 className="font-display uppercase text-2xl text-[var(--bruma)] mb-6 tracking-wide">
@@ -223,11 +234,14 @@ export default async function VolcanoPage({
 
                 const vlogSlug =
                   typeof vlog.slug === "object"
-                    ? vlog.slug.current
+                    ? vlog.slug?.current
                     : vlog.slug;
 
-                const coverUrl = vlog.coverImage
-                  ? urlFor(vlog.coverImage).width(600).height(380).fit("crop").url()
+                if (!vlogSlug) return null;
+
+                const coverBuilder = urlFor(vlog.coverImage);
+                const coverUrl = coverBuilder
+                  ? coverBuilder.width(600).height(380).fit("crop").url()
                   : null;
 
                 return (
