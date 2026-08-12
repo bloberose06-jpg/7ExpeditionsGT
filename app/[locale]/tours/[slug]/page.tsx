@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { TOURS_DATA, Tour } from "@/data/tours";
+import { TOURS_DATA, Tour } from "@/app/data/tours";
 
 interface PageProps {
   params: Promise<{ locale: string; slug: string }>;
