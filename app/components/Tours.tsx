@@ -83,16 +83,16 @@ export default async function Tours() {
               const description = (locale === "en" && v.descriptionEn) || v.description;
               const duration = (locale === "en" && v.durationEn) || v.duration;
               const pdfUrl = (locale === "en" && v.pdfUrlEn) || v.pdfUrl;
-              const tourUrl = `/${locale}/tours/${v.slug.current}`;
+              const tourUrl = `/${locale}/tours/${v.slug?.current}`;
 
               return (
                 <article
                   key={v._id}
-                  id={v.slug.current}
+                  id={v.slug?.current}
                   className="group scroll-mt-24 flex flex-col justify-between rounded-sm border border-[var(--ceniza-line)] bg-[var(--ceniza)] overflow-hidden hover:border-[var(--lava)] transition-colors"
                 >
                   <div>
-                    {/* 📸 IMAGEN CLICABLE A LA PÁGINA DEL TOUR */}
+                    {/* 📸 CLIC EN LA IMAGEN DIRIGE A LA PÁGINA DEL TOUR */}
                     {v.mainImage && (
                       <Link href={tourUrl} className="block relative h-48 w-full bg-[var(--basalt)] overflow-hidden">
                         <img
@@ -103,9 +103,10 @@ export default async function Tours() {
                       </Link>
                     )}
 
-                    {/* Contenido de la tarjeta */}
+                    {/* CONTENIDO DE LA TARJETA */}
                     <div className="p-6">
                       <div className="flex items-start justify-between gap-3 mb-3">
+                        {/* CLIC EN EL TÍTULO DIRIGE A LA PÁGINA DEL TOUR */}
                         <Link href={tourUrl} className="hover:text-[var(--sulfuro)] transition-colors">
                           <h3 className="font-display text-2xl uppercase text-[var(--bruma)]">
                             {title}
@@ -134,23 +135,27 @@ export default async function Tours() {
                     </div>
                   </div>
 
-                  {/* Footer de la tarjeta */}
+                  {/* FOOTER DE LA TARJETA */}
                   <div className="flex items-center justify-between mx-6 pb-6 pt-4 border-t border-[var(--ceniza-line)]">
                     <span className="font-display text-lg text-[var(--sulfuro)]">
                       {v.price || t("priceFallback")}
                     </span>
 
                     <div className="flex items-center gap-5">
-                      {/* Botón INFO DEL TOUR -> Redirige a la landing del tour */}
-                      <Link
-                        href={tourUrl}
-                        className="font-mono text-xs uppercase tracking-[0.15em] text-[var(--bruma-dim)] hover:text-[var(--sulfuro)] border-b border-[var(--ceniza-line)] hover:border-[var(--sulfuro)] pb-0.5 transition-all"
-                        title={t("infoPdfTitle")}
-                      >
-                        {t("infoPdf")}
-                      </Link>
+                      {/* 📄 BOTÓN INFO DEL TOUR (ABRE EL PDF DE SANITY) */}
+                      {pdfUrl && (
+                        <a
+                          href={pdfUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="font-mono text-xs uppercase tracking-[0.15em] text-[var(--bruma-dim)] hover:text-[var(--sulfuro)] border-b border-[var(--ceniza-line)] hover:border-[var(--sulfuro)] pb-0.5 transition-all"
+                          title={t("infoPdfTitle")}
+                        >
+                          {t("infoPdf")}
+                        </a>
+                      )}
 
-                      {/* Botón de Reservar -> Scroll al formulario con el nombre del tour */}
+                      {/* 🎟 BOTÓN RESERVAR (SCROLL AL FORMULARIO) */}
                       <a
                         href="#reservar"
                         data-tour={title}
