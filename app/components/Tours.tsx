@@ -1,5 +1,6 @@
 import { client, urlFor } from "@/sanity/client";
 import { getLocale, getTranslations } from "next-intl/server";
+import Link from "next/link";
 
 export const revalidate = 10;
 
@@ -30,7 +31,6 @@ export default async function Tours() {
     agotado: { label: t("status.agotado"), color: "var(--lava)" },
   };
 
-  // Solicitamos la URL del archivo de manera directa usando la referencia -> asset->url
   const tours: SanityTour[] = await client.fetch(
     `*[_type == "tour"] | order(_createdAt desc) {
       _id,
@@ -83,6 +83,7 @@ export default async function Tours() {
               const description = (locale === "en" && v.descriptionEn) || v.description;
               const duration = (locale === "en" && v.durationEn) || v.duration;
               const pdfUrl = (locale === "en" && v.pdfUrlEn) || v.pdfUrl;
+              const tourUrl = `/${locale}/tours/${v.slug.current}`;
 
               return (
                 <article
@@ -91,25 +92,27 @@ export default async function Tours() {
                   className="group scroll-mt-24 flex flex-col justify-between rounded-sm border border-[var(--ceniza-line)] bg-[var(--ceniza)] overflow-hidden hover:border-[var(--lava)] transition-colors"
                 >
                   <div>
-                    {/* 📸 CONTENEDOR DE LA IMAGEN DINÁMICA */}
+                    {/* 📸 IMAGEN CLICABLE A LA PÁGINA DEL TOUR */}
                     {v.mainImage && (
-                      <div className="relative h-48 w-full bg-[var(--basalt)] overflow-hidden">
+                      <Link href={tourUrl} className="block relative h-48 w-full bg-[var(--basalt)] overflow-hidden">
                         <img
                           src={urlFor(v.mainImage).url()}
                           alt={title}
                           className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500"
                         />
-                      </div>
+                      </Link>
                     )}
 
                     {/* Contenido de la tarjeta */}
                     <div className="p-6">
                       <div className="flex items-start justify-between gap-3 mb-3">
-                        <h3 className="font-display text-2xl uppercase text-[var(--bruma)]">
-                          {title}
-                        </h3>
+                        <Link href={tourUrl} className="hover:text-[var(--sulfuro)] transition-colors">
+                          <h3 className="font-display text-2xl uppercase text-[var(--bruma)]">
+                            {title}
+                          </h3>
+                        </Link>
                         <span
-                          className="mt-1.5 inline-block h-2.5 w-2.5 rounded-full"
+                          className="mt-1.5 inline-block h-2.5 w-2.5 rounded-full flex-shrink-0"
                           style={{ backgroundColor: statusStyles[currentStatus].color }}
                           title={t("statusTitle", { status: statusStyles[currentStatus].label })}
                         />
@@ -138,26 +141,22 @@ export default async function Tours() {
                     </span>
 
                     <div className="flex items-center gap-5">
-                      {/* Botón dinámico para el PDF real subido a Sanity */}
-                      {pdfUrl && (
-                        <a
-                          href={pdfUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="font-mono text-xs uppercase tracking-[0.15em] text-[var(--bruma-dim)] hover:text-[var(--sulfuro)] border-b border-[var(--ceniza-line)] hover:border-[var(--sulfuro)] pb-0.5 transition-all"
-                          title={t("infoPdfTitle")}
-                        >
-                          {t("infoPdf")}
-                        </a>
-                      )}
+                      {/* Botón INFO DEL TOUR -> Redirige a la landing del tour */}
+                      <Link
+                        href={tourUrl}
+                        className="font-mono text-xs uppercase tracking-[0.15em] text-[var(--bruma-dim)] hover:text-[var(--sulfuro)] border-b border-[var(--ceniza-line)] hover:border-[var(--sulfuro)] pb-0.5 transition-all"
+                        title={t("infoPdfTitle")}
+                      >
+                        {t("infoPdf")}
+                      </Link>
 
-                      {/* Botón de Reservar */}
+                      {/* Botón de Reservar -> Scroll al formulario con el nombre del tour */}
                       <a
-                        href={`#reservar`}
+                        href="#reservar"
                         data-tour={title}
                         className="reservar-link font-mono text-xs uppercase tracking-[0.15em] text-[var(--bruma)] border-b border-[var(--lava)] hover:text-[var(--lava-bright)] pb-0.5"
                       >
-                        {t("reservar")}
+                        {t("reservar")} →
                       </a>
                     </div>
                   </div>
@@ -170,4 +169,3 @@ export default async function Tours() {
     </section>
   );
 }
-
