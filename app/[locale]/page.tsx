@@ -6,7 +6,6 @@ import WhyUs from "@/app/components/WhyUs";
 import Calendar from "@/app/components/Calendar";
 import Reservation from "@/app/components/Reservation";
 
-// 1. Configuración Dinámica de Metadatos centrada en Acatenango y Tours (ES / EN)
 export async function generateMetadata({
   params,
 }: {
@@ -17,17 +16,16 @@ export async function generateMetadata({
 
   const isEs = locale === "es";
 
-  // Título enfocado en Tours de Acatenango y Volcanes
+  // Título enriquecido
   const title = isEs
     ? "Tours al Volcán Acatenango y Trekking en Guatemala — 7 Expeditions"
-    : "Acatenango Volcano Tours & Trekking in Guatemala — 7 Expeditions";
+    : "Acatenango Volcano Overnight Hike & Trekking Guatemala — 7 Expeditions";
 
-  // Descripción enfocada en excursiones, caminatas e itinerarios
+  // Meta descripción optimizada con llamadas a la acción y tus palabras clave
   const description = isEs
-    ? "Vive la mejor aventura de trekking al Volcán Acatenango y Fuego. Tours guiados de 2 días y 1 noche, equipamiento incluido y guías expertos en Guatemala."
-    : "Experience the ultimate Acatenango and Fuego volcano hiking adventure. Guided 2-day/1-night tours with full gear and expert local guides in Guatemala.";
+    ? "Reserva tu tour a Acatenango overnight y vive el ascenso al Volcán de Fuego. Disfruta de glamping exclusivo y guías certificados. ¡Reserva hoy con 7 Expeditions!"
+    : "Book your Acatenango overnight tour and experience the Fuego Volcano hike. Enjoy exclusive glamping and certified guides. Reserve today with 7 Expeditions!";
 
-  // Alt de la imagen optimizado para búsqueda de imágenes de Acatenango
   const altImage = isEs
     ? "Senderista en la cima del Volcán Acatenango con vista al Volcán de Fuego en Guatemala"
     : "Hiker on Acatenango Volcano summit with views of Fuego Volcano in Guatemala";
@@ -37,12 +35,16 @@ export async function generateMetadata({
   return {
     title,
     description,
+    keywords: isEs
+      ? ["Tour Acatenango overnight", "Ascenso Volcán de Fuego", "Glamping Acatenango", "Tours volcanes Guatemala"]
+      : ["Acatenango overnight tour", "Fuego volcano hike", "Acatenango glamping", "Guatemala trekking"],
     metadataBase: new URL(baseUrl),
     alternates: {
       canonical: `${baseUrl}/${locale}`,
       languages: {
         "es-GT": `${baseUrl}/es`,
         "en-US": `${baseUrl}/en`,
+        "x-default": `${baseUrl}/es`, // Recomendado por Google para idioma por defecto
       },
     },
     openGraph: {
@@ -70,7 +72,6 @@ export async function generateMetadata({
   };
 }
 
-// 2. Componente Principal del Home con Datos Estructurados para Tours
 export default async function Home({
   params,
 }: {
@@ -79,16 +80,16 @@ export default async function Home({
   const { locale } = await params;
   const isEs = locale === "es";
 
-  // Schema JSON-LD enfocado en Tour de Senderismo / Viajes de Aventura
+  // Schema JSON-LD enriquecido para Google Rich Snippets
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "TouristTrip",
     "name": isEs
-      ? "Tour y Trekking al Volcán Acatenango"
-      : "Acatenango Volcano Hiking Tour",
+      ? "Tour Acatenango Overnight & Volcán de Fuego"
+      : "Acatenango Overnight Tour & Fuego Volcano Hike",
     "description": isEs
-      ? "Excursión guiada de senderismo al Volcán Acatenango con vistas a las erupciones del Volcán de Fuego."
-      : "Guided hiking tour to Acatenango Volcano with active views of Fuego Volcano eruptions.",
+      ? "Excursión guiada de senderismo al Volcán Acatenango con glamping y vistas a las erupciones del Volcán de Fuego."
+      : "Guided overnight hiking tour to Acatenango Volcano with glamping and views of active Fuego Volcano eruptions.",
     "image": "https://www.7expeditionsguatemala.com/gallery/Acatenango1.jpg",
     "touristType": [
       "Hikers",
@@ -97,6 +98,7 @@ export default async function Home({
     ],
     "offers": {
       "@type": "Offer",
+      "price": "99.00",
       "priceCurrency": "USD",
       "availability": "https://schema.org/InStock"
     },
