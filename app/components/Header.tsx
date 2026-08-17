@@ -14,11 +14,13 @@ export default function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
 
+  // 1. Agregamos la ruta 'vlogs' como una página independiente (isPage: true)
   const links = [
     { target: "expediciones", label: t("navExpediciones") },
     { target: "calendario", label: t("navCalendario") },
     { target: "galeria", label: t("navGaleria") },
     { target: "nosotros", label: t("navNosotros") },
+    { target: "vlogs", label: t("navVlogs") || "Vlogs", isPage: true },
     { target: "reservar", label: t("navReservar") },
   ];
 
@@ -29,15 +31,25 @@ export default function Header() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Función inteligente para manejar el scroll/navegación
-  const handleNav = (e: React.MouseEvent<HTMLAnchorElement>, target: string) => {
+  // 2. Función ajustada para diferenciar entre anchors (#) y subpáginas (/vlogs)
+  const handleNav = (
+    e: React.MouseEvent<HTMLAnchorElement>,
+    target: string,
+    isPage?: boolean
+  ) => {
     e.preventDefault();
     setOpen(false);
+
+    // Si el link apunta a una subpágina directa (como /vlogs)
+    if (isPage) {
+      router.push(`/${locale}/${target}`);
+      return;
+    }
 
     const isHome = pathname === `/${locale}` || pathname === "/";
 
     if (isHome) {
-      // Si ya estamos en la Home, hacemos scroll directo a la sección
+      // Si estamos en la Home, hacemos scroll al ID
       const element = document.getElementById(target);
       if (element) {
         element.scrollIntoView({ behavior: "smooth" });
@@ -45,7 +57,7 @@ export default function Header() {
         window.scrollTo({ top: 0, behavior: "smooth" });
       }
     } else {
-      // Si estamos en otra subruta (ej: /volcanoes/acatenango), redirigimos a la Home con el hash
+      // Si estamos en otra página, navegamos a la Home con el hash
       router.push(`/${locale}#${target}`);
     }
   };
@@ -80,8 +92,8 @@ export default function Header() {
           {links.map((l) => (
             <a
               key={l.target}
-              href={`/${locale}#${l.target}`}
-              onClick={(e) => handleNav(e, l.target)}
+              href={l.isPage ? `/${locale}/${l.target}` : `/${locale}#${l.target}`}
+              onClick={(e) => handleNav(e, l.target, l.isPage)}
               className="font-mono text-xs uppercase tracking-[0.15em] text-[var(--bruma-dim)] hover:text-[var(--sulfuro)] transition-colors cursor-pointer"
             >
               {l.label}
@@ -125,8 +137,8 @@ export default function Header() {
           {links.map((l) => (
             <a
               key={l.target}
-              href={`/${locale}#${l.target}`}
-              onClick={(e) => handleNav(e, l.target)}
+              href={l.isPage ? `/${locale}/${l.target}` : `/${locale}#${l.target}`}
+              onClick={(e) => handleNav(e, l.target, l.isPage)}
               className="font-display text-2xl uppercase text-[var(--bruma)] cursor-pointer"
             >
               {l.label}
