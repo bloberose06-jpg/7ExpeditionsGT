@@ -2,6 +2,7 @@ import { Metadata } from "next";
 import Hero from "@/app/components/Hero";
 import Tours from "@/app/components/Tours";
 import Gallery from "@/app/components/Gallery";
+import InstagramScroll, { mockInstagramPosts } from "@/app/components/InstagramScroll";
 import WhyUs from "@/app/components/WhyUs";
 import Calendar from "@/app/components/Calendar";
 import Reservation from "@/app/components/Reservation";
@@ -79,6 +80,7 @@ export default async function Home({
 }) {
   const { locale } = await params;
   const isEs = locale === "es";
+  const currentLocale = (locale === "en" ? "en" : "es") as "es" | "en";
 
   // Schema JSON-LD enriquecido para Google Rich Snippets
   const jsonLd = {
@@ -118,6 +120,7 @@ export default async function Home({
       <Hero />
       <Tours />
       <Gallery />
+      <InstagramScroll items={mockInstagramPosts} locale={currentLocale} />
       <WhyUs />
       <Calendar />
       <Reservation />
