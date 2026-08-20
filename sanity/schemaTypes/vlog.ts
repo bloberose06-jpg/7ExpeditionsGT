@@ -24,14 +24,19 @@ export default defineType({
       },
       validation: (Rule) => Rule.required(),
     }),
-    // 🌋 CAMPO DE REFERENCIA AL VOLCÁN
+
+    // 📍 UBICACIÓN: Permite elegir entre un Volcán o un Destino (Lago Atitlán, etc.)
     defineField({
-      name: 'volcano',
-      title: 'Volcán Relacionado / Related Volcano',
+      name: 'location',
+      title: 'Ubicación / Relación (Location / Related)',
       type: 'reference',
-      to: [{ type: 'volcano' }],
-      description: 'Selecciona el volcán asociado a este Vlog',
+      to: [
+        { type: 'volcano' },      // Referencia a tu esquema de volcanes
+        { type: 'destination' }  // Referencia a tu nuevo esquema de destinos
+      ],
+      description: 'Selecciona el volcán o destino asociado a este Vlog',
     }),
+
     defineField({
       name: 'coverImage',
       title: 'Cover Image',
@@ -99,7 +104,14 @@ export default defineType({
     select: {
       title: 'title.en',
       media: 'coverImage',
-      subtitle: 'volcano.name', // Muestra opcionalmente el nombre del volcán en la lista de vlogs
+      locationName: 'location.name', // Lee el nombre sea volcán o destino
+    },
+    prepare({ title, media, locationName }) {
+      return {
+        title: title || 'Sin Título',
+        media,
+        subtitle: locationName ? `📍 ${locationName}` : 'Sin ubicación',
+      }
     },
   },
 })
