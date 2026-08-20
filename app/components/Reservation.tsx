@@ -4,13 +4,8 @@ import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { volcanoes } from "../data/volcanoes";
 
-// TODO: reemplazá estos dos valores con los datos reales del negocio.
-const WHATSAPP_NUMBER = "50236181268"; // formato: código de país + número, sin +, sin espacios
+const WHATSAPP_NUMBER = "50236181268";
 const CONTACT_EMAIL = "viajesguateasociados@gmail.com";
-
-// URL del Google Apps Script que guarda la reserva en Sheets y envía el correo.
-// Se configura en .env.local / variables de entorno de Vercel:
-// NEXT_PUBLIC_SHEETS_ENDPOINT=https://script.google.com/macros/s/XXXXX/exec
 const SHEETS_ENDPOINT = process.env.NEXT_PUBLIC_SHEETS_ENDPOINT || "";
 
 export default function Reservation() {
@@ -21,6 +16,7 @@ export default function Reservation() {
     email: "",
     phone: "",
     tour: volcanoes[1].name, // Acatenango por defecto
+    customTour: "", // Nuevo estado para cuando eligen "Otro"
     date: "",
     people: "2",
     message: "",
@@ -28,8 +24,9 @@ export default function Reservation() {
 
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
 
-  // Envía los datos del formulario al Google Apps Script, que los guarda en
-  // Sheets y le manda un correo de aviso al negocio.
+  // Determina el nombre real del tour (si seleccionó "Other", utiliza customTour)
+  const selectedTour = form.tour === "Other" ? (form.customTour.trim() || "Otro Destino") : form.tour;
+
   const saveToSheet = async () => {
     if (!SHEETS_ENDPOINT) {
       console.warn("NEXT_PUBLIC_SHEETS_ENDPOINT no está configurado; la reserva no se guardó en Sheets.");
@@ -41,7 +38,10 @@ export default function Reservation() {
         method: "POST",
         mode: "no-cors",
         headers: { "Content-Type": "text/plain" },
-        body: JSON.stringify(form),
+        body: JSON.stringify({
+          ...form,
+          tour: selectedTour, // Envía el destino personalizado a Google Sheets
+        }),
       });
       setStatus("sent");
     } catch (err) {
@@ -50,8 +50,6 @@ export default function Reservation() {
     }
   };
 
-  // Si el visitante viene de un botón "Reservar →" de una tarjeta de tour,
-  // preseleccionamos ese volcán automáticamente.
   useEffect(() => {
     const handler = (e: MouseEvent) => {
       const target = (e.target as HTMLElement)?.closest<HTMLElement>(".reservar-link");
@@ -71,7 +69,7 @@ export default function Reservation() {
     [
       t("waMessageIntro"),
       ``,
-      `${t("waVolcano")}: ${form.tour}`,
+      `${t("waVolcano")}: ${selectedTour}`,
       `${t("waDate")}: ${form.date || t("waDateFallback")}`,
       `${t("waPeople")}: ${form.people}`,
       `${t("waName")}: ${form.name || "-"}`,
@@ -82,11 +80,15 @@ export default function Reservation() {
       .filter(Boolean)
       .join("\n");
 
-  const isValid = Boolean(form.name.trim() && (form.email.trim() || form.phone.trim()));
+  const isValid = Boolean(
+    form.name.trim() && 
+    (form.email.trim() || form.phone.trim()) && 
+    (form.tour !== "Other" || form.customTour.trim() !== "")
+  );
 
   const whatsappHref = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(buildMessage())}`;
   const mailHref = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(
-    t("emailSubject", { tour: form.tour })
+    t("emailSubject", { tour: selectedTour })
   )}&body=${encodeURIComponent(buildMessage())}`;
 
   return (
@@ -123,8 +125,26 @@ export default function Reservation() {
                   {v.name} · {v.elevation.toLocaleString()} m
                 </option>
               ))}
+              {/* Opción para otros destinos */}
+              <option value="Other">Otro / Other destination...</option>
             </select>
           </Field>
+
+          {/* Campo de texto que aparece únicamente cuando eligen "Other" */}
+          {form.tour === "Other" && (
+            <div className="md:col-span-2">
+              <Field label="Especificar Destino / Custom Destination" required>
+                <input
+                  type="text"
+                  required
+                  value={form.customTour}
+                  onChange={update("customTour")}
+                  placeholder="Ej: Lago Atitlán, Semuc Champey, Tikal..."
+                  className="field-input"
+                />
+              </Field>
+            </div>
+          )}
 
           <Field label={t("labelEmail")}>
             <input
