@@ -324,4 +324,61 @@ export const TOURS_DATA: Tour[] = [
       ]
     }
   }
+  {
+    slug: "lago-de-atitlan",
+    heroImage: "/images/tours/atitlan.jpg",
+    priceUSD: 180,
+    elevation: "1,560 msnm",
+    title: {
+      es: "Lago de Atitlán",
+      en: "Lake Atitlan Expedition"
+    },
+    metaDescription: {
+      es: "Descubre el Lago de Atitlán entre volcanes, pueblos mayas y paseos en lancha.",
+      en: "Discover Lake Atitlan among volcanoes, Mayan villages, and boat tours."
+    },
+    schedule: {
+      es: "Todos los días",
+      en: "Daily departures"
+    },
+    duration: {
+      es: "1 Día",
+      en: "1 Day"
+    },
+    overview: {
+      es: "¡Descubre el Lago de Atitlán como nunca antes! Vive una experiencia única entre volcanes, pueblos mayas y paisajes increíbles...",
+      en: "Discover Lake Atitlan like never before! Experience a unique journey surrounded by volcanoes and Mayan culture..."
+    },
+    included: {
+      es: ["Transporte privado", "Paseo en lancha", "Guía local", "Visita a pueblos mayas"],
+      en: ["Private transport", "Boat tour", "Local guide", "Mayan village visits"]
+    },
+    gearProvided: {
+      es: ["Chalecos salvavidas", "Kit de primeros auxilios"],
+      en: ["Life jackets", "First aid kit"]
+    },
+    gearToBring: {
+      es: ["Protector solar", "Cámara", "Lentes de sol", "Chaqueta liviana"],
+      en: ["Sunscreen", "Camera", "Sunglasses", "Light jacket"]
+    },
+    itinerary: {
+      es: [
+        { time: "06:00 AM", title: "Salida desde Panajachel", desc: "Encuentro y abordaje de lancha." },
+        { time: "09:00 AM", title: "Recorrido por San Juan La Laguna", desc: "Visita a talleres textiles y artesanales." }
+      ],
+      en: [
+        { time: "06:00 AM", title: "Departure from Panajachel", desc: "Meeting point and boat embarkation." },
+        { time: "09:00 AM", title: "San Juan La Laguna Tour", desc: "Visit to local textile workshops and art galleries." }
+      ]
+    },
+    faqs: {
+      es: [
+        { q: "¿Es apto para toda la familia?", a: "Sí, es un tour de dificultad baja ideal para todas las edades." }
+      ],
+      en: [
+        { q: "Is it suitable for all ages?", a: "Yes, this is an easy-level tour suitable for all family members." }
+      ]
+    }
+  }
+];
 ];
