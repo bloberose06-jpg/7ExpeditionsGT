@@ -323,7 +323,7 @@ export const TOURS_DATA: Tour[] = [
         { q: "Is it very cold at night?", a: "Yes, summit temperatures can drop below freezing (0°C / 32°F). Thermal layers are required." }
       ]
     }
-  }
+  },
   {
     slug: "lago-de-atitlan",
     heroImage: "/images/tours/atitlan.jpg",
