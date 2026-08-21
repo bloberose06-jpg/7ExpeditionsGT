@@ -118,6 +118,7 @@ export default function Reservation() {
             />
           </Field>
 
+          {/* Etiqueta traducida dinámicamente según idioma */}
           <Field label={t("labelTour")}>
             <select value={form.tour} onChange={update("tour")} className="field-input">
               {volcanoes.map((v) => (
@@ -125,12 +126,11 @@ export default function Reservation() {
                   {v.name} · {v.elevation.toLocaleString()} m
                 </option>
               ))}
-              {/* Opción para otros destinos */}
               <option value="Other">Otro / Other destination...</option>
             </select>
           </Field>
 
-          {/* Campo de texto que aparece únicamente cuando eligen "Other" */}
+          {/* Campo de texto secundario si eligen "Other" */}
           {form.tour === "Other" && (
             <div className="md:col-span-2">
               <Field label="Especificar Destino / Custom Destination" required>
