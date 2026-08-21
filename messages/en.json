@@ -87,7 +87,7 @@
     "description": "Fill out the form and send your request directly via WhatsApp or email. A guide will confirm availability within 24 hours.",
     "labelName": "Full name",
     "placeholderName": "Your name",
-    "labelTour": "Volcano",
+    "labelTour": "Volcano or Other Destination",
     "labelEmail": "Email",
     "placeholderEmail": "you@email.com",
     "labelPhone": "Phone / WhatsApp",
