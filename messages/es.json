@@ -87,7 +87,7 @@
     "description": "Completá el formulario y enviá tu solicitud directo por WhatsApp o correo. Un guía te confirma disponibilidad en menos de 24 horas.",
     "labelName": "Nombre completo",
     "placeholderName": "Tu nombre",
-    "labelTour": "Volcán",
+    "labelTour": "Volcán o Destino",
     "labelEmail": "Correo electrónico",
     "placeholderEmail": "vos@correo.com",
     "labelPhone": "Teléfono / WhatsApp",
