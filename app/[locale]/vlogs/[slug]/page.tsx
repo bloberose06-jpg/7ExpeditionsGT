@@ -3,6 +3,7 @@ import Image from "next/image";
 import { setRequestLocale } from "next-intl/server";
 import { PortableText, type PortableTextComponents } from "@portabletext/react";
 import { client, urlFor } from "@/sanity/client";
+import type { Metadata } from "next";
 
 export const revalidate = 0;
 
@@ -13,6 +14,7 @@ async function getVlog(slug: string) {
     slug,
     coverImage,
     publishedAt,
+    _updatedAt,
     content
   }`;
 
@@ -26,11 +28,12 @@ export async function generateStaticParams() {
   return slugs.map((v) => ({ slug: v.slug.current }));
 }
 
+// 1. MEJORAS DE METADATOS Y SEO INTERNACIONAL
 export async function generateMetadata({
   params,
 }: {
   params: Promise<{ locale: string; slug: string }>;
-}) {
+}): Promise<Metadata> {
   const { locale, slug } = await params;
   const vlog = await getVlog(slug);
 
@@ -38,18 +41,66 @@ export async function generateMetadata({
 
   const lang = locale.startsWith("es") ? "es" : "en";
   const title = vlog.title?.[lang] ?? vlog.title?.es ?? vlog.title?.en ?? "Vlog";
+  
+  // Extrae automáticamente el primer texto de PortableText para la Meta Description si no hay una dedicada
+  const rawBody = vlog.content?.[lang] ?? vlog.content?.es ?? [];
+  const autoSnippet = Array.isArray(rawBody) && rawBody.length > 0
+    ? rawBody.find((b: any) => b._type === "block")?.children?.map((c: any) => c.text).join(" ").slice(0, 155)
+    : null;
+
+  const description = autoSnippet || `Guía y experiencia de senderismo en ${title} con 7 Expeditions Guatemala.`;
   const baseUrl = "https://www.7expeditionsguatemala.com";
+  const currentUrl = `${baseUrl}/${locale}/vlogs/${slug}`;
 
   const imageUrl = vlog.coverImage
     ? urlFor(vlog.coverImage).width(1200).height(630).fit("crop").url()
     : `${baseUrl}/gallery/Acatenango1.jpg`;
 
   return {
-    title: `${title} — 7 Expeditions Guatemala`,
-    description: `Lee sobre la expedición ${title} en 7 Expeditions Guatemala.`,
+    title: `${title} | 7 Expeditions Guatemala`,
+    description,
+    alternates: {
+      canonical: currentUrl,
+      languages: {
+        "es": `${baseUrl}/es/vlogs/${slug}`,
+        "en": `${baseUrl}/en/vlogs/${slug}`,
+        "x-default": `${baseUrl}/es/vlogs/${slug}`,
+      },
+    },
     openGraph: {
-      title,
-      images: [{ url: imageUrl }],
+      title: `${title} | 7 Expeditions Guatemala`,
+      description,
+      url: currentUrl,
+      siteName: "7 Expeditions Guatemala",
+      locale: locale === "es" ? "es_GT" : "en_US",
+      type: "article",
+      publishedTime: vlog.publishedAt,
+      modifiedTime: vlog._updatedAt,
+      images: [
+        {
+          url: imageUrl,
+          width: 1200,
+          height: 630,
+          alt: title,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${title} | 7 Expeditions Guatemala`,
+      description,
+      images: [imageUrl],
+    },
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        "max-video-preview": -1,
+        "max-image-preview": "large",
+        "max-snippet": -1,
+      },
     },
   };
 }
@@ -57,10 +108,8 @@ export async function generateMetadata({
 const components: PortableTextComponents = {
   block: {
     normal: ({ children, value }: { children?: React.ReactNode; value?: any }) => {
-      // Extrae el texto plano del bloque actual
       const text = value?.children?.map((c: any) => c.text).join("") || "";
 
-      // Detección automática: si tiene menos de 65 caracteres y no termina en punto, se renderiza como H3
       if (text.length > 0 && text.length < 65 && !text.trim().endsWith(".")) {
         return (
           <h3 className="font-display uppercase text-xl md:text-2xl text-[var(--lava-bright)] mt-10 mb-4 tracking-wide">
@@ -69,7 +118,6 @@ const components: PortableTextComponents = {
         );
       }
 
-      // De lo contrario, se renderiza como un párrafo normal
       return (
         <p className="text-[var(--bruma-dim)] leading-relaxed mb-6 text-base md:text-lg">
           {children}
@@ -125,7 +173,7 @@ const components: PortableTextComponents = {
         {value?.asset && (
           <Image
             src={urlFor(value).width(1200).url()}
-            alt={value?.alt || "Imagen de la expedición"}
+            alt={value?.alt || "Fotografía de expedición en Guatemala"}
             fill
             sizes="(max-width: 768px) 100vw, 800px"
             className="object-cover"
@@ -164,44 +212,92 @@ export default async function VlogPage({
   const body =
     vlog.content?.[lang] ?? vlog.content?.es ?? vlog.content?.en ?? [];
 
+  const baseUrl = "https://www.7expeditionsguatemala.com";
+  const imageUrl = vlog.coverImage
+    ? urlFor(vlog.coverImage).width(1200).height(630).fit("crop").url()
+    : `${baseUrl}/gallery/Acatenango1.jpg`;
+
+  // 2. SCHEMA MARKUP JSON-LD PARA GOOGLE RICH RESULTS
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": title,
+    "image": [imageUrl],
+    "datePublished": vlog.publishedAt || new Date().toISOString(),
+    "dateModified": vlog._updatedAt || vlog.publishedAt || new Date().toISOString(),
+    "author": {
+      "@type": "Organization",
+      "name": "7 Expeditions Guatemala",
+      "url": baseUrl,
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "7 Expeditions Guatemala",
+      "logo": {
+        "@type": "ImageObject",
+        "url": `${baseUrl}/logo.png`,
+      },
+    },
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": `${baseUrl}/${locale}/vlogs/${slug}`,
+    },
+    "description": `Guía y expedición en ${title} organizada por 7 Expeditions Guatemala.`,
+  };
+
   return (
-    <article className="px-6 lg:px-10 py-24 md:py-32 bg-[var(--basalt-2)] min-h-screen text-[var(--bruma)]">
-      <div className="mx-auto max-w-3xl">
-        {vlog.publishedAt && (
-          <p className="font-mono text-xs uppercase tracking-[0.3em] text-[var(--lava-bright)] mb-3">
-            {new Date(vlog.publishedAt).toLocaleDateString(locale)}
-          </p>
-        )}
+    <>
+      {/* Inyección de JSON-LD estructurado */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
 
-        <h1
-          className="font-display uppercase text-[var(--bruma)] leading-none mb-8"
-          style={{ fontSize: "clamp(2.5rem, 6vw, 5rem)" }}
-        >
-          {title}
-        </h1>
-
-        {vlog.coverImage && (
-          <div className="relative aspect-video mb-10 rounded-sm overflow-hidden border border-neutral-800">
-            <Image
-              src={urlFor(vlog.coverImage).width(1200).url()}
-              alt={title}
-              fill
-              priority
-              className="object-cover"
-            />
-          </div>
-        )}
-
-        <div className="prose prose-invert max-w-none text-[var(--bruma-dim)]">
-          {Array.isArray(body) && body.length > 0 ? (
-            <PortableText value={body} components={components} />
-          ) : (
-            <p className="text-neutral-500 italic">
-              No hay contenido disponible para este artículo.
-            </p>
+      <article className="px-6 lg:px-10 py-24 md:py-32 bg-[var(--basalt-2)] min-h-screen text-[var(--bruma)]">
+        <div className="mx-auto max-w-3xl">
+          {vlog.publishedAt && (
+            <time 
+              dateTime={vlog.publishedAt}
+              className="block font-mono text-xs uppercase tracking-[0.3em] text-[var(--lava-bright)] mb-3"
+            >
+              {new Date(vlog.publishedAt).toLocaleDateString(locale, {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+              })}
+            </time>
           )}
+
+          <h1
+            className="font-display uppercase text-[var(--bruma)] leading-none mb-8"
+            style={{ fontSize: "clamp(2.5rem, 6vw, 5rem)" }}
+          >
+            {title}
+          </h1>
+
+          {vlog.coverImage && (
+            <div className="relative aspect-video mb-10 rounded-sm overflow-hidden border border-neutral-800">
+              <Image
+                src={urlFor(vlog.coverImage).width(1200).url()}
+                alt={title}
+                fill
+                priority
+                className="object-cover"
+              />
+            </div>
+          )}
+
+          <div className="prose prose-invert max-w-none text-[var(--bruma-dim)]">
+            {Array.isArray(body) && body.length > 0 ? (
+              <PortableText value={body} components={components} />
+            ) : (
+              <p className="text-neutral-500 italic">
+                No hay contenido disponible para este artículo.
+              </p>
+            )}
+          </div>
         </div>
-      </div>
-    </article>
+      </article>
+    </>
   );
 }
