@@ -83,31 +83,78 @@ export default async function Home({
   const currentLocale = (locale === "en" ? "en" : "es") as "es" | "en";
 
   // Schema JSON-LD enriquecido para Google Rich Snippets
+  // Schema JSON-LD multidestino optimizado para SEO
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "TouristTrip",
     "name": isEs
-      ? "Tour Acatenango Overnight & Volcán de Fuego"
-      : "Acatenango Overnight Tour & Fuego Volcano Hike",
+      ? "Tours y Expediciones de Aventura en Guatemala — Acatenango, Atitlán, Semuc Champey"
+      : "Guatemala Adventure Tours & Hiking Expeditions — Acatenango, Atitlan, Semuc Champey",
     "description": isEs
-      ? "Excursión guiada de senderismo al Volcán Acatenango con glamping y vistas a las erupciones del Volcán de Fuego."
-      : "Guided overnight hiking tour to Acatenango Volcano with glamping and views of active Fuego Volcano eruptions.",
+      ? "Tours guiados de senderismo y aventura en Guatemala: Volcán Acatenango, Fuego, Lago de Atitlán, Semuc Champey y recorridos en Antigua Guatemala."
+      : "Guided hiking and adventure tours in Guatemala: Acatenango Volcano, Fuego, Lake Atitlan, Semuc Champey, and Antigua Guatemala tours.",
     "image": "https://www.7expeditionsguatemala.com/gallery/Acatenango1.jpg",
     "touristType": [
       "Hikers",
       "Adventure Travelers",
-      "Outdoor Enthusiasts"
+      "Outdoor Enthusiasts",
+      "Backpackers"
     ],
     "offers": {
-      "@type": "Offer",
-      "price": "99.00",
+      "@type": "AggregateOffer",
       "priceCurrency": "USD",
+      "lowPrice": "45.00",
+      "highPrice": "250.00",
+      "offerCount": "5",
       "availability": "https://schema.org/InStock"
     },
+    "itinerary": [
+      {
+        "@type": "TouristAttraction",
+        "name": "Volcán Acatenango & Volcán de Fuego",
+        "description": "Overnight hiking & glamping with active volcano views."
+      },
+      {
+        "@type": "TouristAttraction",
+        "name": "Lago de Atitlán",
+        "description": "Volcano trekking and village tours around Lake Atitlan."
+      },
+      {
+        "@type": "TouristAttraction",
+        "name": "Semuc Champey",
+        "description": "Natural turquoise limestone pools and cave exploration in Alta Verapaz."
+      },
+      {
+        "@type": "TouristAttraction",
+        "name": "Antigua Guatemala",
+        "description": "Historic colonial city walking tours and basecamp for volcano expeditions."
+      }
+    ],
     "provider": {
       "@type": "TravelAgency",
       "name": "7 Expeditions Guatemala",
-      "url": `https://www.7expeditionsguatemala.com/${locale}`
+      "url": `https://www.7expeditionsguatemala.com/${locale}`,
+      "image": "https://www.7expeditionsguatemala.com/gallery/Acatenango1.jpg",
+      "telephone": "+502-XXXXXXXX", // Reemplazar con tu número real
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Antigua Guatemala",
+        "addressRegion": "Sacatepéquez",
+        "addressCountry": "GT"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": "14.5586",
+        "longitude": "-90.7295"
+      },
+      "areaServed": [
+        "Antigua Guatemala",
+        "Acatenango Volcano",
+        "Fuego Volcano",
+        "Lake Atitlan",
+        "Semuc Champey",
+        "Guatemala"
+      ]
     }
   };
 
