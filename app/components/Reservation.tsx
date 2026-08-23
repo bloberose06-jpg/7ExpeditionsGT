@@ -1,273 +1,305 @@
-"use client";
+import { notFound } from "next/navigation";
+import Image from "next/image";
+import { setRequestLocale } from "next-intl/server";
+import { PortableText, type PortableTextComponents } from "@portabletext/react";
+import { client, urlFor } from "@/sanity/client";
+import type { Metadata } from "next";
+import Reservation from "@/app/components/Reservation"; // Importación del formulario
 
-import { useEffect, useState } from "react";
-import { useTranslations } from "next-intl";
-import { volcanoes } from "../data/volcanoes";
+export const revalidate = 0;
 
-const WHATSAPP_NUMBER = "50236181268";
-const CONTACT_EMAIL = "viajesguateasociados@gmail.com";
-const SHEETS_ENDPOINT = process.env.NEXT_PUBLIC_SHEETS_ENDPOINT || "";
+async function getVlog(slug: string) {
+  const query = `*[_type == "vlog" && slug.current == $slug][0]{
+    _id,
+    title,
+    slug,
+    coverImage,
+    publishedAt,
+    _updatedAt,
+    content
+  }`;
 
-export default function Reservation() {
-  const t = useTranslations("reservation");
+  return client.fetch(query, { slug }, { cache: "no-store" });
+}
 
-  const [form, setForm] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    tour: volcanoes[1].name, // Acatenango por defecto
-    customTour: "", // Nuevo estado para cuando eligen "Otro"
-    date: "",
-    people: "2",
-    message: "",
-  });
+export async function generateStaticParams() {
+  const slugs: { slug: { current: string } }[] = await client.fetch(
+    `*[_type == "vlog" && defined(slug.current)]{ slug }`
+  );
+  return slugs.map((v) => ({ slug: v.slug.current }));
+}
 
-  const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
+// 1. MEJORAS DE METADATOS Y SEO INTERNACIONAL
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string; slug: string }>;
+}): Promise<Metadata> {
+  const { locale, slug } = await params;
+  const vlog = await getVlog(slug);
 
-  // Determina el nombre real del tour (si seleccionó "Other", utiliza customTour)
-  const selectedTour = form.tour === "Other" ? (form.customTour.trim() || "Otro Destino") : form.tour;
+  if (!vlog) return {};
 
-  const saveToSheet = async () => {
-    if (!SHEETS_ENDPOINT) {
-      console.warn("NEXT_PUBLIC_SHEETS_ENDPOINT no está configurado; la reserva no se guardó en Sheets.");
-      return;
-    }
-    try {
-      setStatus("sending");
-      await fetch(SHEETS_ENDPOINT, {
-        method: "POST",
-        mode: "no-cors",
-        headers: { "Content-Type": "text/plain" },
-        body: JSON.stringify({
-          ...form,
-          tour: selectedTour, // Envía el destino personalizado a Google Sheets
-        }),
-      });
-      setStatus("sent");
-    } catch (err) {
-      console.error("Error guardando la reserva en Sheets:", err);
-      setStatus("error");
-    }
+  const lang = locale.startsWith("es") ? "es" : "en";
+  const title = vlog.title?.[lang] ?? vlog.title?.es ?? vlog.title?.en ?? "Vlog";
+  
+  const rawBody = vlog.content?.[lang] ?? vlog.content?.es ?? [];
+  const autoSnippet = Array.isArray(rawBody) && rawBody.length > 0
+    ? rawBody.find((b: any) => b._type === "block")?.children?.map((c: any) => c.text).join(" ").slice(0, 155)
+    : null;
+
+  const description = autoSnippet || `Guía y experiencia de senderismo en ${title} con 7 Expeditions Guatemala.`;
+  const baseUrl = "https://www.7expeditionsguatemala.com";
+  const currentUrl = `${baseUrl}/${locale}/vlogs/${slug}`;
+
+  const imageUrl = vlog.coverImage
+    ? urlFor(vlog.coverImage).width(1200).height(630).fit("crop").url()
+    : `${baseUrl}/gallery/Acatenango1.jpg`;
+
+  return {
+    title: `${title} | 7 Expeditions Guatemala`,
+    description,
+    alternates: {
+      canonical: currentUrl,
+      languages: {
+        "es": `${baseUrl}/es/vlogs/${slug}`,
+        "en": `${baseUrl}/en/vlogs/${slug}`,
+        "x-default": `${baseUrl}/es/vlogs/${slug}`,
+      },
+    },
+    openGraph: {
+      title: `${title} | 7 Expeditions Guatemala`,
+      description,
+      url: currentUrl,
+      siteName: "7 Expeditions Guatemala",
+      locale: locale === "es" ? "es_GT" : "en_US",
+      type: "article",
+      publishedTime: vlog.publishedAt,
+      modifiedTime: vlog._updatedAt,
+      images: [
+        {
+          url: imageUrl,
+          width: 1200,
+          height: 630,
+          alt: title,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${title} | 7 Expeditions Guatemala`,
+      description,
+      images: [imageUrl],
+    },
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        "max-video-preview": -1,
+        "max-image-preview": "large",
+        "max-snippet": -1,
+      },
+    },
+  };
+}
+
+const components: PortableTextComponents = {
+  block: {
+    normal: ({ children, value }: { children?: React.ReactNode; value?: any }) => {
+      const text = value?.children?.map((c: any) => c.text).join("") || "";
+
+      if (text.length > 0 && text.length < 65 && !text.trim().endsWith(".")) {
+        return (
+          <h3 className="font-display uppercase text-xl md:text-2xl text-[var(--lava-bright)] mt-10 mb-4 tracking-wide">
+            {children}
+          </h3>
+        );
+      }
+
+      return (
+        <p className="text-[var(--bruma-dim)] leading-relaxed mb-6 text-base md:text-lg">
+          {children}
+        </p>
+      );
+    },
+    h2: ({ children }) => (
+      <h2 className="font-display uppercase text-2xl md:text-3xl text-[var(--bruma)] mt-10 mb-4 border-b border-neutral-800 pb-2">
+        {children}
+      </h2>
+    ),
+    h3: ({ children }) => (
+      <h3 className="font-display uppercase text-xl md:text-2xl text-[var(--lava-bright)] mt-8 mb-3">
+        {children}
+      </h3>
+    ),
+    blockquote: ({ children }) => (
+      <blockquote className="border-l-4 border-[var(--lava-bright)] pl-4 my-6 italic text-[var(--bruma)] bg-black/20 py-2 rounded-r">
+        {children}
+      </blockquote>
+    ),
+  },
+  marks: {
+    strong: ({ children }) => (
+      <strong className="font-semibold text-white">{children}</strong>
+    ),
+    link: ({ value, children }) => (
+      <a
+        href={value?.href}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-[var(--lava-bright)] underline hover:text-white transition-colors"
+      >
+        {children}
+      </a>
+    ),
+  },
+  list: {
+    bullet: ({ children }) => (
+      <ul className="list-disc list-inside space-y-2 mb-6 text-[var(--bruma-dim)]">
+        {children}
+      </ul>
+    ),
+    number: ({ children }) => (
+      <ol className="list-decimal list-inside space-y-2 mb-6 text-[var(--bruma-dim)]">
+        {children}
+      </ol>
+    ),
+  },
+  types: {
+    image: ({ value }) => (
+      <div className="relative w-full aspect-video my-8 rounded-sm overflow-hidden border border-neutral-800">
+        {value?.asset && (
+          <Image
+            src={urlFor(value).width(1200).url()}
+            alt={value?.alt || "Fotografía de expedición en Guatemala"}
+            fill
+            sizes="(max-width: 768px) 100vw, 800px"
+            className="object-cover"
+          />
+        )}
+        {value?.caption && (
+          <p className="text-sm text-[var(--bruma-dim)] mt-2 italic text-center">
+            {value.caption}
+          </p>
+        )}
+      </div>
+    ),
+  },
+};
+
+export default async function VlogPage({
+  params,
+}: {
+  params: Promise<{ locale: string; slug: string }>;
+}) {
+  const resolvedParams = await params;
+  const { locale, slug } = resolvedParams;
+
+  setRequestLocale(locale);
+
+  const vlog = await getVlog(slug);
+
+  if (!vlog) {
+    notFound();
+  }
+
+  const lang = locale.startsWith("es") ? "es" : "en";
+
+  const title =
+    vlog.title?.[lang] ?? vlog.title?.es ?? vlog.title?.en ?? "Sin título";
+  const body =
+    vlog.content?.[lang] ?? vlog.content?.es ?? vlog.content?.en ?? [];
+
+  const baseUrl = "https://www.7expeditionsguatemala.com";
+  const imageUrl = vlog.coverImage
+    ? urlFor(vlog.coverImage).width(1200).height(630).fit("crop").url()
+    : `${baseUrl}/gallery/Acatenango1.jpg`;
+
+  // SCHEMA MARKUP JSON-LD
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": title,
+    "image": [imageUrl],
+    "datePublished": vlog.publishedAt || new Date().toISOString(),
+    "dateModified": vlog._updatedAt || vlog.publishedAt || new Date().toISOString(),
+    "author": {
+      "@type": "Organization",
+      "name": "7 Expeditions Guatemala",
+      "url": baseUrl,
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "7 Expeditions Guatemala",
+      "logo": {
+        "@type": "ImageObject",
+        "url": `${baseUrl}/logo.png`,
+      },
+    },
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": `${baseUrl}/${locale}/vlogs/${slug}`,
+    },
+    "description": `Guía y expedición en ${title} organizada por 7 Expeditions Guatemala.`,
   };
 
-  useEffect(() => {
-    const handler = (e: MouseEvent) => {
-      const target = (e.target as HTMLElement)?.closest<HTMLElement>(".reservar-link");
-      if (target?.dataset.tour) {
-        setForm((f) => ({ ...f, tour: target.dataset.tour as string }));
-      }
-    };
-    document.addEventListener("click", handler);
-    return () => document.removeEventListener("click", handler);
-  }, []);
-
-  const update = (key: keyof typeof form) => (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
-  ) => setForm((f) => ({ ...f, [key]: e.target.value }));
-
-  const buildMessage = () =>
-    [
-      t("waMessageIntro"),
-      ``,
-      `${t("waVolcano")}: ${selectedTour}`,
-      `${t("waDate")}: ${form.date || t("waDateFallback")}`,
-      `${t("waPeople")}: ${form.people}`,
-      `${t("waName")}: ${form.name || "-"}`,
-      `${t("waEmail")}: ${form.email || "-"}`,
-      `${t("waPhone")}: ${form.phone || "-"}`,
-      form.message ? `${t("waMessage")}: ${form.message}` : "",
-    ]
-      .filter(Boolean)
-      .join("\n");
-
-  const isValid = Boolean(
-    form.name.trim() && 
-    (form.email.trim() || form.phone.trim()) && 
-    (form.tour !== "Other" || form.customTour.trim() !== "")
-  );
-
-  const whatsappHref = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(buildMessage())}`;
-  const mailHref = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(
-    t("emailSubject", { tour: selectedTour })
-  )}&body=${encodeURIComponent(buildMessage())}`;
-
   return (
-    <section id="reservar" className="px-6 lg:px-10 py-24 md:py-32 bg-[var(--basalt)]">
-      <div className="mx-auto max-w-4xl">
-        <p className="font-mono text-xs uppercase tracking-[0.3em] text-[var(--lava-bright)] mb-3">
-          {t("eyebrow")}
-        </p>
-        <h2 className="font-display uppercase text-[var(--bruma)] mb-4" style={{ fontSize: "clamp(2.2rem, 5vw, 3.8rem)" }}>
-          {t("title")}
-        </h2>
-        <p className="text-[var(--bruma-dim)] max-w-xl mb-10">
-          {t("description")}
-        </p>
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
 
-        <form
-          className="grid grid-cols-1 md:grid-cols-2 gap-5 bg-[var(--ceniza)] border border-[var(--ceniza-line)] rounded-sm p-6 md:p-8"
-          onSubmit={(e) => e.preventDefault()}
-        >
-          <Field label={t("labelName")} required>
-            <input
-              required
-              value={form.name}
-              onChange={update("name")}
-              placeholder={t("placeholderName")}
-              className="field-input"
-            />
-          </Field>
+      <article className="px-6 lg:px-10 pt-24 md:pt-32 bg-[var(--basalt-2)] min-h-screen text-[var(--bruma)]">
+        <div className="mx-auto max-w-3xl">
+          {vlog.publishedAt && (
+            <time 
+              dateTime={vlog.publishedAt}
+              className="block font-mono text-xs uppercase tracking-[0.3em] text-[var(--lava-bright)] mb-3"
+            >
+              {new Date(vlog.publishedAt).toLocaleDateString(locale, {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+              })}
+            </time>
+          )}
 
-          {/* Etiqueta traducida dinámicamente según idioma */}
-          <Field label={t("labelTour")}>
-            <select value={form.tour} onChange={update("tour")} className="field-input">
-              {volcanoes.map((v) => (
-                <option key={v.slug} value={v.name}>
-                  {v.name} · {v.elevation.toLocaleString()} m
-                </option>
-              ))}
-              <option value="Other">Otro / Other destination...</option>
-            </select>
-          </Field>
+          <h1
+            className="font-display uppercase text-[var(--bruma)] leading-none mb-8"
+            style={{ fontSize: "clamp(2.5rem, 6vw, 5rem)" }}
+          >
+            {title}
+          </h1>
 
-          {/* Campo de texto secundario si eligen "Other" */}
-          {form.tour === "Other" && (
-            <div className="md:col-span-2">
-              <Field label="Especificar Destino / Custom Destination" required>
-                <input
-                  type="text"
-                  required
-                  value={form.customTour}
-                  onChange={update("customTour")}
-                  placeholder="Ej: Lago Atitlán, Semuc Champey, Tikal..."
-                  className="field-input"
-                />
-              </Field>
+          {vlog.coverImage && (
+            <div className="relative aspect-video mb-10 rounded-sm overflow-hidden border border-neutral-800">
+              <Image
+                src={urlFor(vlog.coverImage).width(1200).url()}
+                alt={title}
+                fill
+                priority
+                className="object-cover"
+              />
             </div>
           )}
 
-          <Field label={t("labelEmail")}>
-            <input
-              type="email"
-              value={form.email}
-              onChange={update("email")}
-              placeholder={t("placeholderEmail")}
-              className="field-input"
-            />
-          </Field>
-
-          <Field label={t("labelPhone")}>
-            <input
-              type="tel"
-              value={form.phone}
-              onChange={update("phone")}
-              placeholder={t("placeholderPhone")}
-              className="field-input"
-            />
-          </Field>
-
-          <Field label={t("labelDate")}>
-            <input type="date" value={form.date} onChange={update("date")} className="field-input" />
-          </Field>
-
-          <Field label={t("labelPeople")}>
-            <input
-              type="number"
-              min={1}
-              max={20}
-              value={form.people}
-              onChange={update("people")}
-              className="field-input"
-            />
-          </Field>
-
-          <div className="md:col-span-2">
-            <Field label={t("labelMessage")}>
-              <textarea
-                rows={3}
-                value={form.message}
-                onChange={update("message")}
-                placeholder={t("placeholderMessage")}
-                className="field-input resize-none"
-              />
-            </Field>
+          <div className="prose prose-invert max-w-none text-[var(--bruma-dim)] mb-16">
+            {Array.isArray(body) && body.length > 0 ? (
+              <PortableText value={body} components={components} />
+            ) : (
+              <p className="text-neutral-500 italic">
+                No hay contenido disponible para este artículo.
+              </p>
+            )}
           </div>
+        </div>
 
-          <div className="md:col-span-2 flex flex-col sm:flex-row gap-3 pt-2">
-            <a
-              href={isValid ? whatsappHref : undefined}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-disabled={!isValid}
-              onClick={(e) => {
-                if (!isValid) {
-                  e.preventDefault();
-                  return;
-                }
-                saveToSheet();
-              }}
-              className={`flex-1 text-center rounded-sm px-6 py-3.5 font-display text-base uppercase tracking-wide transition-colors ${
-                isValid
-                  ? "bg-[var(--lava)] hover:bg-[var(--lava-bright)] text-[var(--bruma)] cursor-pointer"
-                  : "bg-[var(--ceniza-line)] text-[var(--bruma-dim)] cursor-not-allowed"
-              }`}
-            >
-              {t("sendWhatsapp")}
-            </a>
-            <a
-              href={isValid ? mailHref : undefined}
-              aria-disabled={!isValid}
-              onClick={(e) => {
-                if (!isValid) {
-                  e.preventDefault();
-                  return;
-                }
-                saveToSheet();
-              }}
-              className={`flex-1 text-center rounded-sm px-6 py-3.5 font-display text-base uppercase tracking-wide border transition-colors ${
-                isValid
-                  ? "border-[var(--sulfuro)] text-[var(--bruma)] hover:bg-[var(--sulfuro)] hover:text-[var(--basalt)] cursor-pointer"
-                  : "border-[var(--ceniza-line)] text-[var(--bruma-dim)] cursor-not-allowed"
-              }`}
-            >
-              {t("sendEmail")}
-            </a>
-          </div>
-
-          {status === "sending" && (
-            <p className="md:col-span-2 font-mono text-[11px] text-[var(--lava-bright)]">
-              Guardando tu reserva…
-            </p>
-          )}
-          {status === "sent" && (
-            <p className="md:col-span-2 font-mono text-[11px] text-[var(--lava-bright)]">
-              ✓ Reserva guardada correctamente.
-            </p>
-          )}
-          {status === "error" && (
-            <p className="md:col-span-2 font-mono text-[11px] text-red-400">
-              No pudimos guardar la reserva automáticamente, pero tu mensaje se envía igual.
-            </p>
-          )}
-          {!isValid && (
-            <p className="md:col-span-2 font-mono text-[11px] text-[var(--bruma-dim)]">
-              {t("validationHint")}
-            </p>
-          )}
-        </form>
-      </div>
-    </section>
-  );
-}
-
-function Field({ label, required, children }: { label: string; required?: boolean; children: React.ReactNode }) {
-  return (
-    <label className="flex flex-col gap-1.5">
-      <span className="font-mono text-[11px] uppercase tracking-[0.15em] text-[var(--bruma-dim)]">
-        {label}
-        {required && <span className="text-[var(--lava)]"> *</span>}
-      </span>
-      {children}
-    </label>
+        {/* Formulario de reserva insertado al final del artículo */}
+        <Reservation />
+      </article>
+    </>
   );
 }
