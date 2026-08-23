@@ -8,6 +8,10 @@ const WHATSAPP_NUMBER = "50236181268";
 const CONTACT_EMAIL = "viajesguateasociados@gmail.com";
 const SHEETS_ENDPOINT = process.env.NEXT_PUBLIC_SHEETS_ENDPOINT || "";
 
+interface ReservationProps {
+  params?: Promise<{ locale?: string; slug?: string }>;
+}
+
 export default function Reservation() {
   const t = useTranslations("reservation");
 
