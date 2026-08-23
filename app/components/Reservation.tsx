@@ -9,10 +9,10 @@ const CONTACT_EMAIL = "viajesguateasociados@gmail.com";
 const SHEETS_ENDPOINT = process.env.NEXT_PUBLIC_SHEETS_ENDPOINT || "";
 
 interface ReservationProps {
-  params?: Promise<{ locale?: string; slug?: string }>;
+  params?: any;
 }
 
-export default function Reservation() {
+export default function Reservation({ params }: ReservationProps = {}) {
   const t = useTranslations("reservation");
 
   const [form, setForm] = useState({
