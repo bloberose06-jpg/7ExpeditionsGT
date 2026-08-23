@@ -3,13 +3,15 @@
 import React from "react";
 
 export default function SocialFloatingButtons() {
-  const phoneNumber = "50236181268"; // Sustituye por tu número real de GT
+  const phoneNumber = "50236181268";
+  
+  // Mensaje que indica claramente el origen de la consulta
   const message = encodeURIComponent(
-    "¡Hola! Estoy interesado en reservar o solicitar más información sobre las expediciones."
+    "¡Hola! Vengo desde la página web 7expeditionsguatemala.com y me gustaría solicitar más información o hacer una reserva."
   );
 
   const whatsappUrl = `https://wa.me/${phoneNumber}?text=${message}`;
-  const instagramUrl = "https://instagram.com/@7expeditionsgt"; // Sustituye por tu usuario
+  const instagramUrl = "https://instagram.com/7expeditionsgt";
 
   return (
     <div className="fixed bottom-6 right-6 z-50 flex flex-col gap-3">
