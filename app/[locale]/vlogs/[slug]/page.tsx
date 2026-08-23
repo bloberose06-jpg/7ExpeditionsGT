@@ -8,7 +8,8 @@ import type { Metadata } from "next";
 export const revalidate = 0;
 
 async function getVlog(slug: string) {
-  const query = `*[_type == "vlog" && slug.current == $slug][0]{
+  // Se evalúa si slug viene como string directo o dentro del objeto de Sanity
+  const query = `*[_type == "vlog" && (slug.current == $slug || slug == $slug)][0]{
     _id,
     title,
     slug,
@@ -22,13 +23,18 @@ async function getVlog(slug: string) {
 }
 
 export async function generateStaticParams() {
-  const slugs: { slug: { current: string } }[] = await client.fetch(
-    `*[_type == "vlog" && defined(slug.current)]{ slug }`
+  const vlogs: { slug?: { current?: string } | string }[] = await client.fetch(
+    `*[_type == "vlog"]{ slug }`
   );
-  return slugs.map((v) => ({ slug: v.slug.current }));
+  
+  return vlogs
+    .map((v) => {
+      const slugValue = typeof v.slug === "string" ? v.slug : v.slug?.current;
+      return slugValue ? { slug: slugValue } : null;
+    })
+    .filter(Boolean);
 }
 
-// 1. MEJORAS DE METADATOS Y SEO INTERNACIONAL
 export async function generateMetadata({
   params,
 }: {
@@ -42,7 +48,6 @@ export async function generateMetadata({
   const lang = locale.startsWith("es") ? "es" : "en";
   const title = vlog.title?.[lang] ?? vlog.title?.es ?? vlog.title?.en ?? "Vlog";
   
-  // Extrae automáticamente el primer texto de PortableText para la Meta Description si no hay una dedicada
   const rawBody = vlog.content?.[lang] ?? vlog.content?.es ?? [];
   const autoSnippet = Array.isArray(rawBody) && rawBody.length > 0
     ? rawBody.find((b: any) => b._type === "block")?.children?.map((c: any) => c.text).join(" ").slice(0, 155)
@@ -217,7 +222,6 @@ export default async function VlogPage({
     ? urlFor(vlog.coverImage).width(1200).height(630).fit("crop").url()
     : `${baseUrl}/gallery/Acatenango1.jpg`;
 
-  // 2. SCHEMA MARKUP JSON-LD PARA GOOGLE RICH RESULTS
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "BlogPosting",
@@ -247,7 +251,6 @@ export default async function VlogPage({
 
   return (
     <>
-      {/* Inyección de JSON-LD estructurado */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
