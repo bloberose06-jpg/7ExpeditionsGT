@@ -28,7 +28,7 @@ export async function generateStaticParams() {
   return slugs.map((v) => ({ slug: v.slug.current }));
 }
 
-// MEJORAS DE METADATOS Y SEO INTERNACIONAL
+// 1. MEJORAS DE METADATOS Y SEO INTERNACIONAL
 export async function generateMetadata({
   params,
 }: {
@@ -42,6 +42,7 @@ export async function generateMetadata({
   const lang = locale.startsWith("es") ? "es" : "en";
   const title = vlog.title?.[lang] ?? vlog.title?.es ?? vlog.title?.en ?? "Vlog";
   
+  // Extrae automáticamente el primer texto de PortableText para la Meta Description si no hay una dedicada
   const rawBody = vlog.content?.[lang] ?? vlog.content?.es ?? [];
   const autoSnippet = Array.isArray(rawBody) && rawBody.length > 0
     ? rawBody.find((b: any) => b._type === "block")?.children?.map((c: any) => c.text).join(" ").slice(0, 155)
@@ -216,7 +217,7 @@ export default async function VlogPage({
     ? urlFor(vlog.coverImage).width(1200).height(630).fit("crop").url()
     : `${baseUrl}/gallery/Acatenango1.jpg`;
 
-  // SCHEMA MARKUP JSON-LD
+  // 2. SCHEMA MARKUP JSON-LD PARA GOOGLE RICH RESULTS
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "BlogPosting",
@@ -246,12 +247,13 @@ export default async function VlogPage({
 
   return (
     <>
+      {/* Inyección de JSON-LD estructurado */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      <article className="px-6 lg:px-10 pt-24 md:pt-32 bg-[var(--basalt-2)] min-h-screen text-[var(--bruma)]">
+      <article className="px-6 lg:px-10 py-24 md:py-32 bg-[var(--basalt-2)] min-h-screen text-[var(--bruma)]">
         <div className="mx-auto max-w-3xl">
           {vlog.publishedAt && (
             <time 
@@ -285,7 +287,7 @@ export default async function VlogPage({
             </div>
           )}
 
-          <div className="prose prose-invert max-w-none text-[var(--bruma-dim)] mb-16">
+          <div className="prose prose-invert max-w-none text-[var(--bruma-dim)]">
             {Array.isArray(body) && body.length > 0 ? (
               <PortableText value={body} components={components} />
             ) : (
