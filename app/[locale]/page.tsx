@@ -22,7 +22,7 @@ export async function generateMetadata({
     ? "Tours al Volcán Acatenango y Trekking en Guatemala — 7 Expeditions"
     : "Acatenango Volcano Overnight Hike & Trekking Guatemala — 7 Expeditions";
 
-  // Meta descripción optimizada
+  // Meta descripción optimizada con llamadas a la acción y tus palabras clave
   const description = isEs
     ? "Reserva tu tour a Acatenango overnight y vive el ascenso al Volcán de Fuego. Disfruta de glamping exclusivo y guías certificados. ¡Reserva hoy con 7 Expeditions!"
     : "Book your Acatenango overnight tour and experience the Fuego Volcano hike. Enjoy exclusive glamping and certified guides. Reserve today with 7 Expeditions!";
@@ -45,7 +45,7 @@ export async function generateMetadata({
       languages: {
         "es-GT": `${baseUrl}/es`,
         "en-US": `${baseUrl}/en`,
-        "x-default": `${baseUrl}/es`,
+        "x-default": `${baseUrl}/es`, // Recomendado por Google para idioma por defecto
       },
     },
     openGraph: {
@@ -82,7 +82,8 @@ export default async function Home({
   const isEs = locale === "es";
   const currentLocale = (locale === "en" ? "en" : "es") as "es" | "en";
 
-  // Schema JSON-LD multidestino
+  // Schema JSON-LD enriquecido para Google Rich Snippets
+  // Schema JSON-LD multidestino optimizado para SEO
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "TouristTrip",
@@ -134,7 +135,7 @@ export default async function Home({
       "name": "7 Expeditions Guatemala",
       "url": `https://www.7expeditionsguatemala.com/${locale}`,
       "image": "https://www.7expeditionsguatemala.com/gallery/Acatenango1.jpg",
-      "telephone": "+50236181268",
+      "telephone": "+502-XXXXXXXX", // Reemplazar con tu número real
       "address": {
         "@type": "PostalAddress",
         "addressLocality": "Antigua Guatemala",
@@ -169,7 +170,7 @@ export default async function Home({
       <InstagramScroll items={mockInstagramPosts} locale={currentLocale} />
       <WhyUs />
       <Calendar />
-      <Reservation params={params} />
+      <Reservation />
     </>
   );
 }
