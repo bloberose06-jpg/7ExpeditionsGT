@@ -4,22 +4,25 @@ import { setRequestLocale } from "next-intl/server";
 import { PortableText, type PortableTextComponents } from "@portabletext/react";
 import { client, urlFor } from "@/sanity/client";
 
-export const revalidate = 0; // Desactiva la caché rígida en desarrollo
+export const revalidate = 0;
 
 async function getVlog(slug: string) {
+  // Query both document types and fetch un-cached data
   const query = `*[_type == "vlog" && slug.current == $slug][0]{
+    _id,
     title,
     slug,
     coverImage,
     publishedAt,
     content
   }`;
+  
   return client.fetch(query, { slug }, { cache: "no-store" });
 }
 
 export async function generateStaticParams() {
   const slugs: { slug: { current: string } }[] = await client.fetch(
-    `*[_type == "vlog"]{ slug }`
+    `*[_type == "vlog" && defined(slug.current)]{ slug }`
   );
   return slugs.map((v) => ({ slug: v.slug.current }));
 }
@@ -34,7 +37,8 @@ export async function generateMetadata({
 
   if (!vlog) return {};
 
-  const title = vlog.title?.[locale] ?? vlog.title?.es ?? vlog.title?.en ?? "Vlog";
+  const lang = locale.startsWith("es") ? "es" : "en";
+  const title = vlog.title?.[lang] ?? vlog.title?.es ?? vlog.title?.en ?? "Vlog";
   const baseUrl = "https://www.7expeditionsguatemala.com";
 
   const imageUrl = vlog.coverImage
@@ -55,13 +59,15 @@ const components: PortableTextComponents = {
   types: {
     image: ({ value }) => (
       <div className="relative w-full aspect-video my-8 rounded-sm overflow-hidden">
-        <Image
-          src={urlFor(value).width(1200).url()}
-          alt={value?.alt || "Imagen de la expedición"}
-          fill
-          sizes="(max-width: 768px) 100vw, 800px"
-          className="object-cover"
-        />
+        {value?.asset && (
+          <Image
+            src={urlFor(value).width(1200).url()}
+            alt={value?.alt || "Imagen del vlog"}
+            fill
+            sizes="(max-width: 768px) 100vw, 800px"
+            className="object-cover"
+          />
+        )}
         {value?.caption && (
           <p className="text-sm text-[var(--bruma-dim)] mt-2 italic text-center">
             {value.caption}
@@ -77,23 +83,22 @@ export default async function VlogPage({
 }: {
   params: Promise<{ locale: string; slug: string }>;
 }) {
-  // 1. Resolver params asíncronos
-  const { locale, slug } = await params;
+  const resolvedParams = await params;
+  const { locale, slug } = resolvedParams;
+  
   setRequestLocale(locale);
 
-  // 2. Fetch del documento
   const vlog = await getVlog(slug);
 
-  // 3. Redirección si el slug no coincide con Sanity
   if (!vlog) {
     notFound();
   }
 
-  // 4. Extracción segura según tu esquema exacto
-  const title = vlog.title?.[locale] ?? vlog.title?.es ?? vlog.title?.en ?? "";
-  
-  // Extrae el array de bloques especificando el idioma del objeto content
-  const body = vlog.content?.[locale] ?? vlog.content?.es ?? vlog.content?.en ?? [];
+  // Normalize language key ("es-GT" -> "es")
+  const lang = locale.startsWith("es") ? "es" : "en";
+
+  const title = vlog.title?.[lang] ?? vlog.title?.es ?? vlog.title?.en ?? "Sin título";
+  const body = vlog.content?.[lang] ?? vlog.content?.es ?? vlog.content?.en ?? [];
 
   return (
     <article className="px-6 lg:px-10 py-24 md:py-32 bg-[var(--basalt-2)] min-h-screen text-[var(--bruma)]">
