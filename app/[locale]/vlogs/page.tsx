@@ -1,6 +1,8 @@
+'use client'
+
+import React from 'react'
 import { PortableText, PortableTextComponents } from '@portabletext/react'
 
-// Define las reglas de diseño para cada etiqueta de Sanity Portable Text
 const components: PortableTextComponents = {
   block: {
     h1: ({ children }) => (
@@ -66,16 +68,17 @@ const components: PortableTextComponents = {
   },
 }
 
-// En el return de tu componente de página:
-export default function VlogPage({ post }: { post: any }) {
-  return (
-    <article className="max-w-4xl mx-auto px-4 py-8">
-      {/* Tu título, fecha e imagen principal aquí */}
+export default function VlogContent({ post }: { post: any }) {
+  // Extrae el array de bloques dando soporte a "content" o "body"
+  const contentData = post?.content || post?.body || []
 
-      {/* Renderizado de PortableText con los estilos aplicados */}
-      <div className="mt-8">
-        <PortableText value={post.content} components={components} />
-      </div>
-    </article>
+  if (!contentData || contentData.length === 0) {
+    return null
+  }
+
+  return (
+    <div className="mt-8">
+      <PortableText value={contentData} components={components} />
+    </div>
   )
 }
