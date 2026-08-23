@@ -8,31 +8,40 @@ import type { Metadata } from "next";
 export const revalidate = 0;
 
 async function getVlog(slug: string) {
-  // Se evalúa si slug viene como string directo o dentro del objeto de Sanity
-  const query = `*[_type == "vlog" && (slug.current == $slug || slug == $slug)][0]{
-    _id,
-    title,
-    slug,
-    coverImage,
-    publishedAt,
-    _updatedAt,
-    content
-  }`;
+  try {
+    const query = `*[_type == "vlog" && (slug.current == $slug || slug == $slug)][0]{
+      _id,
+      title,
+      slug,
+      coverImage,
+      publishedAt,
+      _updatedAt,
+      content
+    }`;
 
-  return client.fetch(query, { slug }, { cache: "no-store" });
+    return await client.fetch(query, { slug }, { cache: "no-store" });
+  } catch (error) {
+    console.error("Error fetching vlog from Sanity:", error);
+    return null;
+  }
 }
 
 export async function generateStaticParams() {
-  const vlogs: { slug?: { current?: string } | string }[] = await client.fetch(
-    `*[_type == "vlog"]{ slug }`
-  );
-  
-  return vlogs
-    .map((v) => {
-      const slugValue = typeof v.slug === "string" ? v.slug : v.slug?.current;
-      return slugValue ? { slug: slugValue } : null;
-    })
-    .filter(Boolean);
+  try {
+    const vlogs: { slug?: { current?: string } | string }[] = await client.fetch(
+      `*[_type == "vlog"]{ slug }`
+    );
+    
+    return (vlogs || [])
+      .map((v) => {
+        const slugValue = typeof v.slug === "string" ? v.slug : v.slug?.current;
+        return slugValue ? { slug: slugValue } : null;
+      })
+      .filter(Boolean);
+  } catch (error) {
+    console.error("Error in generateStaticParams:", error);
+    return [];
+  }
 }
 
 export async function generateMetadata({
@@ -45,12 +54,14 @@ export async function generateMetadata({
 
   if (!vlog) return {};
 
-  const lang = locale.startsWith("es") ? "es" : "en";
-  const title = vlog.title?.[lang] ?? vlog.title?.es ?? vlog.title?.en ?? "Vlog";
+  const lang = locale?.startsWith("es") ? "es" : "en";
+  const title = typeof vlog.title === "string" 
+    ? vlog.title 
+    : vlog.title?.[lang] ?? vlog.title?.es ?? vlog.title?.en ?? "Vlog";
   
-  const rawBody = vlog.content?.[lang] ?? vlog.content?.es ?? [];
+  const rawBody = typeof vlog.content === "object" ? (vlog.content?.[lang] ?? vlog.content?.es ?? []) : [];
   const autoSnippet = Array.isArray(rawBody) && rawBody.length > 0
-    ? rawBody.find((b: any) => b._type === "block")?.children?.map((c: any) => c.text).join(" ").slice(0, 155)
+    ? rawBody.find((b: any) => b?._type === "block")?.children?.map((c: any) => c.text).join(" ").slice(0, 155)
     : null;
 
   const description = autoSnippet || `Guía y experiencia de senderismo en ${title} con 7 Expeditions Guatemala.`;
@@ -95,17 +106,6 @@ export async function generateMetadata({
       title: `${title} | 7 Expeditions Guatemala`,
       description,
       images: [imageUrl],
-    },
-    robots: {
-      index: true,
-      follow: true,
-      googleBot: {
-        index: true,
-        follow: true,
-        "max-video-preview": -1,
-        "max-image-preview": "large",
-        "max-snippet": -1,
-      },
     },
   };
 }
@@ -202,7 +202,9 @@ export default async function VlogPage({
   const resolvedParams = await params;
   const { locale, slug } = resolvedParams;
 
-  setRequestLocale(locale);
+  if (locale) {
+    setRequestLocale(locale);
+  }
 
   const vlog = await getVlog(slug);
 
@@ -210,12 +212,16 @@ export default async function VlogPage({
     notFound();
   }
 
-  const lang = locale.startsWith("es") ? "es" : "en";
+  const lang = locale?.startsWith("es") ? "es" : "en";
 
-  const title =
-    vlog.title?.[lang] ?? vlog.title?.es ?? vlog.title?.en ?? "Sin título";
-  const body =
-    vlog.content?.[lang] ?? vlog.content?.es ?? vlog.content?.en ?? [];
+  // Soporte tanto para strings planos como para objetos i18n
+  const title = typeof vlog.title === "string"
+    ? vlog.title
+    : vlog.title?.[lang] ?? vlog.title?.es ?? vlog.title?.en ?? "Sin título";
+
+  const body = Array.isArray(vlog.content)
+    ? vlog.content
+    : vlog.content?.[lang] ?? vlog.content?.es ?? vlog.content?.en ?? [];
 
   const baseUrl = "https://www.7expeditionsguatemala.com";
   const imageUrl = vlog.coverImage
