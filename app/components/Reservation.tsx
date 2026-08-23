@@ -1,70 +1,273 @@
 "use client";
 
-import React from "react";
+import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
+import { volcanoes } from "../data/volcanoes";
 
-// Haciendo params opcional con '?' se resuelve el error de Vercel/TypeScript
-interface ReservationProps {
-  params?: Promise<{ locale?: string; slug?: string }>;
-}
+const WHATSAPP_NUMBER = "50236181268";
+const CONTACT_EMAIL = "viajesguateasociados@gmail.com";
+const SHEETS_ENDPOINT = process.env.NEXT_PUBLIC_SHEETS_ENDPOINT || "";
 
-export default function Reservation({ params }: ReservationProps = {}) {
+export default function Reservation() {
+  const t = useTranslations("reservation");
+
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    tour: volcanoes[1].name, // Acatenango por defecto
+    customTour: "", // Nuevo estado para cuando eligen "Otro"
+    date: "",
+    people: "2",
+    message: "",
+  });
+
+  const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
+
+  // Determina el nombre real del tour (si seleccionó "Other", utiliza customTour)
+  const selectedTour = form.tour === "Other" ? (form.customTour.trim() || "Otro Destino") : form.tour;
+
+  const saveToSheet = async () => {
+    if (!SHEETS_ENDPOINT) {
+      console.warn("NEXT_PUBLIC_SHEETS_ENDPOINT no está configurado; la reserva no se guardó en Sheets.");
+      return;
+    }
+    try {
+      setStatus("sending");
+      await fetch(SHEETS_ENDPOINT, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "text/plain" },
+        body: JSON.stringify({
+          ...form,
+          tour: selectedTour, // Envía el destino personalizado a Google Sheets
+        }),
+      });
+      setStatus("sent");
+    } catch (err) {
+      console.error("Error guardando la reserva en Sheets:", err);
+      setStatus("error");
+    }
+  };
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      const target = (e.target as HTMLElement)?.closest<HTMLElement>(".reservar-link");
+      if (target?.dataset.tour) {
+        setForm((f) => ({ ...f, tour: target.dataset.tour as string }));
+      }
+    };
+    document.addEventListener("click", handler);
+    return () => document.removeEventListener("click", handler);
+  }, []);
+
+  const update = (key: keyof typeof form) => (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
+  ) => setForm((f) => ({ ...f, [key]: e.target.value }));
+
+  const buildMessage = () =>
+    [
+      t("waMessageIntro"),
+      ``,
+      `${t("waVolcano")}: ${selectedTour}`,
+      `${t("waDate")}: ${form.date || t("waDateFallback")}`,
+      `${t("waPeople")}: ${form.people}`,
+      `${t("waName")}: ${form.name || "-"}`,
+      `${t("waEmail")}: ${form.email || "-"}`,
+      `${t("waPhone")}: ${form.phone || "-"}`,
+      form.message ? `${t("waMessage")}: ${form.message}` : "",
+    ]
+      .filter(Boolean)
+      .join("\n");
+
+  const isValid = Boolean(
+    form.name.trim() && 
+    (form.email.trim() || form.phone.trim()) && 
+    (form.tour !== "Other" || form.customTour.trim() !== "")
+  );
+
+  const whatsappHref = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(buildMessage())}`;
+  const mailHref = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(
+    t("emailSubject", { tour: selectedTour })
+  )}&body=${encodeURIComponent(buildMessage())}`;
+
   return (
-    <section id="reservation" className="py-20 bg-[var(--basalt)] text-white px-6">
-      <div className="max-w-4xl mx-auto text-center">
-        <h2 className="font-display uppercase text-3xl md:text-5xl text-[var(--lava-bright)] mb-4">
-          Reserva tu Expedición
+    <section id="reservar" className="px-6 lg:px-10 py-24 md:py-32 bg-[var(--basalt)]">
+      <div className="mx-auto max-w-4xl">
+        <p className="font-mono text-xs uppercase tracking-[0.3em] text-[var(--lava-bright)] mb-3">
+          {t("eyebrow")}
+        </p>
+        <h2 className="font-display uppercase text-[var(--bruma)] mb-4" style={{ fontSize: "clamp(2.2rem, 5vw, 3.8rem)" }}>
+          {t("title")}
         </h2>
-        <p className="text-[var(--bruma-dim)] mb-8 max-w-xl mx-auto">
-          ¿Listo para la aventura? Completa el formulario a continuación o contáctanos directamente para asegurar tu cupo.
+        <p className="text-[var(--bruma-dim)] max-w-xl mb-10">
+          {t("description")}
         </p>
 
-        <form className="grid grid-cols-1 md:grid-cols-2 gap-6 text-left max-w-2xl mx-auto">
-          <div>
-            <label className="block text-xs font-mono uppercase text-[var(--bruma-dim)] mb-2">
-              Nombre Completo
-            </label>
+        <form
+          className="grid grid-cols-1 md:grid-cols-2 gap-5 bg-[var(--ceniza)] border border-[var(--ceniza-line)] rounded-sm p-6 md:p-8"
+          onSubmit={(e) => e.preventDefault()}
+        >
+          <Field label={t("labelName")} required>
             <input
-              type="text"
               required
-              className="w-full bg-[var(--basalt-2)] border border-neutral-800 rounded p-3 text-white focus:outline-none focus:border-[var(--lava-bright)]"
-              placeholder="Ej. Juan Pérez"
+              value={form.name}
+              onChange={update("name")}
+              placeholder={t("placeholderName")}
+              className="field-input"
             />
-          </div>
+          </Field>
 
-          <div>
-            <label className="block text-xs font-mono uppercase text-[var(--bruma-dim)] mb-2">
-              Correo Electrónico
-            </label>
+          {/* Etiqueta traducida dinámicamente según idioma */}
+          <Field label={t("labelTour")}>
+            <select value={form.tour} onChange={update("tour")} className="field-input">
+              {volcanoes.map((v) => (
+                <option key={v.slug} value={v.name}>
+                  {v.name} · {v.elevation.toLocaleString()} m
+                </option>
+              ))}
+              <option value="Other">Otro / Other destination...</option>
+            </select>
+          </Field>
+
+          {/* Campo de texto secundario si eligen "Other" */}
+          {form.tour === "Other" && (
+            <div className="md:col-span-2">
+              <Field label="Especificar Destino / Custom Destination" required>
+                <input
+                  type="text"
+                  required
+                  value={form.customTour}
+                  onChange={update("customTour")}
+                  placeholder="Ej: Lago Atitlán, Semuc Champey, Tikal..."
+                  className="field-input"
+                />
+              </Field>
+            </div>
+          )}
+
+          <Field label={t("labelEmail")}>
             <input
               type="email"
-              required
-              className="w-full bg-[var(--basalt-2)] border border-neutral-800 rounded p-3 text-white focus:outline-none focus:border-[var(--lava-bright)]"
-              placeholder="tu@email.com"
+              value={form.email}
+              onChange={update("email")}
+              placeholder={t("placeholderEmail")}
+              className="field-input"
             />
-          </div>
+          </Field>
+
+          <Field label={t("labelPhone")}>
+            <input
+              type="tel"
+              value={form.phone}
+              onChange={update("phone")}
+              placeholder={t("placeholderPhone")}
+              className="field-input"
+            />
+          </Field>
+
+          <Field label={t("labelDate")}>
+            <input type="date" value={form.date} onChange={update("date")} className="field-input" />
+          </Field>
+
+          <Field label={t("labelPeople")}>
+            <input
+              type="number"
+              min={1}
+              max={20}
+              value={form.people}
+              onChange={update("people")}
+              className="field-input"
+            />
+          </Field>
 
           <div className="md:col-span-2">
-            <label className="block text-xs font-mono uppercase text-[var(--bruma-dim)] mb-2">
-              Mensaje / Detalle de Reserva
-            </label>
-            <textarea
-              rows={4}
-              required
-              className="w-full bg-[var(--basalt-2)] border border-neutral-800 rounded p-3 text-white focus:outline-none focus:border-[var(--lava-bright)]"
-              placeholder="Indícanos la fecha deseada, número de personas o cualquier duda..."
-            ></textarea>
+            <Field label={t("labelMessage")}>
+              <textarea
+                rows={3}
+                value={form.message}
+                onChange={update("message")}
+                placeholder={t("placeholderMessage")}
+                className="field-input resize-none"
+              />
+            </Field>
           </div>
 
-          <div className="md:col-span-2 text-center mt-4">
-            <button
-              type="submit"
-              className="px-8 py-3 bg-[var(--lava-bright)] hover:bg-red-600 text-white font-mono uppercase tracking-wider text-sm transition-colors rounded"
+          <div className="md:col-span-2 flex flex-col sm:flex-row gap-3 pt-2">
+            <a
+              href={isValid ? whatsappHref : undefined}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-disabled={!isValid}
+              onClick={(e) => {
+                if (!isValid) {
+                  e.preventDefault();
+                  return;
+                }
+                saveToSheet();
+              }}
+              className={`flex-1 text-center rounded-sm px-6 py-3.5 font-display text-base uppercase tracking-wide transition-colors ${
+                isValid
+                  ? "bg-[var(--lava)] hover:bg-[var(--lava-bright)] text-[var(--bruma)] cursor-pointer"
+                  : "bg-[var(--ceniza-line)] text-[var(--bruma-dim)] cursor-not-allowed"
+              }`}
             >
-              Enviar Reserva
-            </button>
+              {t("sendWhatsapp")}
+            </a>
+            <a
+              href={isValid ? mailHref : undefined}
+              aria-disabled={!isValid}
+              onClick={(e) => {
+                if (!isValid) {
+                  e.preventDefault();
+                  return;
+                }
+                saveToSheet();
+              }}
+              className={`flex-1 text-center rounded-sm px-6 py-3.5 font-display text-base uppercase tracking-wide border transition-colors ${
+                isValid
+                  ? "border-[var(--sulfuro)] text-[var(--bruma)] hover:bg-[var(--sulfuro)] hover:text-[var(--basalt)] cursor-pointer"
+                  : "border-[var(--ceniza-line)] text-[var(--bruma-dim)] cursor-not-allowed"
+              }`}
+            >
+              {t("sendEmail")}
+            </a>
           </div>
+
+          {status === "sending" && (
+            <p className="md:col-span-2 font-mono text-[11px] text-[var(--lava-bright)]">
+              Guardando tu reserva…
+            </p>
+          )}
+          {status === "sent" && (
+            <p className="md:col-span-2 font-mono text-[11px] text-[var(--lava-bright)]">
+              ✓ Reserva guardada correctamente.
+            </p>
+          )}
+          {status === "error" && (
+            <p className="md:col-span-2 font-mono text-[11px] text-red-400">
+              No pudimos guardar la reserva automáticamente, pero tu mensaje se envía igual.
+            </p>
+          )}
+          {!isValid && (
+            <p className="md:col-span-2 font-mono text-[11px] text-[var(--bruma-dim)]">
+              {t("validationHint")}
+            </p>
+          )}
         </form>
       </div>
     </section>
+  );
+}
+
+function Field({ label, required, children }: { label: string; required?: boolean; children: React.ReactNode }) {
+  return (
+    <label className="flex flex-col gap-1.5">
+      <span className="font-mono text-[11px] uppercase tracking-[0.15em] text-[var(--bruma-dim)]">
+        {label}
+        {required && <span className="text-[var(--lava)]"> *</span>}
+      </span>
+      {children}
+    </label>
   );
 }
