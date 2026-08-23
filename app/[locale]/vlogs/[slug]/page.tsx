@@ -56,11 +56,11 @@ export async function generateMetadata({
 
 const components: PortableTextComponents = {
   block: {
-    normal: ({ children, node }) => {
-      // Safely extract plain text from current block
-      const text = node?.children?.map((c: any) => c.text).join("") || "";
+    normal: ({ children, value }: { children?: React.ReactNode; value?: any }) => {
+      // Extrae el texto plano del bloque actual
+      const text = value?.children?.map((c: any) => c.text).join("") || "";
 
-      // Automatic Detection: lines under 65 characters that don't end in a period become H3 headers
+      // Detección automática: si tiene menos de 65 caracteres y no termina en punto, se renderiza como H3
       if (text.length > 0 && text.length < 65 && !text.trim().endsWith(".")) {
         return (
           <h3 className="font-display uppercase text-xl md:text-2xl text-[var(--lava-bright)] mt-10 mb-4 tracking-wide">
@@ -69,7 +69,7 @@ const components: PortableTextComponents = {
         );
       }
 
-      // Default paragraph styling
+      // De lo contrario, se renderiza como un párrafo normal
       return (
         <p className="text-[var(--bruma-dim)] leading-relaxed mb-6 text-base md:text-lg">
           {children}
