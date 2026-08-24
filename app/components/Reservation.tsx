@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { volcanoes } from "../data/volcanoes";
 
@@ -27,8 +27,6 @@ export default function Reservation({ params }: ReservationProps = {}) {
   });
 
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
-  const [showEmailMenu, setShowEmailMenu] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
 
   const selectedTour = form.tour === "Other" ? (form.customTour.trim() || "Otro Destino") : form.tour;
 
@@ -66,17 +64,6 @@ export default function Reservation({ params }: ReservationProps = {}) {
     return () => document.removeEventListener("click", handler);
   }, []);
 
-  // Cerrar el menú desplegable al hacer clic fuera de él
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setShowEmailMenu(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
   const update = (key: keyof typeof form) => (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
   ) => setForm((f) => ({ ...f, [key]: e.target.value }));
@@ -103,26 +90,6 @@ export default function Reservation({ params }: ReservationProps = {}) {
   );
 
   const whatsappHref = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(buildMessage())}`;
-  
-  // Enlaces específicos para la Opción C
-  const gmailHref = `https://mail.google.com/mail/?view=cm&fs=1&to=${CONTACT_EMAIL}&su=${encodeURIComponent(
-    t("emailSubject", { tour: selectedTour })
-  )}&body=${encodeURIComponent(buildMessage())}`;
-
-  const nativeMailHref = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(
-    t("emailSubject", { tour: selectedTour })
-  )}&body=${encodeURIComponent(buildMessage())}`;
-
-  const handleEmailOptionClick = (type: "gmail" | "native") => {
-    saveToSheet();
-    setShowEmailMenu(false);
-
-    if (type === "gmail") {
-      window.open(gmailHref, "_blank", "noopener,noreferrer");
-    } else {
-      window.location.href = nativeMailHref;
-    }
-  };
 
   return (
     <section id="reservar" className="px-6 lg:px-10 py-24 md:py-32 bg-[var(--basalt)]">
@@ -246,41 +213,30 @@ export default function Reservation({ params }: ReservationProps = {}) {
               {t("sendWhatsapp")}
             </a>
             
-            {/* Contenedor del Botón de Correo con Menú Desplegable (Opción C) */}
-            <div className="flex-1 relative" ref={dropdownRef}>
-              <button
-                type="button"
-                disabled={!isValid}
-                onClick={() => setShowEmailMenu((prev) => !prev)}
-                className={`w-full text-center rounded-sm px-6 py-3.5 font-display text-base uppercase tracking-wide border transition-colors ${
-                  isValid
-                    ? "border-[var(--sulfuro)] text-[var(--bruma)] hover:bg-[var(--sulfuro)] hover:text-[var(--basalt)] cursor-pointer"
-                    : "border-[var(--ceniza-line)] text-[var(--bruma-dim)] cursor-not-allowed"
-                }`}
-              >
-                {t("sendEmail")}
-              </button>
+            {/* Botón de correo con Opción A (window.location.href) */}
+            <a
+              href="#"
+              aria-disabled={!isValid}
+              onClick={(e) => {
+                e.preventDefault();
+                if (!isValid) return;
 
-              {/* Menú Desplegable */}
-              {showEmailMenu && isValid && (
-                <div className="absolute left-0 right-0 bottom-full mb-2 bg-[var(--ceniza)] border border-[var(--ceniza-line)] rounded-sm shadow-xl z-20 overflow-hidden flex flex-col">
-                  <button
-                    type="button"
-                    onClick={() => handleEmailOptionClick("gmail")}
-                    className="w-full text-left px-4 py-3 text-xs font-mono uppercase text-[var(--bruma)] hover:bg-[var(--basalt)] hover:text-[var(--lava-bright)] transition-colors border-b border-[var(--ceniza-line)]"
-                  >
-                    Abrir en Gmail Web
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => handleEmailOptionClick("native")}
-                    className="w-full text-left px-4 py-3 text-xs font-mono uppercase text-[var(--bruma)] hover:bg-[var(--basalt)] hover:text-[var(--lava-bright)] transition-colors"
-                  >
-                    App de Correo (Outlook / Apple Mail)
-                  </button>
-                </div>
-              )}
-            </div>
+                saveToSheet();
+
+                const mailtoUrl = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(
+                  t("emailSubject", { tour: selectedTour })
+                )}&body=${encodeURIComponent(buildMessage())}`;
+
+                window.location.href = mailtoUrl;
+              }}
+              className={`flex-1 text-center rounded-sm px-6 py-3.5 font-display text-base uppercase tracking-wide border transition-colors ${
+                isValid
+                  ? "border-[var(--sulfuro)] text-[var(--bruma)] hover:bg-[var(--sulfuro)] hover:text-[var(--basalt)] cursor-pointer"
+                  : "border-[var(--ceniza-line)] text-[var(--bruma-dim)] cursor-not-allowed"
+              }`}
+            >
+              {t("sendEmail")}
+            </a>
           </div>
 
           {status === "sending" && (
