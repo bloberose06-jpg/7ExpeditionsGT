@@ -295,8 +295,8 @@ export default async function VlogPage({
           </div>
         </div>
 
-        {/* Updated Reservation call passing resolved values */}
-        <Reservation locale={locale} slug={slug} />
+        {/* Passing resolved parameters inside the expected `params` object prop */}
+        <Reservation params={{ locale, slug }} />
       </article>
     </>
   );
