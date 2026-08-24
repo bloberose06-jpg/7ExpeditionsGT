@@ -20,7 +20,7 @@ export default function Reservation({ params }: ReservationProps = {}) {
     email: "",
     phone: "",
     tour: volcanoes[1].name, // Acatenango por defecto
-    customTour: "", // Nuevo estado para cuando eligen "Otro"
+    customTour: "", // Estado para cuando eligen "Otro"
     date: "",
     people: "2",
     message: "",
@@ -122,7 +122,6 @@ export default function Reservation({ params }: ReservationProps = {}) {
             />
           </Field>
 
-          {/* Etiqueta traducida dinámicamente según idioma */}
           <Field label={t("labelTour")}>
             <select value={form.tour} onChange={update("tour")} className="field-input">
               {volcanoes.map((v) => (
@@ -134,7 +133,6 @@ export default function Reservation({ params }: ReservationProps = {}) {
             </select>
           </Field>
 
-          {/* Campo de texto secundario si eligen "Other" */}
           {form.tour === "Other" && (
             <div className="md:col-span-2">
               <Field label="Especificar Destino / Custom Destination" required>
@@ -218,8 +216,12 @@ export default function Reservation({ params }: ReservationProps = {}) {
             >
               {t("sendWhatsapp")}
             </a>
+            
+            {/* Botón de correo actualizado con target="_blank" */}
             <a
               href={isValid ? mailHref : undefined}
+              target="_blank"
+              rel="noopener noreferrer"
               aria-disabled={!isValid}
               onClick={(e) => {
                 if (!isValid) {
