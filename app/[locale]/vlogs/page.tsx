@@ -4,7 +4,7 @@ import { setRequestLocale } from "next-intl/server";
 import { PortableText, type PortableTextComponents } from "@portabletext/react";
 import { client, urlFor } from "@/sanity/client";
 import type { Metadata } from "next";
-import Reservation from "@/app/components/Reservation"; // Importación del formulario
+import Reservation from "@/app/components/Reservation";
 
 export const revalidate = 0;
 
@@ -29,7 +29,6 @@ export async function generateStaticParams() {
   return slugs.map((v) => ({ slug: v.slug.current }));
 }
 
-// 1. MEJORAS DE METADATOS Y SEO INTERNACIONAL
 export async function generateMetadata({
   params,
 }: {
@@ -217,7 +216,6 @@ export default async function VlogPage({
     ? urlFor(vlog.coverImage).width(1200).height(630).fit("crop").url()
     : `${baseUrl}/gallery/Acatenango1.jpg`;
 
-  // SCHEMA MARKUP JSON-LD
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "BlogPosting",
@@ -297,8 +295,8 @@ export default async function VlogPage({
           </div>
         </div>
 
-        {/* Formulario de reserva insertado al final del artículo con as any */}
-        <Reservation params={params as any} />
+        {/* Updated Reservation call passing resolved values */}
+        <Reservation locale={locale} slug={slug} />
       </article>
     </>
   );
