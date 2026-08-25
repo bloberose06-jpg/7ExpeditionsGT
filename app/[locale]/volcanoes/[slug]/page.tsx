@@ -4,8 +4,11 @@ import Link from "next/link";
 import { setRequestLocale } from "next-intl/server";
 import { createClient } from "next-sanity";
 import imageUrlBuilder from "@sanity/image-url";
+import type { Metadata } from "next";
 
-// 1. Configuración del cliente de Sanity
+// ISR: Revalida la página cada hora
+export const revalidate = 3600;
+
 const client = createClient({
   projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID,
   dataset: process.env.NEXT_PUBLIC_SANITY_DATASET || "production",
@@ -23,7 +26,6 @@ function urlFor(source: any) {
   }
 }
 
-// 2. Generación de rutas estáticas
 export async function generateStaticParams() {
   const query = `*[_type == "volcano" && defined(slug)][].slug`;
   const rawSlugs = await client.fetch(query);
@@ -32,17 +34,15 @@ export async function generateStaticParams() {
     .map((s: any) => (typeof s === "string" ? s : s?.current))
     .filter(Boolean);
 
-  return slugs.map((slug) => ({
-    slug,
-  }));
+  return slugs.map((slug) => ({ slug }));
 }
 
-// 3. Metadata, Tarjeta Open Graph y SEO
+// Metadata SEO Avanzada
 export async function generateMetadata({
   params,
 }: {
   params: Promise<{ locale: string; slug: string }>;
-}) {
+}): Promise<Metadata> {
   const { locale, slug } = await params;
 
   const query = `*[_type == "volcano" && (slug.current == $slug || slug == $slug)][0]{ 
@@ -55,40 +55,48 @@ export async function generateMetadata({
 
   if (!volcano) return {};
 
-  const title = `${volcano.name || "Volcán"} — 7 Expeditions Guatemala`;
+  const volcanoName = volcano.name || "Volcán";
+  const title = `${volcanoName} — Expedición en Guatemala | 7 Expeditions`;
   const description =
-    volcano.description || `Conoce la expedición al volcán ${volcano.name}.`;
+    volcano.description ||
+    `Conoce los detalles de la expedición guiada al volcán ${volcanoName} en Guatemala. Rutas, fotos y vlogs de la caminata.`;
 
   const baseUrl = "https://7expeditionsguatemala.com";
+  const canonicalUrl = `${baseUrl}/${locale}/volcanoes/${slug}`;
 
   const imageBuilder = urlFor(volcano.mainImage);
   const imageUrl = imageBuilder
     ? imageBuilder.width(1200).height(630).fit("crop").url()
     : `${baseUrl}/gallery/IMG-20260706-WA0005.jpg`;
 
+  const currentLocale = locale === "es" ? "es_GT" : "en_US";
+  const alternateLocale = locale === "es" ? "en_US" : "es_GT";
+
   return {
     title,
     description,
     alternates: {
-      canonical: `${baseUrl}/${locale}/volcanoes/${slug}`,
+      canonical: canonicalUrl,
       languages: {
         "es-GT": `${baseUrl}/es/volcanoes/${slug}`,
         "en-US": `${baseUrl}/en/volcanoes/${slug}`,
+        "x-default": `${baseUrl}/es/volcanoes/${slug}`,
       },
     },
     openGraph: {
       title,
       description,
-      url: `${baseUrl}/${locale}/volcanoes/${slug}`,
+      url: canonicalUrl,
       siteName: "7 Expeditions Guatemala",
-      locale: locale === "es" ? "es_GT" : "en_US",
+      locale: currentLocale,
+      alternateLocale: [alternateLocale],
       type: "article",
       images: [
         {
           url: imageUrl,
           width: 1200,
           height: 630,
-          alt: volcano.name || "Volcán",
+          alt: `Expedición al volcán ${volcanoName} en Guatemala`,
         },
       ],
     },
@@ -98,10 +106,15 @@ export async function generateMetadata({
       description,
       images: [imageUrl],
     },
+    robots: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
   };
 }
 
-// 4. Componente de la Página de Volcán
 export default async function VolcanoPage({
   params,
 }: {
@@ -110,7 +123,6 @@ export default async function VolcanoPage({
   const { locale, slug } = await params;
   setRequestLocale(locale);
 
-  // Consulta GROQ: Trae el volcán completo y sus vlogs relacionados
   const query = `*[_type == "volcano" && (slug.current == $slug || slug == $slug)] | order(_createdAt desc)[0]{
     _id,
     name,
@@ -138,19 +150,36 @@ export default async function VolcanoPage({
 
   if (!volcano) notFound();
 
-  // SEO: Schema.org / JSON-LD
+  const baseUrl = "https://7expeditionsguatemala.com";
   const mainImgUrl = urlFor(volcano.mainImage)?.url();
+
+  // JSON-LD Enriquecido
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "TouristAttraction",
+    "@id": `${baseUrl}/${locale}/volcanoes/${slug}#attraction`,
     name: volcano.name,
     description: volcano.description,
-    geo: {
-      "@type": "GeoCoordinates",
-      elevation: `${volcano.elevation} m`,
+    inLanguage: locale === "es" ? "es-GT" : "en-US",
+    touristType: ["Hiking", "Adventure travel", "Outdoor"],
+    location: {
+      "@type": "Place",
+      name: volcano.name,
+      address: {
+        "@type": "PostalAddress",
+        addressCountry: "GT",
+      },
+      geo: {
+        "@type": "GeoCoordinates",
+        elevation: volcano.elevation ? `${volcano.elevation} m` : undefined,
+      },
     },
-    touristType: "Hiking",
-    image: mainImgUrl || undefined,
+    image: mainImgUrl ? [mainImgUrl] : undefined,
+    provider: {
+      "@type": "TravelAgency",
+      name: "7 Expeditions Guatemala",
+      url: baseUrl,
+    },
   };
 
   return (
@@ -179,7 +208,7 @@ export default async function VolcanoPage({
           </p>
         )}
 
-        {/* Highlights */}
+        {/* Highlights con marcado HTML más semántico */}
         {volcano.highlights && volcano.highlights.length > 0 && (
           <ul className="mb-10 space-y-2">
             {volcano.highlights.map((h: string) => (
@@ -194,7 +223,7 @@ export default async function VolcanoPage({
           </ul>
         )}
 
-        {/* Galería de imágenes */}
+        {/* Galería de imágenes con optimización LCP */}
         {volcano.gallery && volcano.gallery.length > 0 && (
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-12">
             {volcano.gallery.map((img: any, idx: number) => {
@@ -207,8 +236,9 @@ export default async function VolcanoPage({
                 >
                   <Image
                     src={imgObj.url()}
-                    alt={`Fotografía ${idx + 1} de la expedición al volcán ${volcano.name}`}
+                    alt={`Vista de la ruta en la expedición al volcán ${volcano.name} - Imagen ${idx + 1}`}
                     fill
+                    priority={idx === 0} // La primera imagen carga con prioridad para mejor LCP
                     sizes="(max-width: 768px) 50vw, 33vw"
                     className="object-cover"
                   />
@@ -218,7 +248,7 @@ export default async function VolcanoPage({
           </div>
         )}
 
-        {/* 🎬 Vlogs & Experiencias Relacionadas */}
+        {/* Vlogs & Experiencias Relacionadas */}
         {volcano.vlogs && volcano.vlogs.length > 0 && (
           <div className="mt-16 border-t border-white/10 pt-12">
             <h2 className="font-display uppercase text-2xl text-[var(--bruma)] mb-6 tracking-wide">
@@ -254,8 +284,9 @@ export default async function VolcanoPage({
                       <div className="relative aspect-video w-full overflow-hidden">
                         <Image
                           src={coverUrl}
-                          alt={vlogTitle || "Vlog de la expedición"}
+                          alt={`Vlog de la expedición: ${vlogTitle}`}
                           fill
+                          sizes="(max-width: 768px) 100vw, 50vw"
                           className="object-cover group-hover:scale-105 transition-transform duration-300"
                         />
                       </div>
