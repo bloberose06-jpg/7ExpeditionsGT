@@ -4,13 +4,13 @@ import VolcanoProfile from "./VolcanoProfile";
 export default async function Hero() {
   const t = await getTranslations("hero");
 
-  // Schema.org Structured Data para potenciar SEO en Google Video/Search
+  // Schema.org Structured Data para SEO
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "VideoObject",
     "name": "Erupción del Volcán de Fuego - 7Expeditions Guatemala",
     "description": "Video de erupción volcánica y vistas panorámicas en las expediciones de senderismo en Guatemala.",
-    "thumbnailUrl": "https://7expeditions.gt/og-volcan-fuego.jpg", // Asegúrate de ajustar esta URL
+    "thumbnailUrl": "https://7expeditions.gt/og-volcan-fuego.jpg",
     "uploadDate": "2026-08-28T00:00:00Z",
     "contentUrl": "https://7expeditions.gt/volcandefuegoguatemala.webm",
   };
@@ -27,31 +27,30 @@ export default async function Hero() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      {/* Background Video Container */}
-      <div className="absolute inset-0 z-0 overflow-hidden bg-[var(--basalt)]">
+      {/* Background Video Container (Sin marcos, 100% Cover) */}
+      <div className="absolute inset-0 z-0 overflow-hidden">
         <video
           autoPlay
           loop
           muted
           playsInline
           aria-hidden="true"
-          aria-label="Video de fondo del Volcán de Fuego en erupción"
-          className="w-full h-full object-cover object-center scale-90 transition-transform duration-700 md:scale-95"
+          className="w-full h-full object-cover object-center"
         >
           <source src="/volcandefuegoguatemala.webm" type="video/webm" />
         </video>
 
-        {/* Capa de contraste / Overlay */}
+        {/* Overlay con tu gradiente original */}
         <div
-          className="absolute inset-0 opacity-75 pointer-events-none"
+          className="absolute inset-0 opacity-80 pointer-events-none"
           style={{
             background:
-              "radial-gradient(120% 90% at 50% 0%, var(--basalt-2) 0%, var(--basalt) 80%)",
+              "radial-gradient(120% 90% at 50% 0%, var(--basalt-2) 0%, var(--basalt) 75%)",
           }}
         />
       </div>
 
-      {/* Hero Content (Estructura Semántica para SEO) */}
+      {/* Main Hero Content (SEO Semántico) */}
       <div className="relative z-10 mx-auto max-w-6xl">
         <p className="reveal font-mono text-xs md:text-sm uppercase tracking-[0.3em] text-[var(--lava-bright)] mb-5">
           {t("eyebrow")}
@@ -73,7 +72,6 @@ export default async function Hero() {
           {t("description")}
         </p>
 
-        {/* Enlaces con atributos accesibles y descriptivos para SEO */}
         <div className="reveal mt-8 flex flex-wrap gap-4" style={{ animationDelay: "0.25s" }}>
           <a
             href="#reservar"
@@ -92,7 +90,7 @@ export default async function Hero() {
         </div>
       </div>
 
-      {/* Perfil del Volcán */}
+      {/* Volcano Profile Section */}
       <div className="relative z-10 mx-auto max-w-6xl mt-16 md:mt-24 reveal" style={{ animationDelay: "0.35s" }}>
         <VolcanoProfile />
       </div>
