@@ -8,12 +8,30 @@ export default async function Hero() {
     <section
       id="top"
       className="relative pt-32 pb-16 md:pt-44 md:pb-20 px-6 lg:px-10 overflow-hidden"
-      style={{
-        background:
-          "radial-gradient(120% 90% at 50% 0%, var(--basalt-2) 0%, var(--basalt) 60%)",
-      }}
     >
-      <div className="mx-auto max-w-6xl">
+      {/* Background Video Layer */}
+      <div className="absolute inset-0 z-0 overflow-hidden">
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="w-full h-full object-cover object-center"
+        >
+          <source src="/volcandefuegoguatemala.webm" type="video/webm" />
+        </video>
+        {/* Overlay con tu gradiente o filtro oscuro para mantener legibilidad */}
+        <div 
+          className="absolute inset-0 opacity-80"
+          style={{
+            background:
+              "radial-gradient(120% 90% at 50% 0%, var(--basalt-2) 0%, var(--basalt) 75%)",
+          }}
+        />
+      </div>
+
+      {/* Main Hero Content */}
+      <div className="relative z-10 mx-auto max-w-6xl">
         <p className="reveal font-mono text-xs md:text-sm uppercase tracking-[0.3em] text-[var(--lava-bright)] mb-5">
           {t("eyebrow")}
         </p>
@@ -23,7 +41,7 @@ export default async function Hero() {
         >
           {t("title1")}
           <br />
-           . <span className="text-[var(--lava)]">{t("title2")}</span>
+          <span className="text-[var(--lava)]">{t("title2")}</span>
         </h1>
         <p
           className="reveal mt-6 max-w-xl text-base md:text-lg text-[var(--bruma-dim)] font-medium"
@@ -46,7 +64,9 @@ export default async function Hero() {
           </a>
         </div>
       </div>
-      <div className="mx-auto max-w-6xl mt-16 md:mt-24 reveal" style={{ animationDelay: "0.35s" }}>
+
+      {/* Volcano Profile Section */}
+      <div className="relative z-10 mx-auto max-w-6xl mt-16 md:mt-24 reveal" style={{ animationDelay: "0.35s" }}>
         <VolcanoProfile />
       </div>
     </section>
