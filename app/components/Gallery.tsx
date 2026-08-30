@@ -10,6 +10,7 @@ type LocalizedText = string | { es?: string; en?: string };
 type Metadata = {
   caption?: LocalizedText;
   location?: LocalizedText;
+  alt?: LocalizedText; // Nuevo: Soporte para Alt SEO explícito
   icon?: IconType;
 };
 
@@ -17,6 +18,7 @@ type Shot = {
   id: string;
   caption: string;
   location: string;
+  alt: string;
   span: string;
   icon: IconType;
   image: string;
@@ -35,8 +37,6 @@ const SPAN_CYCLE = [
 
 const IMAGE_EXTENSIONS = [".jpg", ".jpeg", ".png", ".webp"];
 
-// Resuelve un campo que puede ser un string simple (mismo texto en ambos
-// idiomas) o un objeto { es, en } con traducciones por idioma.
 function resolveLocalized(
   value: LocalizedText | undefined,
   locale: string,
@@ -92,11 +92,17 @@ function getShots(locale: string, defaultCaption: string, defaultLocation: strin
   return files.map((filename, index) => {
     const meta = metadata[filename] ?? {};
     const humanized = humanizeFilename(filename, index, defaultCaption);
+    const captionText = resolveLocalized(meta.caption, locale, humanized);
+
+    // Generar un ALT descriptivo rico para SEO si no existe uno personalizado en metadata.json
+    const defaultAlt = `${captionText} - Expedición de aventura en ${defaultLocation}`;
+    const altText = resolveLocalized(meta.alt, locale, defaultAlt);
 
     return {
       id: String(index + 1).padStart(2, "0"),
-      caption: resolveLocalized(meta.caption, locale, humanized),
+      caption: captionText,
       location: resolveLocalized(meta.location, locale, defaultLocation),
+      alt: altText,
       icon: meta.icon ?? ICON_CYCLE[index % ICON_CYCLE.length],
       span: SPAN_CYCLE[index % SPAN_CYCLE.length],
       image: `/gallery/${filename}`,
@@ -157,10 +163,30 @@ export default async function Gallery() {
   const t = await getTranslations("gallery");
   const shots = getShots(locale, t("defaultCaption"), "Guatemala");
 
+  // Estructura Schema.org JSON-LD para SEO de Galería de Imágenes
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "ImageGallery",
+    "name": `${t("title1")} ${t("title2")}`,
+    "description": t("description"),
+    "image": shots.map((s) => ({
+      "@type": "ImageObject",
+      "contentUrl": s.image,
+      "name": s.caption,
+      "caption": s.caption,
+      "description": s.alt
+    }))
+  };
+
   return (
     <section id="galeria" className="px-6 lg:px-10 py-24 md:py-32 bg-[var(--basalt-2)]">
+      {/* Script de SEO JSON-LD */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+
       <div className="mx-auto max-w-6xl">
-        
         {/* Encabezado */}
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-12">
           <div>
@@ -181,11 +207,11 @@ export default async function Gallery() {
             
             {/* Botones de Redes Sociales */}
             <div className="flex gap-2">
-              {/* Instagram */}
               <a
                 href="https://www.instagram.com/7expeditionsgt?igsh=MXZ6ZGU1ZWl6ZGFqbQ==" 
                 target="_blank"
                 rel="noopener noreferrer"
+                aria-label="Instagram de 7 Expeditions"
                 className="flex items-center gap-2 px-3 py-1.5 rounded-sm border border-white/10 bg-white/5 font-mono text-[11px] uppercase tracking-wider text-white hover:bg-[var(--lava-bright)] hover:border-[var(--lava-bright)] transition-all duration-300"
               >
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -196,11 +222,11 @@ export default async function Gallery() {
                 {t("instagram")}
               </a>
 
-              {/* TikTok */}
               <a
                 href="https://www.tiktok.com/@7.expeditions?_r=1&_t=ZS-97pwNQ1LnE5" 
                 target="_blank"
                 rel="noopener noreferrer"
+                aria-label="TikTok de 7 Expeditions"
                 className="flex items-center gap-2 px-3 py-1.5 rounded-sm border border-white/10 bg-white/5 font-mono text-[11px] uppercase tracking-wider text-white hover:bg-[var(--lava-bright)] hover:border-[var(--lava-bright)] transition-all duration-300"
               >
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -209,11 +235,11 @@ export default async function Gallery() {
                 {t("tiktok")}
               </a>
 
-              {/* YouTube */}
               <a
                 href="https://youtube.com" 
                 target="_blank"
                 rel="noopener noreferrer"
+                aria-label="YouTube de 7 Expeditions"
                 className="flex items-center gap-2 px-3 py-1.5 rounded-sm border border-white/10 bg-white/5 font-mono text-[11px] uppercase tracking-wider text-white hover:bg-[var(--lava-bright)] hover:border-[var(--lava-bright)] transition-all duration-300"
               >
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -233,7 +259,7 @@ export default async function Gallery() {
           </p>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 auto-rows-[200px] md:auto-rows-[180px] grid-flow-row-dense gap-4">
-            {shots.map((s) => (
+            {shots.map((s, idx) => (
               <a
                 key={s.id}
                 href={s.image}
@@ -243,11 +269,11 @@ export default async function Gallery() {
               >
                 <Image
                   src={s.image}
-                  alt={s.caption}
+                  alt={s.alt}
                   fill
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                   className="object-cover transition-transform duration-500 group-hover:scale-105"
-                  priority={s.id === "01"}
+                  priority={idx < 2} // Carga con prioridad las dos primeras imágenes destacadas (LCP)
                 />
 
                 <div className="absolute inset-0 bg-black/30 transition-colors duration-300 group-hover:bg-black/20" />
