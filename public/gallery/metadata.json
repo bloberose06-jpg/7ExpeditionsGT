@@ -1,0 +1,38 @@
+{
+  "Acatenango1.jpg": {
+    "caption": {
+      "es": "Cumbre Acatenango",
+      "en": "Acatenango Summit"
+    },
+    "alt": {
+      "es": "Montañista disfrutando la vista en la cumbre del Volcán Acatenango en Guatemala",
+      "en": "Hiker enjoying the view at the summit of Acatenango Volcano in Guatemala"
+    },
+    "location": "Acatenango, Guatemala",
+    "icon": "sunrise"
+  },
+  "Explosion.jpg": {
+    "caption": {
+      "es": "Erupción Volcán de Fuego",
+      "en": "Fuego Eruption"
+    },
+    "alt": {
+      "es": "Explosión nocturna de lava del Volcán de Fuego vista desde el campamento",
+      "en": "Nighttime lava explosion of Fuego Volcano seen from camp"
+    },
+    "location": "Fuego, Guatemala",
+    "icon": "lava"
+  },
+  "IMG-20260706-WA0002.jpg": {
+    "caption": {
+      "es": "Caminata en el Bosque",
+      "en": "Forest Hike"
+    },
+    "alt": {
+      "es": "Grupo de expedición atravesando el bosque nuboso en Guatemala",
+      "en": "Expedition group walking through the cloud forest in Guatemala"
+    },
+    "location": "Guatemala",
+    "icon": "forest"
+  }
+}
