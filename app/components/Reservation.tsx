@@ -6,7 +6,6 @@ import { volcanoes } from "../data/volcanoes";
 
 const WHATSAPP_NUMBER = "50236181268";
 const CONTACT_EMAIL = "viajesguateasociados@gmail.com";
-const SHEETS_ENDPOINT = process.env.NEXT_PUBLIC_SHEETS_ENDPOINT || "";
 
 interface ReservationProps {
   params?: any;
@@ -30,23 +29,38 @@ export default function Reservation({ params }: ReservationProps = {}) {
 
   const selectedTour = form.tour === "Other" ? (form.customTour.trim() || "Otro Destino") : form.tour;
 
-  // Modificado para retornar la promesa y usar await
   const saveToSheet = async () => {
-    if (!SHEETS_ENDPOINT) {
-      console.warn("NEXT_PUBLIC_SHEETS_ENDPOINT no está configurado; la reserva no se guardó en Sheets.");
+    const endpoint = process.env.NEXT_PUBLIC_SHEETS_ENDPOINT;
+
+    if (!endpoint) {
+      console.warn("NEXT_PUBLIC_SHEETS_ENDPOINT no está configurado.");
+      setStatus("error");
       return;
     }
+
     try {
       setStatus("sending");
-      await fetch(SHEETS_ENDPOINT, {
+
+      // Usar URLSearchParams evita bloqueos de CORS/preflight en Google Apps Script
+      const formData = new URLSearchParams();
+      formData.append("name", form.name);
+      formData.append("email", form.email);
+      formData.append("phone", form.phone);
+      formData.append("tour", selectedTour);
+      formData.append("customTour", form.customTour);
+      formData.append("date", form.date);
+      formData.append("people", form.people);
+      formData.append("message", form.message);
+
+      await fetch(endpoint, {
         method: "POST",
         mode: "no-cors",
-        headers: { "Content-Type": "text/plain" },
-        body: JSON.stringify({
-          ...form,
-          tour: selectedTour,
-        }),
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: formData.toString(),
       });
+
       setStatus("sent");
     } catch (err) {
       console.error("Error guardando la reserva en Sheets:", err);
@@ -193,7 +207,7 @@ export default function Reservation({ params }: ReservationProps = {}) {
           </div>
 
           <div className="md:col-span-2 flex flex-col sm:flex-row gap-3 pt-2">
-            {/* Botón WhatsApp corregido a <button> con await */}
+            {/* Botón WhatsApp */}
             <button
               type="button"
               disabled={!isValid || status === "sending"}
@@ -201,10 +215,7 @@ export default function Reservation({ params }: ReservationProps = {}) {
                 e.preventDefault();
                 if (!isValid) return;
 
-                // Espera a enviar los datos a Google Sheets primero
                 await saveToSheet();
-
-                // Abre WhatsApp en una nueva pestaña después de guardar
                 window.open(whatsappHref, "_blank", "noopener,noreferrer");
               }}
               className={`flex-1 text-center rounded-sm px-6 py-3.5 font-display text-base uppercase tracking-wide transition-colors ${
@@ -215,8 +226,8 @@ export default function Reservation({ params }: ReservationProps = {}) {
             >
               {status === "sending" ? "Guardando..." : t("sendWhatsapp")}
             </button>
-            
-            {/* Botón Correo con await */}
+
+            {/* Botón Correo */}
             <button
               type="button"
               disabled={!isValid || status === "sending"}
