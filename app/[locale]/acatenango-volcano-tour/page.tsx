@@ -1,11 +1,11 @@
 import type { Metadata } from 'next';
 import React from 'react';
 
-// 1. Meta Data for Google Search Engine Optimization
+// 1. Fully-optimized Metadata for Google Search
 export const metadata: Metadata = {
-  title: 'Acatenango & Fuego Volcano Glamping Hike | 7 Expeditions Guatemala',
+  title: 'Acatenango & Fuego Volcano Hiking Tour | 7 Expeditions Guatemala',
   description:
-    'Book the best Acatenango Volcano Glamping Hike in Guatemala. Front-row active Fuego volcano views, private trail access, 4 meals, and top-tier guides.',
+    'Book the best Acatenango Volcano Glamping Hike in Guatemala. Enjoy direct views of erupting Fuego Volcano, private trail access, 4 meals, and 1:4 guide ratios.',
   keywords: [
     'Acatenango Volcano Tour',
     'Acatenango Glamping',
@@ -14,11 +14,14 @@ export const metadata: Metadata = {
     '7 Expeditions Guatemala',
     'Acatenango private trail tour',
   ],
+  alternates: {
+    canonical: 'https://www.7expeditionsguatemala.com/en/acatenango-volcano-tour',
+  },
   openGraph: {
     title: 'Acatenango & Fuego Volcano Glamping Tour | 7 Expeditions Guatemala',
     description:
       'Hike Acatenango Volcano with luxury glamping, 1:4 guide ratios, private trail, and direct views of active Fuego eruptions.',
-    url: 'https://7expeditionsguatemala.com/en/acatenango-volcano-tour',
+    url: 'https://www.7expeditionsguatemala.com/en/acatenango-volcano-tour',
     siteName: '7 Expeditions Guatemala',
     locale: 'en_US',
     type: 'website',
@@ -26,7 +29,7 @@ export const metadata: Metadata = {
 };
 
 export default function AcatenangoSeoPage() {
-  // 2. Structured Data (JSON-LD Schema) for Google Search Engine Rich Snippets
+  // 2. JSON-LD Schema for Google Rich Snippets & Search Cards
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'TouristTrip',
@@ -36,7 +39,7 @@ export default function AcatenangoSeoPage() {
     provider: {
       '@type': 'TravelAgency',
       name: '7 Expeditions Guatemala',
-      url: 'https://7expeditionsguatemala.com',
+      url: 'https://www.7expeditionsguatemala.com',
       telephone: '+50236181268',
     },
     offers: {
@@ -44,7 +47,7 @@ export default function AcatenangoSeoPage() {
       price: '175',
       priceCurrency: 'USD',
       availability: 'https://schema.org/InStock',
-      url: 'https://7expeditionsguatemala.com/en/acatenango-volcano-tour',
+      url: 'https://www.7expeditionsguatemala.com/en/acatenango-volcano-tour',
     },
     itinerary: {
       '@type': 'ItemList',
@@ -67,10 +70,9 @@ export default function AcatenangoSeoPage() {
 
   return (
     <>
-      {/* Injecting Schema JSON-LD for Search Engines */}
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON-STRINGIFY(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
       <article className="min-h-screen bg-white text-gray-900 leading-relaxed">
