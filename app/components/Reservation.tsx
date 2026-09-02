@@ -19,7 +19,7 @@ export default function Reservation({ params }: ReservationProps = {}) {
     name: "",
     email: "",
     phone: "",
-    tour: volcanoes[1].name, // Acatenango por defecto
+    tour: volcanoes[1]?.name || "", // Acatenango por defecto
     customTour: "",
     date: "",
     people: "2",
@@ -30,6 +30,7 @@ export default function Reservation({ params }: ReservationProps = {}) {
 
   const selectedTour = form.tour === "Other" ? (form.customTour.trim() || "Otro Destino") : form.tour;
 
+  // Modificado para retornar la promesa y usar await
   const saveToSheet = async () => {
     if (!SHEETS_ENDPOINT) {
       console.warn("NEXT_PUBLIC_SHEETS_ENDPOINT no está configurado; la reserva no se guardó en Sheets.");
@@ -192,36 +193,38 @@ export default function Reservation({ params }: ReservationProps = {}) {
           </div>
 
           <div className="md:col-span-2 flex flex-col sm:flex-row gap-3 pt-2">
-            <a
-              href={isValid ? whatsappHref : undefined}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-disabled={!isValid}
-              onClick={(e) => {
-                if (!isValid) {
-                  e.preventDefault();
-                  return;
-                }
-                saveToSheet();
+            {/* Botón WhatsApp corregido a <button> con await */}
+            <button
+              type="button"
+              disabled={!isValid || status === "sending"}
+              onClick={async (e) => {
+                e.preventDefault();
+                if (!isValid) return;
+
+                // Espera a enviar los datos a Google Sheets primero
+                await saveToSheet();
+
+                // Abre WhatsApp en una nueva pestaña después de guardar
+                window.open(whatsappHref, "_blank", "noopener,noreferrer");
               }}
               className={`flex-1 text-center rounded-sm px-6 py-3.5 font-display text-base uppercase tracking-wide transition-colors ${
-                isValid
+                isValid && status !== "sending"
                   ? "bg-[var(--lava)] hover:bg-[var(--lava-bright)] text-[var(--bruma)] cursor-pointer"
                   : "bg-[var(--ceniza-line)] text-[var(--bruma-dim)] cursor-not-allowed"
               }`}
             >
-              {t("sendWhatsapp")}
-            </a>
+              {status === "sending" ? "Guardando..." : t("sendWhatsapp")}
+            </button>
             
-            {/* Botón de correo con Opción A (window.location.href) */}
-            <a
-              href="#"
-              aria-disabled={!isValid}
-              onClick={(e) => {
+            {/* Botón Correo con await */}
+            <button
+              type="button"
+              disabled={!isValid || status === "sending"}
+              onClick={async (e) => {
                 e.preventDefault();
                 if (!isValid) return;
 
-                saveToSheet();
+                await saveToSheet();
 
                 const mailtoUrl = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(
                   t("emailSubject", { tour: selectedTour })
@@ -230,13 +233,13 @@ export default function Reservation({ params }: ReservationProps = {}) {
                 window.location.href = mailtoUrl;
               }}
               className={`flex-1 text-center rounded-sm px-6 py-3.5 font-display text-base uppercase tracking-wide border transition-colors ${
-                isValid
+                isValid && status !== "sending"
                   ? "border-[var(--sulfuro)] text-[var(--bruma)] hover:bg-[var(--sulfuro)] hover:text-[var(--basalt)] cursor-pointer"
                   : "border-[var(--ceniza-line)] text-[var(--bruma-dim)] cursor-not-allowed"
               }`}
             >
               {t("sendEmail")}
-            </a>
+            </button>
           </div>
 
           {status === "sending" && (
