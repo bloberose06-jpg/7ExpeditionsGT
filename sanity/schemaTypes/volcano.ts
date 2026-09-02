@@ -12,7 +12,6 @@ export const volcano = defineType({
       validation: (Rule) => Rule.required(),
     }),
 
-    // 🌋 DESPLEGABLE REAL DE LOS 7 VOLCANES
     defineField({
       name: 'slug',
       title: 'Seleccionar Volcán (Slug para la URL)',
@@ -28,7 +27,7 @@ export const volcano = defineType({
           { title: 'Volcán Santa María (santa-maria)', value: 'santa-maria' },
           { title: 'Volcán Agua (agua)', value: 'agua' },
         ],
-        layout: 'dropdown', // Fuerza la vista de menú desplegable
+        layout: 'dropdown',
       },
     }),
 
@@ -38,27 +37,46 @@ export const volcano = defineType({
       type: 'image',
       options: { hotspot: true },
     }),
+
     defineField({
       name: 'elevation',
       title: 'Altitud (metros)',
       type: 'number',
     }),
+
+    // 🌐 DIFICULTAD TRADUCIBLE (Objeto con ES / EN)
     defineField({
       name: 'difficulty',
       title: 'Dificultad',
-      type: 'string',
+      type: 'object',
+      fields: [
+        { name: 'es', title: 'Español', type: 'string' },
+        { name: 'en', title: 'Inglés', type: 'string' },
+      ],
     }),
+
+    // 🌐 DESCRIPCIÓN TRADUCIBLE (Objeto con ES / EN)
     defineField({
       name: 'description',
       title: 'Descripción',
-      type: 'text',
+      type: 'object',
+      fields: [
+        { name: 'es', title: 'Español', type: 'text' },
+        { name: 'en', title: 'Inglés', type: 'text' },
+      ],
     }),
+
+    // 🌐 PUNTOS DESTACADOS TRADUCIBLES
     defineField({
       name: 'highlights',
       title: 'Puntos Destacados',
-      type: 'array',
-      of: [{ type: 'string' }],
+      type: 'object',
+      fields: [
+        { name: 'es', title: 'Español', type: 'array', of: [{ type: 'string' }] },
+        { name: 'en', title: 'Inglés', type: 'array', of: [{ type: 'string' }] },
+      ],
     }),
+
     defineField({
       name: 'gallery',
       title: 'Galería de Imágenes',
