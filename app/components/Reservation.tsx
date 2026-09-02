@@ -18,7 +18,7 @@ export default function Reservation({ params }: ReservationProps = {}) {
     name: "",
     email: "",
     phone: "",
-    tour: volcanoes[1]?.name || "", // Acatenango por defecto
+    tour: volcanoes[1]?.name || "",
     customTour: "",
     date: "",
     people: "2",
@@ -41,24 +41,25 @@ export default function Reservation({ params }: ReservationProps = {}) {
     try {
       setStatus("sending");
 
-      // Usar URLSearchParams evita bloqueos de CORS/preflight en Google Apps Script
-      const formData = new URLSearchParams();
-      formData.append("name", form.name);
-      formData.append("email", form.email);
-      formData.append("phone", form.phone);
-      formData.append("tour", selectedTour);
-      formData.append("customTour", form.customTour);
-      formData.append("date", form.date);
-      formData.append("people", form.people);
-      formData.append("message", form.message);
+      const payload = {
+        name: form.name,
+        email: form.email,
+        phone: form.phone,
+        tour: selectedTour,
+        customTour: form.customTour,
+        date: form.date,
+        people: form.people,
+        message: form.message,
+      };
 
+      // Usar text/plain evita el bloqueo de CORS preflight en Apps Script
       await fetch(endpoint, {
         method: "POST",
         mode: "no-cors",
         headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
+          "Content-Type": "text/plain;charset=utf-8",
         },
-        body: formData.toString(),
+        body: JSON.stringify(payload),
       });
 
       setStatus("sent");
