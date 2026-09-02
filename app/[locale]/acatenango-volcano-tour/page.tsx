@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import React from 'react';
-import Reservation from '../components/Reservation'; // Adjust path if components is at app/components or similar
+import Reservation from '../../components/Reservation'; // Adjust path if components is at app/components or similar
 
 export const metadata: Metadata = {
   title: 'Acatenango & Fuego Volcano Hiking Tour | 7 Expeditions Guatemala',
