@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import React from 'react';
+import Reservation from '@/components/Reservation'; // Adjust path if components is at app/components or similar
 
-// 1. Fully-optimized Metadata for Google Search
 export const metadata: Metadata = {
   title: 'Acatenango & Fuego Volcano Hiking Tour | 7 Expeditions Guatemala',
   description:
@@ -29,7 +29,6 @@ export const metadata: Metadata = {
 };
 
 export default function AcatenangoSeoPage() {
-  // 2. JSON-LD Schema for Google Rich Snippets & Search Cards
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'TouristTrip',
@@ -90,9 +89,7 @@ export default function AcatenangoSeoPage() {
             </p>
             <div className="flex flex-wrap justify-center gap-4">
               <a
-                href="https://wa.me/50236181268"
-                target="_blank"
-                rel="noopener noreferrer"
+                href="#reservar"
                 className="bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-8 rounded-full shadow-lg transition duration-300"
               >
                 Book Tour – $175 USD / Q1,350 GTQ
@@ -192,21 +189,8 @@ export default function AcatenangoSeoPage() {
           </div>
         </section>
 
-        {/* Call to Action Footer */}
-        <footer className="bg-slate-900 text-white py-16 text-center px-6 mt-12">
-          <h2 className="text-3xl font-bold mb-3">Reserve Your Acatenango Hike Today</h2>
-          <p className="text-gray-400 max-w-xl mx-auto mb-8">
-            Daily departures from Antigua Guatemala. Reserve your spot with a 50% deposit via WhatsApp.
-          </p>
-          <a
-            href="https://wa.me/50236181268"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-block bg-orange-500 hover:bg-orange-600 text-white font-bold py-4 px-10 rounded-full transition duration-300"
-          >
-            Contact via WhatsApp (+502 3618-1268)
-          </a>
-        </footer>
+        {/* Embedded Reservation Section */}
+        <Reservation />
       </article>
     </>
   );
