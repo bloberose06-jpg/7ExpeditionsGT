@@ -12,6 +12,15 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  async redirects() {
+    return [
+      {
+        source: "/acatenango-volcano-tour",
+        destination: "/en/acatenango-volcano-tour",
+        permanent: true, // 301 Permanent Redirect for optimal SEO
+      },
+    ];
+  },
 };
 
 export default withNextIntl(nextConfig);
