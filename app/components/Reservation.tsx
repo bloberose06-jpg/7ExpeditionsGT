@@ -41,10 +41,16 @@ export default function Reservation({ params }: ReservationProps = {}) {
     try {
       setStatus("sending");
 
+      // Wrap phone number in quotes if it starts with '+' to prevent Sheets formula parse error
+      const trimmedPhone = form.phone.trim();
+      const formattedPhone = trimmedPhone.startsWith("+") 
+        ? `"${trimmedPhone}"` 
+        : trimmedPhone;
+
       const payload = {
         name: form.name,
         email: form.email,
-        phone: form.phone,
+        phone: formattedPhone,
         tour: selectedTour,
         customTour: form.customTour,
         date: form.date,
