@@ -1,15 +1,24 @@
 "use client";
 
 import React from "react";
-import { useTranslations } from "next-intl";
+import { useLocale } from "next-intl";
 
 export default function SocialFloatingButtons() {
-  const t = useTranslations("social");
+  const locale = useLocale();
+  const isEn = locale === "en";
+
   const phoneNumber = "50236181268";
 
-  // Pre-filled message localized automatically
-  const message = encodeURIComponent(t("waReferralMessage"));
+  // Dynamic values based on the current locale
+  const labels = {
+    whatsappLabel: isEn ? "Request info? Click here" : "¿Más información? Clic aquí",
+    instagramLabel: isEn ? "More info on IG" : "Más información en IG",
+    waReferralMessage: isEn
+      ? "Hello! I am coming from the website 7expeditionsguatemala.com and I would like to request more information or make a booking."
+      : "¡Hola! Vengo desde la página web 7expeditionsguatemala.com y me gustaría solicitar más información o hacer una reserva.",
+  };
 
+  const message = encodeURIComponent(labels.waReferralMessage);
   const whatsappUrl = `https://wa.me/${phoneNumber}?text=${message}`;
   const instagramUrl = "https://instagram.com/7expeditionsgt";
 
@@ -40,7 +49,7 @@ export default function SocialFloatingButtons() {
           </svg>
         </div>
         <span className="text-xs font-semibold whitespace-nowrap">
-          {t("instagramLabel")}
+          {labels.instagramLabel}
         </span>
       </a>
 
@@ -67,7 +76,7 @@ export default function SocialFloatingButtons() {
           </svg>
         </div>
         <span className="text-xs font-semibold whitespace-nowrap">
-          {t("whatsappLabel")}
+          {labels.whatsappLabel}
         </span>
       </a>
     </div>
