@@ -1,26 +1,26 @@
 "use client";
 
 import React from "react";
+import { useTranslations } from "next-intl";
 
 export default function SocialFloatingButtons() {
+  const t = useTranslations("social");
   const phoneNumber = "50236181268";
-  
-  // Mensaje optimizado para atribución de referidos
-  const message = encodeURIComponent(
-    "¡Hola! Vengo desde el sitio web 7expeditionsguatemala.com y me gustaría solicitar más información o hacer una reserva."
-  );
+
+  // Pre-filled message localized automatically
+  const message = encodeURIComponent(t("waReferralMessage"));
 
   const whatsappUrl = `https://wa.me/${phoneNumber}?text=${message}`;
   const instagramUrl = "https://instagram.com/7expeditionsgt";
 
   return (
     <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-3">
-      {/* Botón de Instagram */}
+      {/* Instagram Button */}
       <a
         href={instagramUrl}
         target="_blank"
         rel="noopener noreferrer"
-        aria-label="Solicitar información en Instagram"
+        aria-label="Instagram"
         className="group flex items-center gap-2 bg-gradient-to-tr from-yellow-500 via-pink-500 to-purple-600 text-white rounded-full p-1.5 pr-4 shadow-lg hover:scale-105 transition-all duration-300"
       >
         <div className="flex items-center justify-center w-9 h-9 rounded-full bg-white/20">
@@ -40,16 +40,16 @@ export default function SocialFloatingButtons() {
           </svg>
         </div>
         <span className="text-xs font-semibold whitespace-nowrap">
-          Más información en IG
+          {t("instagramLabel")}
         </span>
       </a>
 
-      {/* Botón de WhatsApp */}
+      {/* WhatsApp Button */}
       <a
         href={whatsappUrl}
         target="_blank"
         rel="noopener noreferrer"
-        aria-label="Solicitar información en WhatsApp"
+        aria-label="WhatsApp"
         className="group flex items-center gap-2 bg-[#25D366] text-white rounded-full p-1.5 pr-4 shadow-lg hover:scale-105 transition-all duration-300"
       >
         <div className="flex items-center justify-center w-9 h-9 rounded-full bg-white/20">
@@ -67,7 +67,7 @@ export default function SocialFloatingButtons() {
           </svg>
         </div>
         <span className="text-xs font-semibold whitespace-nowrap">
-          ¿Más información? Clic aquí
+          {t("whatsappLabel")}
         </span>
       </a>
     </div>
