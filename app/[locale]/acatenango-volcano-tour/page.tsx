@@ -3,12 +3,12 @@ import React from 'react';
 import Image from 'next/image';
 import Reservation from '../../components/Reservation'; 
 
-// Importaciones relativas con alias/ruta relativa directa desde el componente
-import volcanAcatenangoImg from '../../../public/gallery/Volcan-Acatenango.jpg';
-import desayunoAcatenangoImg from '../../../public/gallery/desayuno en volcan acatenango.jpg';
-import tiendasAcatenangoImg from '../../../public/gallery/tiendas de acampar acatenango.jpg';
-import tourAcatenangoImg from '../../../public/gallery/tour volcan acatenango.jpeg';
-import familiasAcatenangoImg from '../../../public/gallery/tours-familiares-voclan-acatenango.jpg';
+// Importaciones usando el alias raíz (@) y extensiones exactas
+import volcanAcatenangoImg from '@/public/gallery/Volcan-Acatenango.jpg';
+import desayunoAcatenangoImg from '@/public/gallery/desayuno en volcan acatenango.jpeg'; // Corrección a .jpeg
+import tiendasAcatenangoImg from '@/public/gallery/tiendas de acampar acatenango.jpg';
+import tourAcatenangoImg from '@/public/gallery/tour volcan acatenango.jpeg';
+import familiasAcatenangoImg from '@/public/gallery/tours-familiares-voclan-acatenango.jpg';
 
 export const metadata: Metadata = {
   title: 'Acatenango & Fuego Volcano Hiking Tour | 7 Expeditions Guatemala',
