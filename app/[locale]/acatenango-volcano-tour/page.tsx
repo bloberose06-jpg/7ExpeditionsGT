@@ -140,23 +140,14 @@ export default function AcatenangoSeoPage() {
             </p>
           </div>
 
-          {/* Photo Gallery Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 my-8">
-            <div className="relative h-64 rounded-xl overflow-hidden shadow-md">
-              <Image
-                src="/gallery/tiendas%20de%20acampar%20acatenango.jpg"
-                alt="Tiendas de acampar en Volcán Acatenango"
-                fill
-                sizes="(max-width: 768px) 100vw, 50vw"
-                className="object-cover hover:scale-105 transition duration-300"
-              />
-            </div>
+          {/* Photo Gallery Grid (3 imágenes) */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 my-8">
             <div className="relative h-64 rounded-xl overflow-hidden shadow-md">
               <Image
                 src="/gallery/desayuno%20en%20volcan%20acatenango.jpeg"
                 alt="Desayuno en Volcán Acatenango"
                 fill
-                sizes="(max-width: 768px) 100vw, 50vw"
+                sizes="(max-width: 768px) 100vw, 33vw"
                 className="object-cover hover:scale-105 transition duration-300"
               />
             </div>
@@ -165,7 +156,7 @@ export default function AcatenangoSeoPage() {
                 src="/gallery/tour%20volcan%20acatenango.jpeg"
                 alt="Tour en el Volcán Acatenango"
                 fill
-                sizes="(max-width: 768px) 100vw, 50vw"
+                sizes="(max-width: 768px) 100vw, 33vw"
                 className="object-cover hover:scale-105 transition duration-300"
               />
             </div>
@@ -174,7 +165,7 @@ export default function AcatenangoSeoPage() {
                 src="/gallery/tours-familiares-voclan-acatenango.jpg"
                 alt="Tours familiares en el Volcán Acatenango"
                 fill
-                sizes="(max-width: 768px) 100vw, 50vw"
+                sizes="(max-width: 768px) 100vw, 33vw"
                 className="object-cover hover:scale-105 transition duration-300"
               />
             </div>
