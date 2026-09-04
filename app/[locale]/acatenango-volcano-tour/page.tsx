@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import React, { useEffect } from 'react';
+import React from 'react';
 import Image from 'next/image';
 import Script from 'next/script';
 import Reservation from '../../components/Reservation'; 
@@ -76,7 +76,7 @@ export default function AcatenangoSeoPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      {/* Script optimizado de TripAdvisor para Next.js */}
+      {/* Script optimizado de TripAdvisor */}
       <Script
         src="https://www.jscache.com/wejs?wtype=rated&amp;uniq=259&amp;locationId=34516424&amp;lang=en_US&amp;display_version=2"
         strategy="lazyOnload"
@@ -103,7 +103,7 @@ export default function AcatenangoSeoPage() {
               Experience the active Fuego Volcano from our private glamping base camp at 3,600m altitude with full comfort, small groups, and expert guides.
             </p>
 
-            {/* Widget de TripAdvisor dentro del Hero */}
+            {/* Widget de TripAdvisor */}
             <div className="flex justify-center mb-6">
               <div id="TA_rated259" className="TA_rated">
                 <ul id="czsfd9mg9d" className="TA_links Sl4eAx6Uc">
