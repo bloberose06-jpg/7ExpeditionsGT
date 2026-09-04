@@ -1,6 +1,14 @@
 import type { Metadata } from 'next';
 import React from 'react';
+import Image from 'next/image';
 import Reservation from '../../components/Reservation'; // Adjust path if components is at app/components or similar
+
+// Asumiendo que la carpeta gallery está dentro de public/gallery/
+import volcanAcatenangoImg from '/public/gallery/Volcan-Acatenango.jpg';
+import desayunoAcatenangoImg from '/public/gallery/desayuno en volcan acatenango.jpg';
+import tiendasAcatenangoImg from '/public/gallery/tiendas de acampar acatenango.jpg';
+import tourAcatenangoImg from '/public/gallery/tour volcan acatenango.jpeg';
+import familiasAcatenangoImg from '/public/gallery/tours-familiares-voclan-acatenango.jpg';
 
 export const metadata: Metadata = {
   title: 'Acatenango & Fuego Volcano Hiking Tour | 7 Expeditions Guatemala',
@@ -76,15 +84,22 @@ export default function AcatenangoSeoPage() {
 
       <article className="min-h-screen bg-white text-gray-900 leading-relaxed">
         {/* Hero Section */}
-        <header className="bg-gradient-to-b from-slate-900 to-slate-800 text-white py-20 px-6 text-center">
-          <div className="max-w-4xl mx-auto">
+        <header className="relative bg-slate-900 text-white py-24 px-6 text-center overflow-hidden">
+          <Image
+            src={volcanAcatenangoImg}
+            alt="Volcán Acatenango Guatemala"
+            fill
+            priority
+            className="object-cover opacity-30"
+          />
+          <div className="relative max-w-4xl mx-auto z-10">
             <span className="text-orange-400 font-bold uppercase tracking-widest text-sm">
               Official Tour Operator • 7 Expeditions Guatemala
             </span>
             <h1 className="text-4xl md:text-6xl font-extrabold mt-3 mb-6 tracking-tight">
               Acatenango & Fuego Volcano Glamping Hike
             </h1>
-            <p className="text-lg md:text-xl text-gray-300 max-w-2xl mx-auto mb-8">
+            <p className="text-lg md:text-xl text-gray-200 max-w-2xl mx-auto mb-8">
               Experience the active Fuego Volcano from our private glamping base camp at 3,600m altitude with full comfort, small groups, and expert guides.
             </p>
             <div className="flex flex-wrap justify-center gap-4">
@@ -130,6 +145,42 @@ export default function AcatenangoSeoPage() {
             <p className="text-gray-700 text-lg mt-3">
               Unlike standard tours, 7 Expeditions offers access to a <strong>private trail</strong> that reduces total hiking time by one hour while bypassing crowded public routes.
             </p>
+          </div>
+
+          {/* Photo Gallery Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 my-8">
+            <div className="relative h-64 rounded-xl overflow-hidden shadow-md">
+              <Image
+                src={tiendasAcatenangoImg}
+                alt="Tiendas de acampar en Volcán Acatenango"
+                fill
+                className="object-cover hover:scale-105 transition duration-300"
+              />
+            </div>
+            <div className="relative h-64 rounded-xl overflow-hidden shadow-md">
+              <Image
+                src={desayunoAcatenangoImg}
+                alt="Desayuno en Volcán Acatenango"
+                fill
+                className="object-cover hover:scale-105 transition duration-300"
+              />
+            </div>
+            <div className="relative h-64 rounded-xl overflow-hidden shadow-md">
+              <Image
+                src={tourAcatenangoImg}
+                alt="Tour en el Volcán Acatenango"
+                fill
+                className="object-cover hover:scale-105 transition duration-300"
+              />
+            </div>
+            <div className="relative h-64 rounded-xl overflow-hidden shadow-md">
+              <Image
+                src={familiasAcatenangoImg}
+                alt="Tours familiares en el Volcán Acatenango"
+                fill
+                className="object-cover hover:scale-105 transition duration-300"
+              />
+            </div>
           </div>
 
           {/* Included Features */}
