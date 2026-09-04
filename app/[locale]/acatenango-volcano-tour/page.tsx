@@ -1,7 +1,14 @@
 import type { Metadata } from 'next';
 import React from 'react';
 import Image from 'next/image';
-import Reservation from '../../components/Reservation'; // Adjust path if components is at app/components or similar
+import Reservation from '../../components/Reservation'; 
+
+// Importaciones relativas con alias/ruta relativa directa desde el componente
+import volcanAcatenangoImg from '../../../public/gallery/Volcan-Acatenango.jpg';
+import desayunoAcatenangoImg from '../../../public/gallery/desayuno en volcan acatenango.jpg';
+import tiendasAcatenangoImg from '../../../public/gallery/tiendas de acampar acatenango.jpg';
+import tourAcatenangoImg from '../../../public/gallery/tour volcan acatenango.jpeg';
+import familiasAcatenangoImg from '../../../public/gallery/tours-familiares-voclan-acatenango.jpg';
 
 export const metadata: Metadata = {
   title: 'Acatenango & Fuego Volcano Hiking Tour | 7 Expeditions Guatemala',
@@ -79,7 +86,7 @@ export default function AcatenangoSeoPage() {
         {/* Hero Section */}
         <header className="relative bg-slate-900 text-white py-24 px-6 text-center overflow-hidden">
           <Image
-            src="/gallery/Volcan-Acatenango.jpg"
+            src={volcanAcatenangoImg}
             alt="Volcán Acatenango Guatemala"
             fill
             priority
@@ -144,37 +151,33 @@ export default function AcatenangoSeoPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 my-8">
             <div className="relative h-64 rounded-xl overflow-hidden shadow-md">
               <Image
-                src="/gallery/tiendas de acampar acatenango.jpg"
+                src={tiendasAcatenangoImg}
                 alt="Tiendas de acampar en Volcán Acatenango"
                 fill
-                sizes="(max-width: 768px) 100vw, 50vw"
                 className="object-cover hover:scale-105 transition duration-300"
               />
             </div>
             <div className="relative h-64 rounded-xl overflow-hidden shadow-md">
               <Image
-                src="/gallery/desayuno en volcan acatenango.jpg"
+                src={desayunoAcatenangoImg}
                 alt="Desayuno en Volcán Acatenango"
                 fill
-                sizes="(max-width: 768px) 100vw, 50vw"
                 className="object-cover hover:scale-105 transition duration-300"
               />
             </div>
             <div className="relative h-64 rounded-xl overflow-hidden shadow-md">
               <Image
-                src="/gallery/tour volcan acatenango.jpeg"
+                src={tourAcatenangoImg}
                 alt="Tour en el Volcán Acatenango"
                 fill
-                sizes="(max-width: 768px) 100vw, 50vw"
                 className="object-cover hover:scale-105 transition duration-300"
               />
             </div>
             <div className="relative h-64 rounded-xl overflow-hidden shadow-md">
               <Image
-                src="/gallery/tours-familiares-voclan-acatenango.jpg"
+                src={familiasAcatenangoImg}
                 alt="Tours familiares en el Volcán Acatenango"
                 fill
-                sizes="(max-width: 768px) 100vw, 50vw"
                 className="object-cover hover:scale-105 transition duration-300"
               />
             </div>
