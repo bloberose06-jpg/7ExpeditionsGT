@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
-import React from 'react';
+import React, { useEffect } from 'react';
 import Image from 'next/image';
+import Script from 'next/script';
 import Reservation from '../../components/Reservation'; 
 
 export const metadata: Metadata = {
@@ -75,6 +76,12 @@ export default function AcatenangoSeoPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
+      {/* Script optimizado de TripAdvisor para Next.js */}
+      <Script
+        src="https://www.jscache.com/wejs?wtype=rated&amp;uniq=259&amp;locationId=34516424&amp;lang=en_US&amp;display_version=2"
+        strategy="lazyOnload"
+      />
+
       <article className="min-h-screen bg-white text-gray-900 leading-relaxed">
         {/* Hero Section */}
         <header className="relative bg-slate-900 text-white py-24 px-6 text-center overflow-hidden">
@@ -95,6 +102,27 @@ export default function AcatenangoSeoPage() {
             <p className="text-lg md:text-xl text-gray-200 max-w-2xl mx-auto mb-8">
               Experience the active Fuego Volcano from our private glamping base camp at 3,600m altitude with full comfort, small groups, and expert guides.
             </p>
+
+            {/* Widget de TripAdvisor dentro del Hero */}
+            <div className="flex justify-center mb-6">
+              <div id="TA_rated259" className="TA_rated">
+                <ul id="czsfd9mg9d" className="TA_links Sl4eAx6Uc">
+                  <li id="2KiwlMQTUFaK" className="i2WmPIDv">
+                    <a
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      href="https://www.tripadvisor.com/Attraction_Review-g295366-d34516424-Reviews-7_Expeditions_Guatemala-Antigua_Sacatepequez_Department.html"
+                    >
+                      <img
+                        src="https://www.tripadvisor.com/img/cdsi/img2/badges/ollie-11424-2.gif"
+                        alt="TripAdvisor"
+                      />
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
             <div className="flex flex-wrap justify-center gap-4">
               <a
                 href="#reservar"
@@ -140,7 +168,7 @@ export default function AcatenangoSeoPage() {
             </p>
           </div>
 
-          {/* Photo Gallery Grid (3 imágenes) */}
+          {/* Photo Gallery Grid */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 my-8">
             <div className="relative h-64 rounded-xl overflow-hidden shadow-md">
               <Image
