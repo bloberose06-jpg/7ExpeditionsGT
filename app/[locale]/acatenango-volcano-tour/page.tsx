@@ -103,23 +103,26 @@ export default function AcatenangoSeoPage() {
               Experience the active Fuego Volcano from our private glamping base camp at 3,600m altitude with full comfort, small groups, and expert guides.
             </p>
 
-            {/* Widget de TripAdvisor */}
+            {/* TripAdvisor Widget Badge Wrapper */}
             <div className="flex justify-center mb-6">
-              <div id="TA_rated259" className="TA_rated">
-                <ul id="czsfd9mg9d" className="TA_links Sl4eAx6Uc">
-                  <li id="2KiwlMQTUFaK" className="i2WmPIDv">
-                    <a
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      href="https://www.tripadvisor.com/Attraction_Review-g295366-d34516424-Reviews-7_Expeditions_Guatemala-Antigua_Sacatepequez_Department.html"
-                    >
-                      <img
-                        src="https://www.tripadvisor.com/img/cdsi/img2/badges/ollie-11424-2.gif"
-                        alt="TripAdvisor"
-                      />
-                    </a>
-                  </li>
-                </ul>
+              <div className="bg-white/95 backdrop-blur-sm px-6 py-2 rounded-full shadow-lg border border-white/20 inline-flex items-center justify-center">
+                <div id="TA_rated259" className="TA_rated [&_*]:!text-gray-900 scale-125 origin-center">
+                  <ul id="czsfd9mg9d" className="TA_links Sl4eAx6Uc">
+                    <li id="2KiwlMQTUFaK" className="i2WmPIDv">
+                      <a
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        href="https://www.tripadvisor.com/Attraction_Review-g295366-d34516424-Reviews-7_Expeditions_Guatemala-Antigua_Sacatepequez_Department.html"
+                      >
+                        <img
+                          src="https://www.tripadvisor.com/img/cdsi/img2/badges/ollie-11424-2.gif"
+                          alt="TripAdvisor"
+                          className="h-8 w-auto object-contain"
+                        />
+                      </a>
+                    </li>
+                  </ul>
+                </div>
               </div>
             </div>
 
