@@ -4,7 +4,7 @@ import Tours from "@/app/components/Tours";
 import Gallery from "@/app/components/Gallery";
 import InstagramScroll, { mockInstagramPosts } from "@/app/components/InstagramScroll";
 import WhyUs from "@/app/components/WhyUs";
-import Calendar from "@/app/components/Calendar";
+//import Calendar from "@/app/components/Calendar";
 import Reservation from "@/app/components/Reservation";
 
 export async function generateMetadata({
@@ -122,7 +122,7 @@ export default async function Home({
       <Gallery />
       <InstagramScroll items={mockInstagramPosts} locale={currentLocale} />
       <WhyUs />
-      <Calendar />
+      
       <Reservation />
     </>
   );
