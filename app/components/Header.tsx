@@ -16,8 +16,7 @@ export default function Header() {
 
   // 1. Agregamos la ruta 'vlogs' como una página independiente (isPage: true)
   const links = [
-    { target: "expediciones", label: t("navExpediciones") },
-    { target: "calendario", label: t("navCalendario") },
+    { target: "expediciones", label: t("navExpediciones") },    
     { target: "galeria", label: t("navGaleria") },
     { target: "nosotros", label: t("navNosotros") },
     { target: "vlogs", label: t("navVlogs") || "Vlogs", isPage: true },
