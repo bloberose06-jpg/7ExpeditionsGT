@@ -1,555 +1,306 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>El viaje de Shifu por Guatemala</title>
+import Header from "../components/Header";
 
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;700&display=swap');
+const moments = [
+  {
+    number: "01",
+    place: "ANTIGUA GUATEMALA",
+    title: "El comienzo",
+    description:
+      "Shifu comienza su aventura caminando por las calles empedradas de Antigua Guatemala. Entre arquitectura colonial, volcanes y el famoso Arco de Santa Catalina, descubre el carácter histórico de Guatemala.",
+    quote:
+      "Un buen viaje comienza cuando uno deja de saber exactamente qué encontrará.",
+    image:
+      "https://commons.wikimedia.org/wiki/Special:FilePath/Antigua%20Guatemala%20-%20Santa%20Catalina%20Arch.jpg",
+  },
+  {
+    number: "02",
+    place: "VOLCÁN ACATENANGO",
+    title: "Frente al volcán",
+    description:
+      "La tranquilidad queda atrás. Shifu emprende el ascenso hacia el Volcán Acatenango. Cada paso lo acerca a una de las vistas más impresionantes del país.",
+    quote: "La paciencia también es una forma de fuerza.",
+    image:
+      "https://commons.wikimedia.org/wiki/Special:FilePath/Volcan%20acatenango.jpg",
+  },
+  {
+    number: "03",
+    place: "LAGO DE ATITLÁN",
+    title: "El lago de los volcanes",
+    description:
+      "Shifu llega al Lago de Atitlán y encuentra finalmente un momento de calma. El agua, los volcanes y los pueblos que rodean el lago convierten este lugar en uno de los momentos más especiales del viaje.",
+    quote:
+      "A veces el mejor entrenamiento consiste simplemente en detenerse.",
+    image:
+      "https://commons.wikimedia.org/wiki/Special:FilePath/Lake%20Atitlan%2C%20Guatemala.jpg",
+  },
+  {
+    number: "04",
+    place: "SEMUC CHAMPEY",
+    title: "La selva escondida",
+    description:
+      "Después de atravesar caminos de montaña, Shifu descubre las pozas turquesas de Semuc Champey. Rodeado de selva, comprende que algunas de las mejores aventuras están lejos de los caminos fáciles.",
+    quote:
+      "El camino difícil suele llevar a lugares extraordinarios.",
+    image:
+      "https://commons.wikimedia.org/wiki/Special:FilePath/Semuc%20Champey%2C%20Guatemala%20CA.jpg",
+  },
+  {
+    number: "05",
+    place: "TIKAL",
+    title: "Entre los antiguos mayas",
+    description:
+      "El último gran capítulo lleva a Shifu hasta Tikal. Los templos emergen entre la selva mientras contempla la grandeza de la civilización maya.",
+    quote:
+      "El verdadero conocimiento también vive en las historias del pasado.",
+    image:
+      "https://commons.wikimedia.org/wiki/Special:FilePath/Tikal%20(Guatemala).JPG",
+  },
+];
 
-:root {
-  --verde: #163f35;
-  --verde2: #286653;
-  --dorado: #e5ad45;
-  --crema: #f7f1df;
-  --oscuro: #111814;
+const gallery = [
+  {
+    image:
+      "https://commons.wikimedia.org/wiki/Special:FilePath/Antigua%20Guatemala%20-%20Santa%20Catalina%20Arch.jpg",
+    alt: "Antigua Guatemala",
+  },
+  {
+    image:
+      "https://commons.wikimedia.org/wiki/Special:FilePath/Lake%20Atitlan%2C%20Guatemala.jpg",
+    alt: "Lago de Atitlán",
+  },
+  {
+    image:
+      "https://commons.wikimedia.org/wiki/Special:FilePath/Semuc%20Champey%2C%20Guatemala%20CA.jpg",
+    alt: "Semuc Champey",
+  },
+  {
+    image:
+      "https://commons.wikimedia.org/wiki/Special:FilePath/Volcan%20acatenango.jpg",
+    alt: "Volcán Acatenango",
+  },
+  {
+    image:
+      "https://commons.wikimedia.org/wiki/Special:FilePath/Tikal%20(Guatemala).JPG",
+    alt: "Tikal",
+  },
+  {
+    image:
+      "https://commons.wikimedia.org/wiki/Special:FilePath/Antigua%20Guatemala%20-%20Santa%20Catalina%20Arch.jpg",
+    alt: "Arco de Santa Catalina",
+  },
+];
+
+export default function ShifuGuatemalaPage() {
+  return (
+    <main className="shifu-page">
+      <Header />
+
+      {/* HERO */}
+      <section
+        id="top"
+        className="relative flex min-h-screen items-center overflow-hidden bg-[#101914]"
+      >
+        <div
+          className="absolute inset-0 bg-cover bg-center"
+          style={{
+            backgroundImage: `url("${moments[0].image}")`,
+          }}
+        />
+
+        <div className="absolute inset-0 bg-gradient-to-r from-[#07110d] via-[#07110dcc] to-[#07110d33]" />
+
+        <div className="relative z-10 mx-auto w-full max-w-7xl px-6 py-32 lg:px-10">
+          <div className="max-w-4xl">
+            <span className="mb-7 inline-block rounded-full bg-[#e5ad45] px-5 py-2 text-xs font-bold uppercase tracking-[0.2em] text-[#162019]">
+              Diario de aventura · Guatemala
+            </span>
+
+            <h1 className="font-display text-7xl uppercase leading-[0.82] tracking-wide text-[#f7f1df] sm:text-8xl md:text-9xl lg:text-[10rem]">
+              El viaje
+              <br />
+              <span className="text-[#e5ad45]">de Shifu</span>
+            </h1>
+
+            <p className="mt-8 max-w-2xl text-base leading-8 text-[#e5eee9] sm:text-lg">
+              Entre volcanes, pueblos llenos de color, lagos rodeados de
+              montañas y antiguas ciudades mayas, Shifu descubre una
+              Guatemala que jamás olvidará.
+            </p>
+
+            <a
+              href="#aventura"
+              className="mt-10 inline-flex items-center gap-3 border border-[#e5ad45] px-6 py-3 text-xs font-bold uppercase tracking-[0.18em] text-[#e5ad45] transition-all hover:bg-[#e5ad45] hover:text-[#162019]"
+            >
+              Comenzar el viaje
+              <span>↓</span>
+            </a>
+          </div>
+        </div>
+
+        <div className="absolute bottom-8 left-1/2 z-10 -translate-x-1/2 text-xs uppercase tracking-[0.3em] text-[#f7f1df99]">
+          Guatemala · 7 Expeditions GT
+        </div>
+      </section>
+
+      {/* INTRO */}
+      <section
+        id="aventura"
+        className="bg-[#f7f1df] px-6 py-24 lg:px-10 lg:py-32"
+      >
+        <div className="mx-auto max-w-4xl text-center">
+          <p className="mb-5 text-xs font-bold uppercase tracking-[0.3em] text-[#b37d20]">
+            Una aventura inesperada
+          </p>
+
+          <h2 className="font-display text-5xl uppercase leading-none text-[#163f35] sm:text-6xl md:text-7xl">
+            Cinco lugares.
+            <br />
+            Una historia.
+          </h2>
+
+          <p className="mx-auto mt-8 max-w-2xl text-base leading-8 text-[#35443e] sm:text-lg">
+            Shifu llegó a Guatemala buscando tranquilidad... pero encontró
+            volcanes, selva, agua turquesa, cultura maya y algunos de los
+            paisajes más impresionantes de Centroamérica.
+          </p>
+        </div>
+      </section>
+
+      {/* TIMELINE */}
+      <section
+        id="momentos"
+        className="bg-[#163f35] px-6 py-24 text-[#f7f1df] lg:px-10 lg:py-32"
+      >
+        <div className="mx-auto max-w-7xl">
+          <div className="mb-20 text-center">
+            <p className="mb-4 text-xs font-bold uppercase tracking-[0.3em] text-[#e5ad45]">
+              El recorrido
+            </p>
+
+            <h2 className="font-display text-6xl uppercase text-[#e5ad45] sm:text-7xl">
+              Momentos clave
+            </h2>
+          </div>
+
+          <div className="space-y-28">
+            {moments.map((moment, index) => (
+              <article
+                key={moment.number}
+                className="grid items-center gap-10 lg:grid-cols-2 lg:gap-16"
+              >
+                <div
+                  className={`overflow-hidden rounded-2xl ${
+                    index % 2 === 1 ? "lg:order-2" : ""
+                  }`}
+                >
+                  <img
+                    src={moment.image}
+                    alt={moment.place}
+                    className="h-[350px] w-full object-cover transition duration-700 hover:scale-105 sm:h-[450px]"
+                  />
+                </div>
+
+                <div className={index % 2 === 1 ? "lg:order-1" : ""}>
+                  <span className="font-mono text-sm tracking-[0.3em] text-[#e5ad45]">
+                    {moment.number} · {moment.place}
+                  </span>
+
+                  <h3 className="mt-3 font-display text-5xl uppercase leading-none sm:text-6xl">
+                    {moment.title}
+                  </h3>
+
+                  <p className="mt-6 max-w-xl leading-8 text-[#d8e2dd]">
+                    {moment.description}
+                  </p>
+
+                  <div className="mt-7 border-l-4 border-[#e5ad45] pl-5 text-sm italic leading-7 text-[#e5ad45]">
+                    “{moment.quote}”
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* GALERÍA */}
+      <section
+        id="galeria"
+        className="bg-[#f7f1df] px-6 py-24 lg:px-10 lg:py-32"
+      >
+        <div className="mx-auto max-w-7xl">
+          <div className="mb-12 text-center">
+            <p className="mb-4 text-xs font-bold uppercase tracking-[0.3em] text-[#b37d20]">
+              Recuerdos
+            </p>
+
+            <h2 className="font-display text-6xl uppercase text-[#163f35] sm:text-7xl">
+              Postales del viaje
+            </h2>
+          </div>
+
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {gallery.map((item, index) => (
+              <div
+                key={`${item.alt}-${index}`}
+                className="group overflow-hidden rounded-xl"
+              >
+                <img
+                  src={item.image}
+                  alt={item.alt}
+                  loading="lazy"
+                  className="h-[300px] w-full object-cover transition duration-700 group-hover:scale-105"
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* FINAL */}
+      <section
+        className="relative flex min-h-[70vh] items-center justify-center overflow-hidden px-6 py-24 text-center"
+        style={{
+          backgroundImage: `url("${moments[4].image}")`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+      >
+        <div className="absolute inset-0 bg-[#07110d]/80" />
+
+        <div className="relative z-10 max-w-4xl">
+          <p className="mb-5 text-xs font-bold uppercase tracking-[0.3em] text-[#e5ad45]">
+            Fin de la expedición
+          </p>
+
+          <h2 className="font-display text-7xl uppercase leading-none text-[#e5ad45] sm:text-8xl md:text-9xl">
+            Hasta pronto,
+            <br />
+            Guatemala.
+          </h2>
+
+          <p className="mx-auto mt-8 max-w-2xl text-base leading-8 text-[#f7f1df] sm:text-lg">
+            Shifu llegó buscando una aventura y se marchó con algo mucho más
+            valioso: recuerdos, paisajes y nuevas historias que contar.
+          </p>
+
+          <a
+            href="#top"
+            className="mt-10 inline-flex rounded-sm bg-[#e5ad45] px-7 py-4 text-xs font-bold uppercase tracking-[0.18em] text-[#162019] transition hover:bg-[#f2c35f]"
+          >
+            Volver al inicio ↑
+          </a>
+        </div>
+      </section>
+
+      {/* FOOTER */}
+      <footer className="bg-[#0c1713] px-6 py-8 text-center text-xs text-[#9eaca5]">
+        <p>7 Expeditions GT · El viaje de Shifu por Guatemala</p>
+        <p className="mt-2 opacity-70">
+          Fotografías obtenidas de Wikimedia Commons. Consulta las páginas
+          originales para autoría y licencia de cada imagen.
+        </p>
+      </footer>
+    </main>
+  );
 }
-
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-html {
-  scroll-behavior: smooth;
-}
-
-body {
-  font-family: 'Inter', sans-serif;
-  background: var(--crema);
-  color: var(--oscuro);
-}
-
-/* HERO */
-
-.hero {
-  min-height: 100vh;
-  background:
-    linear-gradient(90deg, rgba(5,20,15,.88), rgba(5,20,15,.25)),
-    url('https://commons.wikimedia.org/wiki/Special:FilePath/Antigua%20Guatemala%20-%20Santa%20Catalina%20Arch.jpg');
-  background-size: cover;
-  background-position: center;
-  display: flex;
-  align-items: center;
-  padding: 60px 8%;
-  color: white;
-}
-
-.hero-content {
-  max-width: 850px;
-}
-
-.tag {
-  display: inline-block;
-  background: var(--dorado);
-  color: #1b211d;
-  padding: 9px 18px;
-  border-radius: 30px;
-  font-weight: bold;
-  margin-bottom: 25px;
-}
-
-h1 {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: clamp(70px, 13vw, 150px);
-  line-height: .85;
-  letter-spacing: 2px;
-}
-
-.hero p {
-  font-size: 1.25rem;
-  max-width: 650px;
-  margin-top: 30px;
-  line-height: 1.7;
-}
-
-.scroll {
-  margin-top: 45px;
-  color: var(--dorado);
-  font-weight: bold;
-}
-
-/* INTRO */
-
-.intro {
-  padding: 100px 8%;
-  text-align: center;
-  max-width: 1000px;
-  margin: auto;
-}
-
-.intro h2,
-.timeline h2,
-.gallery h2 {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 60px;
-  color: var(--verde);
-  letter-spacing: 1px;
-}
-
-.intro p {
-  margin-top: 25px;
-  font-size: 1.15rem;
-  line-height: 1.9;
-}
-
-/* TIMELINE */
-
-.timeline {
-  padding: 80px 8%;
-  background: var(--verde);
-  color: white;
-}
-
-.timeline h2 {
-  color: var(--dorado);
-  text-align: center;
-  margin-bottom: 70px;
-}
-
-.moment {
-  max-width: 1100px;
-  margin: 0 auto 80px;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 45px;
-  align-items: center;
-}
-
-.moment:nth-child(even) {
-  direction: rtl;
-}
-
-.moment:nth-child(even) .text {
-  direction: ltr;
-}
-
-.moment img {
-  width: 100%;
-  height: 420px;
-  object-fit: cover;
-  border-radius: 25px;
-  box-shadow: 0 20px 50px rgba(0,0,0,.3);
-}
-
-.number {
-  color: var(--dorado);
-  font-size: 18px;
-  font-weight: bold;
-  letter-spacing: 3px;
-}
-
-.moment h3 {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 55px;
-  margin: 10px 0 20px;
-}
-
-.moment p {
-  line-height: 1.8;
-  color: #d8e2dd;
-}
-
-.quote {
-  border-left: 4px solid var(--dorado);
-  margin-top: 25px;
-  padding-left: 20px;
-  font-style: italic;
-}
-
-/* GALLERY */
-
-.gallery {
-  padding: 100px 8%;
-}
-
-.gallery h2 {
-  text-align: center;
-  margin-bottom: 50px;
-}
-
-.grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 18px;
-}
-
-.grid img {
-  width: 100%;
-  height: 320px;
-  object-fit: cover;
-  border-radius: 18px;
-  transition: .4s;
-}
-
-.grid img:hover {
-  transform: scale(1.03);
-}
-
-/* FINAL */
-
-.final {
-  min-height: 70vh;
-  background:
-    linear-gradient(rgba(12,29,23,.75), rgba(12,29,23,.85)),
-    url('https://commons.wikimedia.org/wiki/Special:FilePath/Tikal%20(Guatemala).JPG');
-  background-size: cover;
-  background-position: center;
-  color: white;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  padding: 50px 8%;
-}
-
-.final h2 {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: clamp(70px, 12vw, 130px);
-  color: var(--dorado);
-}
-
-.final p {
-  max-width: 700px;
-  margin: 25px auto;
-  font-size: 1.2rem;
-  line-height: 1.8;
-}
-
-.btn {
-  display: inline-block;
-  margin-top: 20px;
-  padding: 15px 30px;
-  background: var(--dorado);
-  color: #172019;
-  text-decoration: none;
-  font-weight: bold;
-  border-radius: 30px;
-}
-
-/* FOOTER */
-
-footer {
-  background: #0c1713;
-  color: #9eaca5;
-  padding: 35px;
-  text-align: center;
-  font-size: .85rem;
-}
-
-/* MOBILE */
-
-@media(max-width: 750px) {
-
-  .hero {
-    padding: 40px 7%;
-  }
-
-  .moment {
-    grid-template-columns: 1fr;
-  }
-
-  .moment:nth-child(even) {
-    direction: ltr;
-  }
-
-  .moment img {
-    height: 300px;
-  }
-
-  .grid {
-    grid-template-columns: 1fr;
-  }
-
-  .grid img {
-    height: 280px;
-  }
-}
-</style>
-</head>
-
-<body>
-
-<!-- PORTADA -->
-
-<section class="hero">
-
-  <div class="hero-content">
-
-    <span class="tag">DIARIO DE AVENTURA · GUATEMALA</span>
-
-    <h1>
-      EL VIAJE<br>
-      DE SHIFU
-    </h1>
-
-    <p>
-      Entre volcanes, pueblos llenos de color, lagos rodeados de montañas
-      y antiguas ciudades mayas, Shifu descubre una Guatemala que jamás
-      olvidará.
-    </p>
-
-    <div class="scroll">
-      ↓ DESLIZA PARA COMENZAR EL VIAJE
-    </div>
-
-  </div>
-
-</section>
-
-
-<!-- INTRO -->
-
-<section class="intro">
-
-  <h2>Una aventura inesperada</h2>
-
-  <p>
-    Shifu llegó a Guatemala buscando tranquilidad...
-    pero encontró volcanes, selva, agua turquesa, cultura maya
-    y algunos de los paisajes más impresionantes de Centroamérica.
-  </p>
-
-  <p>
-    Este es el recorrido de sus momentos más memorables.
-  </p>
-
-</section>
-
-
-<!-- MOMENTOS -->
-
-<section class="timeline">
-
-  <h2>Momentos clave del viaje</h2>
-
-
-  <!-- ANTIGUA -->
-
-  <article class="moment">
-
-    <img
-      src="https://commons.wikimedia.org/wiki/Special:FilePath/Antigua%20Guatemala%20-%20Santa%20Catalina%20Arch.jpg"
-      alt="Arco de Santa Catalina en Antigua Guatemala">
-
-    <div class="text">
-
-      <span class="number">01 · ANTIGUA GUATEMALA</span>
-
-      <h3>El comienzo</h3>
-
-      <p>
-        Shifu comienza su aventura caminando por las calles empedradas
-        de Antigua Guatemala. Entre edificios coloniales, volcanes
-        y el famoso Arco de Santa Catalina, descubre el carácter
-        histórico de la ciudad.
-      </p>
-
-      <div class="quote">
-        “Un buen viaje comienza cuando uno deja de saber exactamente
-        qué encontrará.”
-      </div>
-
-    </div>
-
-  </article>
-
-
-  <!-- ACATENANGO -->
-
-  <article class="moment">
-
-    <img
-      src="https://commons.wikimedia.org/wiki/Special:FilePath/Volcan%20acatenango.jpg"
-      alt="Volcán Acatenango">
-
-    <div class="text">
-
-      <span class="number">02 · ACATENANGO</span>
-
-      <h3>Frente al volcán</h3>
-
-      <p>
-        La tranquilidad queda atrás. Shifu emprende el ascenso hacia
-        el Volcán Acatenango. El camino se vuelve más difícil,
-        pero la recompensa llega al alcanzar las alturas y contemplar
-        el paisaje volcánico.
-      </p>
-
-      <div class="quote">
-        “La paciencia también es una forma de fuerza.”
-      </div>
-
-    </div>
-
-  </article>
-
-
-  <!-- ATITLAN -->
-
-  <article class="moment">
-
-    <img
-      src="https://commons.wikimedia.org/wiki/Special:FilePath/Lake%20Atitlan%2C%20Guatemala.jpg"
-      alt="Lago de Atitlán">
-
-    <div class="text">
-
-      <span class="number">03 · LAGO DE ATITLÁN</span>
-
-      <h3>El lago de los volcanes</h3>
-
-      <p>
-        Shifu llega al Lago de Atitlán y finalmente encuentra un momento
-        de calma. El agua, los volcanes y los pueblos alrededor del lago
-        crean uno de los escenarios más especiales del viaje.
-      </p>
-
-      <div class="quote">
-        “A veces el mejor entrenamiento consiste simplemente en detenerse.”
-      </div>
-
-    </div>
-
-  </article>
-
-
-  <!-- SEMUC -->
-
-  <article class="moment">
-
-    <img
-      src="https://commons.wikimedia.org/wiki/Special:FilePath/Semuc%20Champey%2C%20Guatemala%20CA.jpg"
-      alt="Semuc Champey">
-
-    <div class="text">
-
-      <span class="number">04 · SEMUC CHAMPEY</span>
-
-      <h3>La selva escondida</h3>
-
-      <p>
-        Después de atravesar caminos de montaña, Shifu descubre
-        las pozas turquesas de Semuc Champey. Rodeado de selva,
-        el maestro comprende que algunas de las mejores aventuras
-        están lejos de los caminos fáciles.
-      </p>
-
-      <div class="quote">
-        “El camino difícil suele llevar a lugares extraordinarios.”
-      </div>
-
-    </div>
-
-  </article>
-
-
-  <!-- TIKAL -->
-
-  <article class="moment">
-
-    <img
-      src="https://commons.wikimedia.org/wiki/Special:FilePath/Tikal%20(Guatemala).JPG"
-      alt="Templo maya de Tikal">
-
-    <div class="text">
-
-      <span class="number">05 · TIKAL</span>
-
-      <h3>Entre los antiguos mayas</h3>
-
-      <p>
-        El último gran capítulo lleva a Shifu hasta Tikal.
-        Los templos emergen entre la selva mientras el viajero
-        contempla la grandeza de la civilización maya.
-      </p>
-
-      <div class="quote">
-        “El verdadero conocimiento también vive en las historias del pasado.”
-      </div>
-
-    </div>
-
-  </article>
-
-</section>
-
-
-<!-- GALERÍA -->
-
-<section class="gallery">
-
-  <h2>Postales del viaje</h2>
-
-  <div class="grid">
-
-    <img
-      src="https://commons.wikimedia.org/wiki/Special:FilePath/Antigua%20Guatemala%20Arch.jpg"
-      alt="Antigua Guatemala">
-
-    <img
-      src="https://commons.wikimedia.org/wiki/Special:FilePath/Lago%20de%20Atitl%C3%A1n%20en%20Guatemala.jpg"
-      alt="Lago de Atitlán">
-
-    <img
-      src="https://commons.wikimedia.org/wiki/Special:FilePath/Semuc%20Champey.jpg"
-      alt="Semuc Champey">
-
-    <img
-      src="https://commons.wikimedia.org/wiki/Special:FilePath/Volcan%20acatenango.jpg"
-      alt="Acatenango">
-
-    <img
-      src="https://commons.wikimedia.org/wiki/Special:FilePath/Tikal%20-%20Guatemala%2C%20Guatemala.jpg"
-      alt="Tikal">
-
-    <img
-      src="https://commons.wikimedia.org/wiki/Special:FilePath/Arco%20de%20Santa%20Catalina.jpg"
-      alt="Arco de Santa Catalina">
-
-  </div>
-
-</section>
-
-
-<!-- FINAL -->
-
-<section class="final">
-
-  <div>
-
-    <h2>Hasta pronto, Guatemala.</h2>
-
-    <p>
-      Shifu llegó buscando una aventura y se marchó con algo mucho más
-      valioso: recuerdos, paisajes y nuevas historias que contar.
-    </p>
-
-    <a href="#top" class="btn">VOLVER AL INICIO ↑</a>
-
-  </div>
-
-</section>
-
-
-<footer>
-
-  Fotografías: Wikimedia Commons · Las imágenes utilizadas indican
-  sus autores y licencias en sus páginas originales.
-
-</footer>
-
-</body>
-</html>
