@@ -6,6 +6,7 @@ import InstagramScroll, { mockInstagramPosts } from "@/app/components/InstagramS
 import WhyUs from "@/app/components/WhyUs";
 //import Calendar from "@/app/components/Calendar";
 import Reservation from "@/app/components/Reservation";
+import TripAdvisorWidget from "@/app/components/TripAdvisorWidget";
 
 export async function generateMetadata({
   params,
@@ -123,6 +124,8 @@ export default async function Home({
       <InstagramScroll items={mockInstagramPosts} locale={currentLocale} />
       <WhyUs />
       
+      <TripAdvisorWidget />
+
       <Reservation />
     </>
   );
