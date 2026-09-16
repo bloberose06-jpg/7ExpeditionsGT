@@ -10,10 +10,10 @@ export default function TripAdvisorWidget() {
           Opiniones de nuestros viajeros
         </h2>
 
-        {/* Contenedor target obligatorio para Trustindex */}
-        <div id="trustindex-widget"></div>
+        {/* ESTRUCTURA OFICIAL TRUSTINDEX */}
+        <div className="ti-widget" data-widget-id="2e3d5b781f6a550d7986e17d845"></div>
 
-        {/* Script de Trustindex */}
+        {/* Script de carga */}
         <Script 
           src="https://cdn.trustindex.io/loader.js?2e3d5b781f6a550d7986e17d845" 
           strategy="lazyOnload" 
