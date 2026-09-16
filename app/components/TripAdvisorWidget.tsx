@@ -1,8 +1,23 @@
 'use client';
 
-import Script from 'next/script';
+import { useEffect } from 'react';
 
 export default function TripAdvisorWidget() {
+  useEffect(() => {
+    // Evita duplicar el script en el DOM
+    const scriptId = 'trustindex-loader-script';
+    let script = document.getElementById(scriptId) as HTMLScriptElement;
+
+    if (!script) {
+      script = document.createElement('script');
+      script.id = scriptId;
+      script.src = 'https://cdn.trustindex.io/loader.js?2e3d5b781f6a550d7986e17d845';
+      script.async = true;
+      script.defer = true;
+      document.body.appendChild(script);
+    }
+  }, []);
+
   return (
     <section className="py-16 bg-black text-white border-t border-zinc-900">
       <div className="container mx-auto px-4 max-w-6xl">
@@ -10,26 +25,11 @@ export default function TripAdvisorWidget() {
           Opiniones de nuestros viajeros
         </h2>
 
-        {/* Estructura oficial del iframe/widget de Trustindex */}
+        {/* Contenedor oficial para la inserción de Trustindex */}
         <div 
-          className="ti-widget min-h-[180px] flex justify-center items-center" 
+          className="ti-widget text-center min-h-[150px]" 
           data-widget-id="2e3d5b781f6a550d7986e17d845"
-        >
-          <a 
-            href="https://www.trustindex.io" 
-            target="_blank" 
-            rel="noreferrer" 
-            className="text-xs text-zinc-600 hover:text-zinc-400 transition-colors"
-          >
-            Cargando evaluaciones de TripAdvisor...
-          </a>
-        </div>
-
-        {/* Script cargado inmediatamente después de que la página sea interactiva */}
-        <Script 
-          src="https://cdn.trustindex.io/loader.js?2e3d5b781f6a550d7986e17d845" 
-          strategy="afterInteractive" 
-        />
+        ></div>
       </div>
     </section>
   );
