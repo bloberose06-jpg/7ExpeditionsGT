@@ -81,7 +81,6 @@ export default async function Home({
 }) {
   const { locale } = await params;
   const isEs = locale === "es";
-  const currentLocale = (locale === "en" ? "en" : "es") as "es" | "en";
 
   // Schema JSON-LD enriquecido para Google Rich Snippets
   const jsonLd = {
@@ -121,7 +120,6 @@ export default async function Home({
       <Hero />
       <Tours />
       <Gallery />
-      <InstagramScroll items={mockInstagramPosts} locale={currentLocale} />
       <WhyUs />
       
       <TripAdvisorWidget />
